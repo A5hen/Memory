@@ -1,5 +1,0 @@
-.vs/
-Binaries/
-DerivedDataCache/
-Intermediate/
-Saved/
