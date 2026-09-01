@@ -54,8 +54,6 @@ struct FDialogueContent
 	TArray<FDialogueOptionEffect> DialogueOptionEffects;
 };
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnOptionSiwtched, int32, Index);
-
 struct FInteractionOption;
 struct FInteractionQuery;
 
@@ -100,10 +98,10 @@ public:
 
 	virtual void GatherInteractionOptions(const FInteractionQuery& InteractQuery, FInteractionOptionBuilder& OptionBuilder) = 0;
 
-	virtual void ShowOption(const FInteractionOption& Option, bool bShow) {}
-	virtual void SelectOption(const FInteractionOption& Option, bool bSelect) {}
+	virtual void ShowOption(const FText& Option, bool bShow) {}
+	virtual void SelectOption(const FText& Option, bool bSelect) {}
 
-	virtual bool IsInteractable() const { return false; }
+	virtual bool IsInteractable() const { return true; }
 
 	virtual FGameplayTag GetActorTag() const { return FGameplayTag(); }
 

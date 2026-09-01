@@ -29,8 +29,6 @@ void UEGLN_CharacterBehavior::UpdateContent(const FGameplayTag& EventTag, const 
 
 	for (const auto& Pair : CharacterBehavior)
 	{
-		int32 Index = 0;
-
 		if (!GeneratedCharacterBehavior.Find(Pair.Key))
 		{
 			UGraphContentWidget* Overview_Character = CreateWidget<UGraphContentWidget>(this, OverviewClass_Character);
@@ -47,6 +45,8 @@ void UEGLN_CharacterBehavior::UpdateContent(const FGameplayTag& EventTag, const 
 
 			GeneratedCharacterBehavior.Add(Pair.Key);
 		}
+
+		int32 Index = 0;
 
 		TArray<FName>& BehaviorDescs = GeneratedCharacterBehavior[Pair.Key];
 
@@ -66,8 +66,6 @@ void UEGLN_CharacterBehavior::UpdateContent(const FGameplayTag& EventTag, const 
 				Overview_Behavior->ContentWidgetInfo.BehaviorDesc = BehaviorDesc;
 
 				Overview_Behavior->DisplayContent();
-
-				ScrollBox_CharacterBehavior->AddChild(Overview_Behavior);
 
 				ScrollBox_CharacterBehavior->InsertChildAt(Index, Overview_Behavior);
 				++Index;

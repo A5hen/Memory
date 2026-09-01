@@ -6,7 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "OptionWidgetContainer.generated.h"
 
-class UWrapBox;
+class UScrollBox;
 
 /**
  * 
@@ -19,9 +19,10 @@ class MEMORY_API UOptionWidgetContainer : public UUserWidget
 public:
 
 	void AddOptionWidget(UUserWidget* InWidget);
+	void ShowOptionWidget(const FText& Option, bool bShow);
 
 protected:
 
 	UPROPERTY(meta = (BindWidget))
-	UWrapBox* WrapBox_Root;
+	UScrollBox* ScrollBox_Root;
 };

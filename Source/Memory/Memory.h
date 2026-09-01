@@ -16,14 +16,6 @@ enum class EActionType : uint8
 };
 
 UENUM(BlueprintType)
-enum class EActorType : uint8
-{
-	Consumable,
-	Valuable,
-	None,
-};
-
-UENUM(BlueprintType)
 enum class EEventStage : uint8
 {
 	Childhood,

@@ -4,10 +4,16 @@
 #include "OptionWidget.h"
 #include "Components/TextBlock.h"//
 
-void UOptionWidget::SetOptionInfo(const FText& NewOption)
+void UOptionWidget::SetOptionText(const FText& Option)
 {
-	if (!NewOption.IsEmpty())
+	if (!Option.IsEmpty())
 	{
-		Option->SetText(NewOption);
+		Text_Option->SetText(Option);
+		OptionText = Option;
 	}
+}
+
+const FText& UOptionWidget::GetOptionText() const
+{
+	return OptionText;
 }

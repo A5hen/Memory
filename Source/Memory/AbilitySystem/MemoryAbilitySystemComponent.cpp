@@ -79,7 +79,6 @@ void UMemoryAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bG
 			if (Spec->Ability && !Spec->IsActive())
 			{
 				UMemoryGameplayAbility* MemoryAbilityCDO = CastChecked<UMemoryGameplayAbility>(Spec->Ability);
-
 				if (MemoryAbilityCDO->GetActivationPolicy() == EMemoryAbilityActivationPolicy::WhileInputActive)
 				{
 					AbilitiesToActivate.AddUnique(SpecHandle);

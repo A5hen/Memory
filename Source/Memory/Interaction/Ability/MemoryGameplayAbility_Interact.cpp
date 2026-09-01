@@ -12,7 +12,7 @@ void UMemoryGameplayAbility_Interact::ExtraInputPressed(const FGameplayTag& Extr
 {
 	const FMemoryGameplayTags& GameplayTags = FMemoryGameplayTags::Get();
 
-	Options[SelectedIndex].InteractableTarget->SelectOption(Options[SelectedIndex], false);
+	Options[SelectedIndex].InteractableTarget->SelectOption(Options[SelectedIndex].Option, false);
 
 	if (ExtraInputTag.MatchesTagExact(GameplayTags.Ability_Extra_Up))
 	{
@@ -32,7 +32,7 @@ void UMemoryGameplayAbility_Interact::ExtraInputPressed(const FGameplayTag& Extr
 		SelectedIndex = Options.Num() - 1;
 	}
 
-	Options[SelectedIndex].InteractableTarget->SelectOption(Options[SelectedIndex], true);
+	Options[SelectedIndex].InteractableTarget->SelectOption(Options[SelectedIndex].Option, true);
 }
 
 void UMemoryGameplayAbility_Interact::ActivateAbility(
@@ -49,13 +49,13 @@ void UMemoryGameplayAbility_Interact::ActivateAbility(
 
 void UMemoryGameplayAbility_Interact::UpdateInteractions(const TArray<FInteractionOption>& InteractiveOptions)
 {
-	Options[SelectedIndex].InteractableTarget->SelectOption(Options[SelectedIndex], false);
+	Options[SelectedIndex].InteractableTarget->SelectOption(Options[SelectedIndex].Option, false);
 
 	for (const FInteractionOption& Option : InteractiveOptions)
 	{
 		if (!Options.Contains(Option))
 		{
-			Option.InteractableTarget->ShowOption(Option, true);
+			Option.InteractableTarget->ShowOption(Option.Option, true);
 		}
 		else
 		{
@@ -65,13 +65,13 @@ void UMemoryGameplayAbility_Interact::UpdateInteractions(const TArray<FInteracti
 
 	for (const FInteractionOption& Option : InteractiveOptions)
 	{
-		Option.InteractableTarget->ShowOption(Option, false);
+		Option.InteractableTarget->ShowOption(Option.Option, false);
 	}
 
 	Options = InteractiveOptions;
 
 	SelectedIndex = 0;
-	Options[SelectedIndex].InteractableTarget->SelectOption(Options[SelectedIndex], true);
+	Options[SelectedIndex].InteractableTarget->SelectOption(Options[SelectedIndex].Option, true);
 }
 
 void UMemoryGameplayAbility_Interact::TriggerInteraction()

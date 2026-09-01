@@ -2,9 +2,33 @@
 
 
 #include "OptionWidgetContainer.h"
-#include "Components/WrapBox.h"//
+#include "Components/ScrollBox.h"//
+#include "Memory/UI/OptionWidget.h"//
 
 void UOptionWidgetContainer::AddOptionWidget(UUserWidget* InWidget)
 {
-	WrapBox_Root->AddChildToWrapBox(InWidget);
+	ScrollBox_Root->AddChild(InWidget);
+}
+
+void UOptionWidgetContainer::ShowOptionWidget(const FText& Option, bool bShow)
+{
+	for (UWidget* Widget : ScrollBox_Root->GetAllChildren())
+	{
+		if (UOptionWidget* OptionWidget = Cast<UOptionWidget>(Widget))
+		{
+			if (OptionWidget->GetOptionText().IdenticalTo(Option))
+			{
+				if (bShow)
+				{
+					OptionWidget->SetVisibility(ESlateVisibility::Visible);
+				}
+				else
+				{
+					OptionWidget->SetVisibility(ESlateVisibility::Collapsed);
+				}
+
+				return;
+			}
+		}
+	}
 }

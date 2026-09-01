@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "MemoryActivatableWidget.h"
+#include "Memory/Memory.h"//
 #include "EventMenu.generated.h"
 
 class USizeBox;

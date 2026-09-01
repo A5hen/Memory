@@ -29,10 +29,11 @@ void UBehaviorCognitionDetail::UpdateContent(const FContentWidgetInfo& ContentWi
 			Content_BehaviorCognition->ContentWidgetInfo = ContentWidgetInfo;
 			Content_BehaviorCognition->ContentWidgetInfo.CognitionLevel = i;
 
-			CurrentCognitionLevel = i;
-
 			Content_BehaviorCognition->DisplayContent();
+
 			ScrollBox_BehaviorCognition->AddChild(Content_BehaviorCognition);
+
+			CurrentCognitionLevel = i;
 		}
 	}
 }
