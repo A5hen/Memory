@@ -37,32 +37,6 @@ void AInteractableActor::GatherInteractionOptions(const FInteractionQuery& Inter
 	}
 }
 
-void AInteractableActor::ShowOption(const FText& Option, bool bShow)
-{
-	if (bShow == bShowOption)return;
-
-	bShowOption = bShow;
-
-	UOptionWidgetContainer* OptionContainer = Cast<UOptionWidgetContainer>(WidgetContainer->GetUserWidgetObject());
-	OptionContainer->ShowOptionWidget(Option, bShow);
-
-	if (UWorld* World = GetWorld())
-	{
-		if (bShow)
-		{
-			World->GetTimerManager().SetTimer(TimerHandle, this, &AInteractableActor::FacingPlayer, 0.01f, true, 0.f);
-		}
-		else
-		{
-			World->GetTimerManager().ClearTimer(TimerHandle);
-		}
-	}
-}
-
-void AInteractableActor::SelectOption(const FText& Option, bool bSelect)
-{
-}
-
 bool AInteractableActor::IsInteractable() const
 {
 	return true;
@@ -80,7 +54,7 @@ void AInteractableActor::BeginPlay()
 			UOptionWidget* OptionWidget = CreateWidget<UOptionWidget>(GetWorld(), OptionWidgetClass);
 			OptionWidget->SetOptionText(InteractionOption.Option);
 
-			OptionContainer->AddOptionWidget(OptionWidget);
+			OptionContainer->AddOptionWidget(InteractionOption.ID, OptionWidget);
 		}
 	}
 }

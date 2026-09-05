@@ -31,8 +31,8 @@ public:
 
 	/*~InteractableTarget Interface*/
 	virtual void GatherInteractionOptions(const FInteractionQuery& InteractQuery, FInteractionOptionBuilder& OptionBuilder) override;
-	virtual void ShowOption(const FText& Option, bool bShow) override;
-	virtual void SelectOption(const FText& Option, bool bSelect) override;
+	virtual void DisplayOption(const FName& ID, bool bDisplay) override;
+	virtual void SelectOption(const FName& ID, bool bSelect) override;
 	virtual bool IsInteractable() const override;
 
 	virtual FGameplayTag GetActorTag()const override;
@@ -81,7 +81,7 @@ protected:
 
 	FTimerHandle TimerHandle;
 
-	bool bShowOption = false;
+	bool bTimerSet = false;
 
 	bool bInteractable = true;
 

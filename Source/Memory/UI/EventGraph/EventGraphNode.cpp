@@ -10,7 +10,7 @@
 #include "Memory/UI/EventGraph/LeafNode/EGLN_SelfAwareness.h"//
 #include "Memory/MemoryGameplayTag.h"//
 
-void UEventGraphNode::UpdateLeafNode(const FGameplayTag& EventTag, const FExperiencedEventInfo& ExperiencedEventInfo)
+void UEventGraphNode::UpdateNode(const FGameplayTag& EventTag, const FExperiencedEventInfo& ExperiencedEventInfo)
 {
 	UpdateLeafNode_CharacterBehavior(EventTag, ExperiencedEventInfo);
 	UpdateLeafNode_SelfAwareness(EventTag, ExperiencedEventInfo);
@@ -47,7 +47,7 @@ void UEventGraphNode::UpdateLeafNode_CharacterBehavior(const FGameplayTag& Event
 			{
 				CharacterBehavior.Add(Pair.Key, Pair.Value.Names);
 			}
-			LeafNode_CharacterBehavior->UpdateContent(EventTag, CharacterBehavior);
+			LeafNode_CharacterBehavior->UpdateLeafNode(EventTag, CharacterBehavior);
 		}
 		else
 		{
@@ -56,7 +56,7 @@ void UEventGraphNode::UpdateLeafNode_CharacterBehavior(const FGameplayTag& Event
 			{
 				CharacterBehavior.Add(Pair.Key, Pair.Value.Names);
 			}
-			LeafNode_CharacterBehavior->UpdateContent(EventTag, CharacterBehavior);
+			LeafNode_CharacterBehavior->UpdateLeafNode(EventTag, CharacterBehavior);
 		}
 	}
 }
@@ -87,11 +87,11 @@ void UEventGraphNode::UpdateLeafNode_SelfAwareness(const FGameplayTag& EventTag,
 
 			CanvasPanelSlot->SetAutoSize(true);
 
-			LeafNode_SelfAwareness->UpdateContent(EventTag, ExperiencedEventInfo.GeneratedSelfAwareness);
+			LeafNode_SelfAwareness->UpdateLeafNode(EventTag, ExperiencedEventInfo.GeneratedSelfAwareness);
 		}
 		else
 		{
-			LeafNode_SelfAwareness->UpdateContent(EventTag, ExperiencedEventInfo.GeneratedSelfAwareness);
+			LeafNode_SelfAwareness->UpdateLeafNode(EventTag, ExperiencedEventInfo.GeneratedSelfAwareness);
 		}
 	}
 }

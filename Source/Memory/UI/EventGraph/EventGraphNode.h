@@ -24,7 +24,7 @@ class MEMORY_API UEventGraphNode : public UGraphNodeWidget
 
 public:
 
-	void UpdateLeafNode(const FGameplayTag& EventTag, const FExperiencedEventInfo& ExperiencedEventInfo);
+	void UpdateNode(const FGameplayTag& EventTag, const FExperiencedEventInfo& ExperiencedEventInfo);
 
 protected:
 

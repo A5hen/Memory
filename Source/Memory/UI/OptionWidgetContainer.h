@@ -8,6 +8,21 @@
 
 class UScrollBox;
 
+class UOptionWidget;
+
+USTRUCT()
+struct FOptionWidgetInfo
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	UOptionWidget* OptionWidget = nullptr;
+
+	bool bSelected = false;
+
+	bool bDisplayed = false;
+};
+
 /**
  * 
  */
@@ -18,11 +33,23 @@ class MEMORY_API UOptionWidgetContainer : public UUserWidget
 
 public:
 
-	void AddOptionWidget(UUserWidget* InWidget);
-	void ShowOptionWidget(const FText& Option, bool bShow);
+	void AddOptionWidget(const FName& ID, UOptionWidget* OptionWidget);
+
+	void DisplayOptionWidget(const FName& ID, bool bDisplay);
+	bool IsOptionWidgetDisplayed(const FName& ID) const;
+
+	void SelectOptionWidget(const FName& ID, bool bSelect);
+	bool IsOptionWidgetSelected(const FName& ID) const;
+
+	bool IsAnyOptionDisplayed() const;
 
 protected:
 
+	UPROPERTY()
+	TMap<FName, FOptionWidgetInfo> OptionWidgetInfomation;
+
 	UPROPERTY(meta = (BindWidget))
 	UScrollBox* ScrollBox_Root;
+
+	int32 DisplayedOptionNum = 0;
 };

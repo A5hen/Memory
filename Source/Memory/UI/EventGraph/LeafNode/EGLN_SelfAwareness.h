@@ -21,7 +21,7 @@ class MEMORY_API UEGLN_SelfAwareness : public UUserWidget
 
 public:
 
-	void UpdateContent(const FGameplayTag& EventTag, const FGameplayTagContainer& GeneratedSelfAwareness);
+	void UpdateLeafNode(const FGameplayTag& EventTag, const FGameplayTagContainer& GeneratedSelfAwareness);
 
 protected:
 

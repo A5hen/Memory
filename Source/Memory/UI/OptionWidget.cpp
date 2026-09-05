@@ -9,11 +9,9 @@ void UOptionWidget::SetOptionText(const FText& Option)
 	if (!Option.IsEmpty())
 	{
 		Text_Option->SetText(Option);
-		OptionText = Option;
 	}
 }
 
-const FText& UOptionWidget::GetOptionText() const
+void UOptionWidget::Select(bool bSelect)
 {
-	return OptionText;
 }

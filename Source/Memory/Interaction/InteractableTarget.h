@@ -98,8 +98,8 @@ public:
 
 	virtual void GatherInteractionOptions(const FInteractionQuery& InteractQuery, FInteractionOptionBuilder& OptionBuilder) = 0;
 
-	virtual void ShowOption(const FText& Option, bool bShow) {}
-	virtual void SelectOption(const FText& Option, bool bSelect) {}
+	virtual void DisplayOption(const FName& ID, bool bDisplay) {}
+	virtual void SelectOption(const FName& ID, bool bSelect) {}
 
 	virtual bool IsInteractable() const { return true; }
 

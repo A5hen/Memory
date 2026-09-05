@@ -12,8 +12,6 @@ class UScrollBox;
 class UGraphContentWidget;
 struct FContentWidgetInfo;
 
-class UCharacterCognitionSet;
-
 /**
  * 
  */

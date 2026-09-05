@@ -6,7 +6,7 @@
 #include "Memory/UI/GraphContentWidget.h"//
 #include "Memory/MemoryGameplayTag.h"//
 
-void UEGLN_SelfAwareness::UpdateContent(const FGameplayTag& EventTag, const FGameplayTagContainer& GeneratedSelfAwareness)
+void UEGLN_SelfAwareness::UpdateLeafNode(const FGameplayTag& EventTag, const FGameplayTagContainer& GeneratedSelfAwareness)
 {
 	check(OverviewClass_SelfAwareness);
 	

@@ -18,6 +18,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText Option;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName ID;
+
 	UPROPERTY(BlueprintReadWrite)
 	TScriptInterface<IInteractableTarget> InteractableTarget;
 
@@ -43,6 +46,7 @@ public:
 	FORCEINLINE bool operator==(const FInteractionOption& Other) const
 	{
 		return Option.IdenticalTo(Other.Option) &&
+			ID.IsEqual(Other.ID) &&
 			InteractableTarget == Other.InteractableTarget &&
 			InteractionAbilityToGrant == Other.InteractionAbilityToGrant &&
 			TargetAbilitySystem == Other.TargetAbilitySystem &&

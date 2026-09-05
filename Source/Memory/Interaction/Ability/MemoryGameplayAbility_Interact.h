@@ -31,12 +31,15 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "GA_Interact")
 	void TriggerInteraction();
 
+	void DisplayOption_Check(const FInteractionOption& Option, bool bDisplay);
+	void SelectOption_Check(const FInteractionOption& Option, bool bSelect);
+
 protected:
 
 	UPROPERTY()
 	TArray<FInteractionOption> Options;
 
-	int32 SelectedIndex = 0;
+	int32 SelectedIndex = -1;
 
 	UPROPERTY(EditDefaultsOnly, Category = "GA_Interact|ScanParam")
 	float InteractionScanRate = 0.1f;

@@ -6,7 +6,7 @@
 #include "Memory/UI/GraphContentWidget.h"//
 #include "Memory/MemoryGameplayTag.h"//
 
-void UEGLN_CharacterBehavior::UpdateContent(const FGameplayTag& EventTag, const TMap<FGameplayTag, TArray<FName>>& CharacterBehavior)
+void UEGLN_CharacterBehavior::UpdateLeafNode(const FGameplayTag& EventTag, const TMap<FGameplayTag, TArray<FName>>& CharacterBehavior)
 {
 	check(OverviewClass_Character);
 	check(OverviewClass_CharacterBehavior);

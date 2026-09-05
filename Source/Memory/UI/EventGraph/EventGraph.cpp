@@ -119,7 +119,7 @@ void UEventGraph::UpdateEventGraphNode(const FGameplayTag& EventTag, const FExpe
 		CanvasPanelSlot->SetPosition(PositionOnGraph);
 		CanvasPanelSlot->SetAutoSize(true);
 
-		EventGraphNode->UpdateLeafNode(EventTag, ExperiencedEventInfo);
+		EventGraphNode->UpdateNode(EventTag, ExperiencedEventInfo);
 
 		GeneratedEventGraphNodes.Add(EventTag, EventGraphNode);
 	}
@@ -128,7 +128,7 @@ void UEventGraph::UpdateEventGraphNode(const FGameplayTag& EventTag, const FExpe
 		if (GeneratedEventGraphNodes.Find(EventTag))
 		{
 			UEventGraphNode* EventGraphNode = GeneratedEventGraphNodes[EventTag];
-			EventGraphNode->UpdateLeafNode(EventTag, ExperiencedEventInfo);
+			EventGraphNode->UpdateNode(EventTag, ExperiencedEventInfo);
 		}
 	}
 }

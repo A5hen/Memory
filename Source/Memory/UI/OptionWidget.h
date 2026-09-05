@@ -19,12 +19,11 @@ class MEMORY_API UOptionWidget : public UUserWidget
 public:
 
 	void SetOptionText(const FText& Option);
-	const FText& GetOptionText() const;
+
+	void Select(bool bSelect);
 
 protected:
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* Text_Option;
-
-	FText OptionText;
 };

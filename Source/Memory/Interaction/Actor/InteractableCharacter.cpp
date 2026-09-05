@@ -65,7 +65,7 @@ void AInteractableCharacter::BeginPlay()
 			UOptionWidget* OptionWidget = CreateWidget<UOptionWidget>(GetWorld(), OptionWidgetClass);
 			OptionWidget->SetOptionText(InteractionOption.Option);
 
-			OptionContainer->AddOptionWidget(OptionWidget);
+			OptionContainer->AddOptionWidget(InteractionOption.ID, OptionWidget);
 		}
 	}
 }
@@ -118,29 +118,42 @@ void AInteractableCharacter::GatherInteractionOptions(const FInteractionQuery& I
 	}
 }
 
-void AInteractableCharacter::ShowOption(const FText& Option, bool bShow)
+void AInteractableCharacter::DisplayOption(const FName& ID, bool bDisplay)
 {
-	if (bShow == bShowOption)return;
-
-	bShowOption = bShow;
-
 	UOptionWidgetContainer* OptionContainer = Cast<UOptionWidgetContainer>(WidgetContainer->GetUserWidgetObject());
-	OptionContainer->ShowOptionWidget(Option, bShow);
+	OptionContainer->DisplayOptionWidget(ID, bDisplay);
 
 	if (UWorld* World = GetWorld())
 	{
-		if(bShow)
+		if (OptionContainer->IsAnyOptionDisplayed())
 		{
-			World->GetTimerManager().SetTimer(TimerHandle, this, &AInteractableCharacter::FacingPlayer, 0.01f, true, 0.f);
+			if (WidgetContainer->IsVisible() == false)
+			{
+				WidgetContainer->SetVisibility(true);
+			}
+
+			if (!bTimerSet)
+			{
+				World->GetTimerManager().SetTimer(TimerHandle, this, &AInteractableCharacter::FacingPlayer, 0.01f, true, 0.f);
+				bTimerSet = true;
+			}
 		}
 		else
 		{
-			World->GetTimerManager().ClearTimer(TimerHandle);
+			if (WidgetContainer->IsVisible() != false)
+			{
+				WidgetContainer->SetVisibility(false);
+			}
+
+			if (bTimerSet)
+			{
+				World->GetTimerManager().ClearTimer(TimerHandle);
+			}
 		}
 	}
 }
 
-void AInteractableCharacter::SelectOption(const FText& Option, bool bSelect)
+void AInteractableCharacter::SelectOption(const FName& ID, bool bSelect)
 {
 }
 

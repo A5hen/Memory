@@ -32,14 +32,14 @@ TSharedRef<ISlateRun> FHoverDecorator::Create(const TSharedRef<class FTextLayout
 	const FTextBlockStyle& TextStyle = Owner->GetCurrentDefaultTextStyle();
 
 	UDataTable* TextStyleSet = Owner->GetTextStyleSet();
-	const FRichTextStyleRow* UnhoveredTipStyle = TextStyleSet->FindRow<FRichTextStyleRow>(FName("E_Unhovered"), TEXT("Can't find row: E_Unhovered"));
+	const FRichTextStyleRow* UnhoveredStyle = TextStyleSet->FindRow<FRichTextStyleRow>(FName("E_Unhovered"), TEXT("Can't find row: E_Unhovered"));
 
 	TSharedPtr<ISlateRun> SlateRun;
 
 	TSharedPtr<SWidget> DecoratorWidget;
-	if (UnhoveredTipStyle)
+	if (UnhoveredStyle)
 	{
-		DecoratorWidget = CreateDecoratorWidget(RunInfo, UnhoveredTipStyle->TextStyle);
+		DecoratorWidget = CreateDecoratorWidget(RunInfo, UnhoveredStyle->TextStyle);
 	}
 	else
 	{

@@ -22,7 +22,7 @@ class MEMORY_API UEGLN_CharacterBehavior : public UUserWidget
 	
 public:
 
-	void UpdateContent(const FGameplayTag& EventTag, const TMap<FGameplayTag, TArray<FName>>& CharacterBehavior);
+	void UpdateLeafNode(const FGameplayTag& EventTag, const TMap<FGameplayTag, TArray<FName>>& CharacterBehavior);
 
 protected:
 

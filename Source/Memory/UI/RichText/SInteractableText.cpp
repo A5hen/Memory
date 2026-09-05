@@ -25,10 +25,10 @@ void SInteractableText::Construct(const FArguments& InArgs)
 				{
 					if(RichTextStyleSet.IsValid())
 					{
-						const FRichTextStyleRow* HoveredTipStyle = RichTextStyleSet->FindRow<FRichTextStyleRow>(FName("E_Hovered"), TEXT("Can't find row: E_Hovered"));
-						if (HoveredTipStyle)
+						const FRichTextStyleRow* HoveredStyle = RichTextStyleSet->FindRow<FRichTextStyleRow>(FName("E_Hovered"), TEXT("Can't find row: E_Hovered"));
+						if (HoveredStyle)
 						{
-							TextBlock->SetTextStyle(&HoveredTipStyle->TextStyle);
+							TextBlock->SetTextStyle(&HoveredStyle->TextStyle);
 						}
 					}
 
@@ -50,10 +50,10 @@ void SInteractableText::Construct(const FArguments& InArgs)
 				{
 					if (RichTextStyleSet.IsValid())
 					{
-						const FRichTextStyleRow* UnhoveredTipStyle = RichTextStyleSet->FindRow<FRichTextStyleRow>(FName("E_Unhovered"), TEXT("Can't find row: E_Unhovered"));
-						if (UnhoveredTipStyle)
+						const FRichTextStyleRow* UnhoveredStyle = RichTextStyleSet->FindRow<FRichTextStyleRow>(FName("E_Unhovered"), TEXT("Can't find row: E_Unhovered"));
+						if (UnhoveredStyle)
 						{
-							TextBlock->SetTextStyle(&UnhoveredTipStyle->TextStyle);
+							TextBlock->SetTextStyle(&UnhoveredStyle->TextStyle);
 						}
 					}
 

@@ -12,7 +12,7 @@ void UMemoryGameplayAbility_Interact::ExtraInputPressed(const FGameplayTag& Extr
 {
 	const FMemoryGameplayTags& GameplayTags = FMemoryGameplayTags::Get();
 
-	Options[SelectedIndex].InteractableTarget->SelectOption(Options[SelectedIndex].Option, false);
+	SelectOption_Check(Options[SelectedIndex], false);
 
 	if (ExtraInputTag.MatchesTagExact(GameplayTags.Ability_Extra_Up))
 	{
@@ -32,7 +32,7 @@ void UMemoryGameplayAbility_Interact::ExtraInputPressed(const FGameplayTag& Extr
 		SelectedIndex = Options.Num() - 1;
 	}
 
-	Options[SelectedIndex].InteractableTarget->SelectOption(Options[SelectedIndex].Option, true);
+	SelectOption_Check(Options[SelectedIndex], true);
 }
 
 void UMemoryGameplayAbility_Interact::ActivateAbility(
@@ -49,29 +49,44 @@ void UMemoryGameplayAbility_Interact::ActivateAbility(
 
 void UMemoryGameplayAbility_Interact::UpdateInteractions(const TArray<FInteractionOption>& InteractiveOptions)
 {
-	Options[SelectedIndex].InteractableTarget->SelectOption(Options[SelectedIndex].Option, false);
+	if (SelectedIndex != -1)
+	{
+		if (!InteractiveOptions.Contains(Options[SelectedIndex]))
+		{
+			SelectOption_Check(Options[SelectedIndex], false);
+			SelectedIndex = -1;
+		}
+		else
+		{
+			SelectedIndex = InteractiveOptions.Find(Options[SelectedIndex]);
+		}
+	}
 
 	for (const FInteractionOption& Option : InteractiveOptions)
 	{
 		if (!Options.Contains(Option))
 		{
-			Option.InteractableTarget->ShowOption(Option.Option, true);
-		}
-		else
-		{
+			DisplayOption_Check(Option, true);
 			Options.Remove(Option);
 		}
 	}
 
-	for (const FInteractionOption& Option : InteractiveOptions)
+	for (const FInteractionOption& Option : Options)
 	{
-		Option.InteractableTarget->ShowOption(Option.Option, false);
+		DisplayOption_Check(Option, false);
 	}
 
 	Options = InteractiveOptions;
 
-	SelectedIndex = 0;
-	Options[SelectedIndex].InteractableTarget->SelectOption(Options[SelectedIndex].Option, true);
+	if (SelectedIndex == -1 && Options.Num() != 0)
+	{
+		SelectedIndex = 0;
+	}
+
+	if (SelectedIndex != -1)
+	{
+		SelectOption_Check(Options[SelectedIndex], true);
+	}
 }
 
 void UMemoryGameplayAbility_Interact::TriggerInteraction()
@@ -102,5 +117,21 @@ void UMemoryGameplayAbility_Interact::TriggerInteraction()
 			FGameplayTag(),
 			&Payload,
 			*InteractionOption.TargetAbilitySystem);
+	}
+}
+
+void UMemoryGameplayAbility_Interact::DisplayOption_Check(const FInteractionOption& Option, bool bDisplay)
+{
+	if (Option.InteractableTarget.GetObject() && Option.InteractableTarget.GetInterface())
+	{
+		Option.InteractableTarget->DisplayOption(Option.ID, bDisplay);
+	}
+}
+
+void UMemoryGameplayAbility_Interact::SelectOption_Check(const FInteractionOption& Option, bool bSelect)
+{
+	if (Option.InteractableTarget.GetObject() && Option.InteractableTarget.GetInterface())
+	{
+		Option.InteractableTarget->SelectOption(Option.ID, bSelect);
 	}
 }

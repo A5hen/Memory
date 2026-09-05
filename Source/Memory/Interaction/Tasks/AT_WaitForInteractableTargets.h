@@ -49,5 +49,6 @@ private:
 
 	FTimerHandle TimerHandle;
 
+	UPROPERTY()
 	TArray<FInteractionOption> CurrentOptions;
 };
