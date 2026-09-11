@@ -40,7 +40,11 @@ public:
 	virtual void GetDialogueContent(FDialogueContent& OutDialogueContent) const override;
 	virtual void SetDialogueContent(const FDialogueContent& NewDialogueContent) override;
 
-	virtual void CharacterMove(AActor* TargetPoint)override;
+	virtual int32 GetDialogueBranchIndex() const override;
+	virtual void SetDialogueBranchIndex(int32 NewBranchIndex) override;
+
+	virtual int32 GetDialogueSentenceIndex() const override;
+	virtual void SetDialogueSentenceIndex(int32 NewSentenceIndex) override;
 	/*~End of InteractableTarget Interface*/
 
 protected:
@@ -99,5 +103,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "InteractableCharacter|DialogueContent")
 	int32 DialogueBranchIndex = 0;
+
+	UPROPERTY(EditDefaultsOnly, Category = "InteractableCharacter|DialogueContent")
+	int32 DialogueSentenceIndex = 0;
 	/*Dialogue*/
 };

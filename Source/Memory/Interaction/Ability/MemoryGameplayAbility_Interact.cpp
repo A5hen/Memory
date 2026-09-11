@@ -12,24 +12,21 @@ void UMemoryGameplayAbility_Interact::ExtraInputPressed(const FGameplayTag& Extr
 {
 	const FMemoryGameplayTags& GameplayTags = FMemoryGameplayTags::Get();
 
+	if (SelectedIndex == -1 || Options.Num() < 2)return;
+
 	SelectOption_Check(Options[SelectedIndex], false);
 
 	if (ExtraInputTag.MatchesTagExact(GameplayTags.Ability_Extra_Up))
 	{
-		SelectedIndex = SelectedIndex - 1;
+		if (SelectedIndex == 0)return;
+		
+		SelectedIndex = FMath::Max(0, SelectedIndex - 1);
 	}
 	else if (ExtraInputTag.MatchesTagExact(GameplayTags.Ability_Extra_Down))
 	{
-		SelectedIndex = SelectedIndex + 1;
-	}
+		if (SelectedIndex == Options.Num() - 1)return;
 
-	if (SelectedIndex > Options.Num() - 1)
-	{
-		SelectedIndex = 0;
-	}
-	else if (SelectedIndex < 0)
-	{
-		SelectedIndex = Options.Num() - 1;
+		SelectedIndex = FMath::Max(Options.Num() - 1, SelectedIndex + 1);
 	}
 
 	SelectOption_Check(Options[SelectedIndex], true);
@@ -108,7 +105,13 @@ void UMemoryGameplayAbility_Interact::TriggerInteraction()
 		Payload.Instigator = Instigator;
 		Payload.Target = InteractableTargetActor;
 
+		// Grab the target actor off the payload we're going to use it as the 'avatar' for the interaction, and the
+		// source InteractableTarget actor as the owner actor.
+		AActor* TargetActor = const_cast<AActor*>(ToRawPtr(Payload.Target));
+
+		// The actor info needed for the interaction.
 		FGameplayAbilityActorInfo ActorInfo;
+		ActorInfo.InitFromActor(InteractableTargetActor, TargetActor, InteractionOption.TargetAbilitySystem);
 
 		// Trigger the ability using event tag.
 		InteractionOption.TargetAbilitySystem->TriggerAbilityFromGameplayEvent(
@@ -122,7 +125,7 @@ void UMemoryGameplayAbility_Interact::TriggerInteraction()
 
 void UMemoryGameplayAbility_Interact::DisplayOption_Check(const FInteractionOption& Option, bool bDisplay)
 {
-	if (Option.InteractableTarget.GetObject() && Option.InteractableTarget.GetInterface())
+	if (Option.InteractableTarget)
 	{
 		Option.InteractableTarget->DisplayOption(Option.ID, bDisplay);
 	}
@@ -130,7 +133,7 @@ void UMemoryGameplayAbility_Interact::DisplayOption_Check(const FInteractionOpti
 
 void UMemoryGameplayAbility_Interact::SelectOption_Check(const FInteractionOption& Option, bool bSelect)
 {
-	if (Option.InteractableTarget.GetObject() && Option.InteractableTarget.GetInterface())
+	if (Option.InteractableTarget)
 	{
 		Option.InteractableTarget->SelectOption(Option.ID, bSelect);
 	}

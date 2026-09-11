@@ -8,7 +8,7 @@
 #include "SelfAwarenessSet.generated.h"
 
 USTRUCT(BlueprintType)
-struct FEffectOnBehaviorCognition
+struct FBehaviorCognitionEffect
 {
 	GENERATED_BODY()
 
@@ -22,7 +22,7 @@ struct FAwarenessInfo
 	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	TMap<FGameplayTag, FEffectOnBehaviorCognition> EffectOnCharacterBehaviorCognition;
+	TMap<FGameplayTag, FBehaviorCognitionEffect> CharacterBehaviorCognitionEffects;
 };
 
 /**

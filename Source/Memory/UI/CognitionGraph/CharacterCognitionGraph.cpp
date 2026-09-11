@@ -86,9 +86,12 @@ void UCharacterCognitionGraph::UpdateCognitionGraph(const FBehaviorCognitionInfo
 
 UCharacterCognitionSet* UCharacterCognitionGraph::GetCharacterCognitionSet()
 {
-	if (UMemoryGameInstance* MemoryGI = GetGameInstance<UMemoryGameInstance>())
+	if (CharacterCognitionSet)
 	{
-		CharacterCognitionSet = MemoryGI->GetCharacterCognitionSet();
+		if (UMemoryGameInstance* MemoryGI = GetGameInstance<UMemoryGameInstance>())
+		{
+			CharacterCognitionSet = MemoryGI->GetCharacterCognitionSet();
+		}
 	}
 
 	return CharacterCognitionSet;

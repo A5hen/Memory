@@ -28,11 +28,6 @@ void UMemoryWidgetController::SelectContent(const FContentWidgetInfo& ContentWid
 	OnContentSelected.Broadcast(ContentWidgetInfo);
 }
 
-void UMemoryWidgetController::DeselectPreviousContent(const FContentWidgetInfo& ContentWidgetInfo)
-{
-	OnOtherContentSelected.Broadcast(ContentWidgetInfo);
-}
-
 AMemoryPlayerController* UMemoryWidgetController::GetMemoryPC()
 {
 	if (MemoryPC == nullptr)

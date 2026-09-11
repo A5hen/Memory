@@ -33,8 +33,6 @@ void UGraphContentWidget::HandleMouseButtonDown()
 	bSelected = true;
 
 	WidgetController->SelectContent(ContentWidgetInfo);
-	WidgetController->DeselectPreviousContent(ContentWidgetInfo);
-	WidgetController->OnOtherContentSelected.AddUObject(this, &UGraphContentWidget::HandleDeselection);
 
 	OnSelected.Broadcast(ContentWidgetInfo);
 	BP_OnSelected.Broadcast();
@@ -52,30 +50,4 @@ FReply UGraphContentWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry,
 	HandleMouseButtonDown();
 
 	return FReply::Handled();
-}
-
-void UGraphContentWidget::HandleDeselection(const FContentWidgetInfo& InContentWidgetInfo)
-{
-	const FMemoryGameplayTags& GameplayTags = FMemoryGameplayTags::Get();
-
-	bool bReactDeselection = true;
-
-	if (ContentWidgetInfo.OwnerWidgetTag.MatchesTagExact(GameplayTags.Widget_EventMenu))
-	{
-		if (ContentWidgetInfo.ContentTag.MatchesTagExact(GameplayTags.Content_Character))
-		{
-			if (!InContentWidgetInfo.ContentTag.MatchesTagExact(GameplayTags.Content_Character))
-			{
-				bReactDeselection = false;
-			}
-		}
-	}
-
-	if (bReactDeselection)
-	{
-		bSelected = false;
-
-		WidgetController->OnOtherContentSelected.RemoveAll(this);
-		BP_OnDeselected.Broadcast();
-	}
 }

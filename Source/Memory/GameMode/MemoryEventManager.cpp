@@ -49,26 +49,28 @@ void UMemoryEventManager::ConfirmStartEventCondition(const FString& ConditionKey
 
 void UMemoryEventManager::FinishEventAsyncAction(const FGameplayTag& ActorTag, EActionType ActionType)
 {
-	if(OngoingEventDefinition)
+	if (OngoingEventDefinition)
 	{
 		OngoingEventDefinition->FinishEventAsyncAction(ActorTag, ActionType);
 	}
 }
 
-void UMemoryEventManager::SendDialogueSelectionResult(int32 SentenceIndex, int32 Result)
+void UMemoryEventManager::SendDialogueResult(const FGameplayTag& ActorTag, int32 SentenceIndex, FText Result)
 {
 	if (OngoingEventDefinition)
 	{
-		OngoingEventDefinition->SendDialogueSelectionResult(SentenceIndex, Result);
+		OngoingEventDefinition->SendDialogueResult(ActorTag, SentenceIndex, Result);
 	}
 }
 
 UMemoryEventSet* UMemoryEventManager::GetMemoryEventSet()
 {
-	if (EventSet == nullptr && GetWorld())
+	if (!EventSet && GetWorld())
 	{
-		UMemoryGameInstance* MemoryGI = GetWorld()->GetGameInstance<UMemoryGameInstance>();
-		EventSet = MemoryGI->GetMemoryEventSet();
+		if (UMemoryGameInstance* MemoryGI = GetWorld()->GetGameInstance<UMemoryGameInstance>())
+		{
+			EventSet = MemoryGI->GetMemoryEventSet();
+		}
 	}
 
 	return EventSet;
@@ -85,7 +87,6 @@ void UMemoryEventManager::StartNextEvent()
 
 	if (OngoingEventDefinition = NewObject<UMemoryEventDefinition>(this, EventInfo->EventDefinition))
 	{
-		OngoingEventDefinition->SetEventTag(GameplayTags.Event_Test);
 		OngoingEventDefinition->SetOutterWorldContext(WorldContext);
 		OngoingEventDefinition->SetPlayerController(PlayerController);
 

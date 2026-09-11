@@ -70,7 +70,7 @@ public:
 
 public:
 
-	void SetEventTag(const FGameplayTag& InEventTag) { EventTag = InEventTag; }
+	const FGameplayTag& GetEventTag() { return EventTag; }
 
 	/*EventStep*/
 	UFUNCTION(BlueprintImplementableEvent, Category = "EventDefinition")
@@ -89,13 +89,11 @@ public:
 
 	/*AsyncAction*/
 	void RegisterEventAsyncAction(UEventAsyncAction* ActionToActivate);
-	void RegisterDialogueSelectionListener(UListenDialogueSelectionResult* Listener);
-
 	void FinishEventAsyncAction(const FGameplayTag& ActorTag, EActionType ActionType);
 	void PostFinishedActionsChange();
 	bool CheckActionIsFinished(const FName& ActionName) const;
 
-	void SendDialogueSelectionResult(int32 SentenceIndex, int32 Result);
+	void SendDialogueResult(const FGameplayTag& ActorTag, int32 SentenceIndex, FText Result);
 	/*AsyncAction*/
 
 	/*SceneActor*/
@@ -114,9 +112,6 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Action|Character")
 	void SetDialogueContent(FGameplayTag ActorTag, const FDialogueContent& NewDialogueContent);
-
-	UFUNCTION(BlueprintCallable, Category = "Action|Character")
-	void CharacterMove(FGameplayTag ActorTag, FGameplayTag TargetPointTag);
 
 	UFUNCTION(BlueprintCallable, Category = "Action|Player")
 	void GrantNewAbilities(FGameplayTagContainer AbilityTags);
@@ -173,9 +168,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "FinishedAction");
 	TArray<FName> FinishedActions;
-
-	UPROPERTY()
-	TObjectPtr<UListenDialogueSelectionResult> DialogueSelectionListener;
 	/*AsyncAction*/
 
 	/*Outter*/

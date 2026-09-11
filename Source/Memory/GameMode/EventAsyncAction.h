@@ -11,7 +11,7 @@
 class UMemoryEventDefinition;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOutputNode);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOutputNodeWithDialogueSelection, int32, SentenceIndex, int32, Result);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOutputNode_Dialogue, int32, SentenceIndex, FText, Result);
 
 /**
  * 
@@ -50,8 +50,10 @@ public:
 	void ActivateNextAsyncAction();
 	/*Output*/
 
-	bool CheckStartCondition(const TArray<FName>& InFinishedActions) const;
+	void ListenDialogue(UListenDialogueResult* InListenDialogueResult);
+	void SendDialogueResult(int32 SentenceIndex, FText Result);
 
+	bool CheckStartCondition(const TArray<FName>& InFinishedActions) const;
 	bool IsFinished() const { return bFinished; }
 
 	const FName& GetActionName() const { return ActionName; }
@@ -72,28 +74,26 @@ protected:
 	TArray<FName> StartCondition;
 
 	bool bFinished = false;
+
+	UPROPERTY()
+	TObjectPtr<UListenDialogueResult> ListenDialogueResult;
 };
 
 UCLASS(BlueprintType, meta = (ExposedAsyncProxy = "OutAsyncAction"))
-class MEMORY_API UListenDialogueSelectionResult : public UBlueprintAsyncActionBase
+class MEMORY_API UListenDialogueResult : public UBlueprintAsyncActionBase
 {
 	GENERATED_BODY()
 
 public:
 
 	UPROPERTY(BlueprintAssignable)
-	FOutputNodeWithDialogueSelection OnResultReceived;
+	FOutputNode_Dialogue OnResultReceived;
 
 	UFUNCTION(BlueprintCallable, Category = "EventAsyncAction",
 		meta = (DefaultToSelf = "InEventDefinition", BlueprintInternalUseOnly = "true"))
-	static UListenDialogueSelectionResult* ListenDialogueSelectionResult(UMemoryEventDefinition* InEventDefinition);
+	static UListenDialogueResult* ListenDialogueResult(UEventAsyncAction* InAsyncAction);
 
 	virtual void Activate() override;
 
 	void Destory();
-
-protected:
-
-	UPROPERTY()
-	TObjectPtr<UMemoryEventDefinition> OwnerEventDefinition;
 };

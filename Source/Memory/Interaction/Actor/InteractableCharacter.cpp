@@ -177,10 +177,22 @@ void AInteractableCharacter::SetDialogueContent(const FDialogueContent& NewDialo
 	DialogueContent = NewDialogueContent;
 }
 
-void AInteractableCharacter::CharacterMove(AActor* TargetPoint)
+int32 AInteractableCharacter::GetDialogueBranchIndex() const
 {
-	if (AIController && TargetPoint)
-	{
-		AIController->GetBlackboardComponent()->SetValueAsObject(FName("TargetPoint"), TargetPoint);
-	}
+	return DialogueBranchIndex;
+}
+
+void AInteractableCharacter::SetDialogueBranchIndex(int32 NewBranchIndex)
+{
+	DialogueBranchIndex = NewBranchIndex;
+}
+
+int32 AInteractableCharacter::GetDialogueSentenceIndex() const
+{
+	return DialogueSentenceIndex;
+}
+
+void AInteractableCharacter::SetDialogueSentenceIndex(int32 NewSentenceIndex)
+{
+	DialogueSentenceIndex = NewSentenceIndex;
 }

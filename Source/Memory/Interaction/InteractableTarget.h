@@ -105,11 +105,14 @@ public:
 
 	virtual FGameplayTag GetActorTag() const { return FGameplayTag(); }
 
-	/*Character*/
+	/*Dialogue*/
 	virtual void GetDialogueContent(FDialogueContent& OutDialogueContent) const {}
-
 	virtual void SetDialogueContent(const FDialogueContent& NewDialogueContent) {}
 
-	virtual void CharacterMove(AActor* TargetPoint) {}
-	/*Character*/
+	virtual int32 GetDialogueBranchIndex() const { return -1; }
+	virtual void SetDialogueBranchIndex(int32 NewBranchIndex) {}
+
+	virtual int32 GetDialogueSentenceIndex() const { return -1; }
+	virtual void SetDialogueSentenceIndex(int32 NewSentenceIndex) {}
+	/*Dialogue*/
 };

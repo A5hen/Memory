@@ -135,9 +135,12 @@ void UEventGraph::UpdateEventGraphNode(const FGameplayTag& EventTag, const FExpe
 
 UMemoryEventSet* UEventGraph::GetEventSet()
 {
-	if (UMemoryGameInstance* MemoryGI = GetGameInstance<UMemoryGameInstance>())
+	if (!EventSet)
 	{
-		EventSet = MemoryGI->GetMemoryEventSet();
+		if (UMemoryGameInstance* MemoryGI = GetGameInstance<UMemoryGameInstance>())
+		{
+			EventSet = MemoryGI->GetMemoryEventSet();
+		}
 	}
 
 	return EventSet;

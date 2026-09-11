@@ -23,5 +23,5 @@ public:
 	static void FinishEventAsyncAction(const UObject* WorldContextObject, EActionType ActionType, FGameplayTag ActorTag);
 
 	UFUNCTION(BlueprintCallable, Category = "MemoryEventLibrary", meta = (DefaultToSelf = "WorldContextObject"))
-	static void SendDialogueSelectionResult(const UObject* WorldContextObject, int32 SentenceIndex, int32 Result);
+	static void SendDialogueResult(const UObject* WorldContextObject, FGameplayTag ActorTag, int32 SentenceIndex, FText Result);
 };

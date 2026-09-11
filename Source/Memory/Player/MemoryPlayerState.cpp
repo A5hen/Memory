@@ -134,24 +134,22 @@ void AMemoryPlayerState::HandleSelfAwarenessGeneration(
 {
 	if (!InAwarenessInfo)return;
 
-	for (const auto& Pair1 : InAwarenessInfo->EffectOnCharacterBehaviorCognition)
+	for (const auto& CharacterBehaviorCognitionEffect : InAwarenessInfo->CharacterBehaviorCognitionEffects)
 	{
-		FBehaviorCognitionInfomation* BehaviorCognitionInfomation_Generated = CharacterBehaviorCognitionInfomation_Generated.Find(Pair1.Key);
-		FBehaviorCognitionInfomation& BehaviorCognitionInfomation_Ungenerated = CharacterBehaviorCognitionInfomation_Ungenerated.FindOrAdd(Pair1.Key);
+		FBehaviorCognitionInfomation* BehaviorCognitionInfomation_Generated = CharacterBehaviorCognitionInfomation_Generated.Find(CharacterBehaviorCognitionEffect.Key);
+		FBehaviorCognitionInfomation& ChangedBehaviorCognitionInfomation = ChangedCharacterBehaviorCognitionInfomation.FindOrAdd(CharacterBehaviorCognitionEffect.Key);
 
-		FBehaviorCognitionInfomation& ChangedBehaviorCognitionInfomation = ChangedCharacterBehaviorCognitionInfomation.FindOrAdd(Pair1.Key);
-
-		for (const auto& Pair2 : Pair1.Value.NewCognitionLevel)
+		for (const auto& Pair : CharacterBehaviorCognitionEffect.Value.NewCognitionLevel)
 		{
 			bool bCognitionGenerated = false;
 
 			if (BehaviorCognitionInfomation_Generated)
 			{
-				if (FBehaviorCognitionInfo* Info_Generated = BehaviorCognitionInfomation_Generated->DescToInfo.Find(Pair2.Key))
+				if (FBehaviorCognitionInfo* Info_Generated = BehaviorCognitionInfomation_Generated->DescToInfo.Find(Pair.Key))
 				{
-					Info_Generated->CognitionLevelToAwareness.Emplace(Pair2.Value, AwarenessTags);
+					Info_Generated->CognitionLevelToAwareness.Emplace(Pair.Value, AwarenessTags);
 
-					ChangedBehaviorCognitionInfomation.DescToInfo.Emplace(Pair2.Key, *Info_Generated);
+					ChangedBehaviorCognitionInfomation.DescToInfo.Emplace(Pair.Key, *Info_Generated);
 
 					bCognitionGenerated = true;
 				}
@@ -159,9 +157,11 @@ void AMemoryPlayerState::HandleSelfAwarenessGeneration(
 
 			if (!bCognitionGenerated)
 			{
+				FBehaviorCognitionInfomation& BehaviorCognitionInfomation_Ungenerated = CharacterBehaviorCognitionInfomation_Ungenerated.FindOrAdd(CharacterBehaviorCognitionEffect.Key);
+
 				FBehaviorCognitionInfo NewInfo;
-				NewInfo.CognitionLevelToAwareness.Emplace(Pair2.Value, AwarenessTags);
-				BehaviorCognitionInfomation_Ungenerated.DescToInfo.Emplace(Pair2.Key, NewInfo);
+				NewInfo.CognitionLevelToAwareness.Emplace(Pair.Value, AwarenessTags);
+				BehaviorCognitionInfomation_Ungenerated.DescToInfo.Emplace(Pair.Key, NewInfo);
 			}
 		}
 	}

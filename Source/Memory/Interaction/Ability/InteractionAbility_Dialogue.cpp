@@ -6,11 +6,13 @@
 
 bool UInteractionAbility_Dialogue::SetParams(const FGameplayEventData& EventData)
 {
-	/*ActorTag = EventData.TargetTags.GetByIndex(0);
-
-	IInteractableTarget* InteractableTarget = Cast<IInteractableTarget>(EventData.Target);
+	InteractableTarget = TScriptInterface<IInteractableTarget>(const_cast<AActor*>(ToRawPtr(EventData.Target)));
 	if (InteractableTarget)
 	{
+		ActorTag = InteractableTarget->GetActorTag();
+		CurrentBranchIndex = InteractableTarget->GetDialogueBranchIndex();
+		NextSentenceIndex = InteractableTarget->GetDialogueSentenceIndex();
+
 		InteractableTarget->GetDialogueContent(DialogueContent);
 
 		if (FDialogueBranch* DialogueBranch = DialogueContent.DialogueBranches.Find(CurrentBranchIndex))
@@ -20,7 +22,7 @@ bool UInteractionAbility_Dialogue::SetParams(const FGameplayEventData& EventData
 				return true;
 			}
 		}
-	}*/
+	}
 
 	return false;
 }
@@ -30,20 +32,20 @@ bool UInteractionAbility_Dialogue::UpdateDialogueContent(FText& Sentence, TArray
 	FDialogueBranch* DialogueBranch = DialogueContent.DialogueBranches.Find(CurrentBranchIndex);
 	if (DialogueBranch)
 	{
-		if (CurrentSentenceIndex >= DialogueBranch->DialogueContent.Num())
+		if (NextSentenceIndex >= DialogueBranch->DialogueContent.Num())
 		{
 			return false;
 		}
 
-		Sentence = DialogueBranch->DialogueContent[CurrentSentenceIndex];
+		Sentence = DialogueBranch->DialogueContent[NextSentenceIndex];
 
-		FDialogueOption* DialogueOption = DialogueBranch->DialogueOptions.Find(CurrentSentenceIndex);
+		FDialogueOption* DialogueOption = DialogueBranch->DialogueOptions.Find(NextSentenceIndex);
 		if (DialogueOption)
 		{
 			Options = DialogueOption->Options;
 		}
 
-		++CurrentSentenceIndex;
+		++NextSentenceIndex;
 
 		return true;
 	}
@@ -58,8 +60,24 @@ void UInteractionAbility_Dialogue::ReceiveSelectionResult(const FText& Option)
 		if (OptionEffect.Option.EqualTo(Option))
 		{
 			CurrentBranchIndex = OptionEffect.BranchToJump;
-			CurrentSentenceIndex = 0;
+			NextSentenceIndex = 0;
+
+			if (InteractableTarget)
+			{
+				InteractableTarget->SetDialogueBranchIndex(CurrentBranchIndex);
+			}
+
 			return;
 		}
+	}
+}
+
+void UInteractionAbility_Dialogue::InterruptDialogue()
+{
+	bInterrupted = true;
+
+	if (InteractableTarget)
+	{
+		InteractableTarget->SetDialogueSentenceIndex(NextSentenceIndex - 1);
 	}
 }

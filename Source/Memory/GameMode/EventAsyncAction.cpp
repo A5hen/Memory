@@ -35,6 +35,11 @@ void UEventAsyncAction::Activate()
 
 void UEventAsyncAction::Destory()
 {
+	if (ListenDialogueResult)
+	{
+		ListenDialogueResult->Destory();
+	}
+
 	SetReadyToDestroy();
 	MarkAsGarbage();
 }
@@ -56,6 +61,19 @@ void UEventAsyncAction::ActivateNextAsyncAction()
 	NextAsyncAction.Broadcast();
 }
 
+void UEventAsyncAction::ListenDialogue(UListenDialogueResult* InListenDialogueResult)
+{
+	ListenDialogueResult = InListenDialogueResult;
+}
+
+void UEventAsyncAction::SendDialogueResult(int32 SentenceIndex, FText Result)
+{
+	if (ListenDialogueResult)
+	{
+		ListenDialogueResult->OnResultReceived.Broadcast(SentenceIndex, Result);
+	}
+}
+
 bool UEventAsyncAction::CheckStartCondition(const TArray<FName>& InFinishedActions) const
 {
 	//return InFinishedActions.Contains(StartCondition);
@@ -66,29 +84,22 @@ bool UEventAsyncAction::CheckStartCondition(const TArray<FName>& InFinishedActio
 //
 //
 
-UListenDialogueSelectionResult* UListenDialogueSelectionResult::ListenDialogueSelectionResult(UMemoryEventDefinition* InEventDefinition)
+UListenDialogueResult* UListenDialogueResult::ListenDialogueResult(UEventAsyncAction* InAsyncAction)
 {
-	check(InEventDefinition);
+	check(InAsyncAction);
 
-	UListenDialogueSelectionResult* AsyncAction = NewObject<UListenDialogueSelectionResult>();
-	AsyncAction->OwnerEventDefinition = InEventDefinition;
+	UListenDialogueResult* AsyncAction = NewObject<UListenDialogueResult>();
+	InAsyncAction->ListenDialogue(AsyncAction);
 
 	return AsyncAction;
 }
 
-void UListenDialogueSelectionResult::Activate()
+void UListenDialogueResult::Activate()
 {
-	if (OwnerEventDefinition)
-	{
-		OwnerEventDefinition->RegisterDialogueSelectionListener(this);
-	}
-	else
-	{
-		Destory();
-	}
+
 }
 
-void UListenDialogueSelectionResult::Destory()
+void UListenDialogueResult::Destory()
 {
 	SetReadyToDestroy();
 	MarkAsGarbage();

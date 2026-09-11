@@ -40,10 +40,7 @@ struct FWidgetControllerParams
 	TObjectPtr<UAttributeSet>AttributeSet = nullptr;
 };
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnActivationStateChanged, bool);
-
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnContentSelected, const FContentWidgetInfo&);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnOtherContentSelected, const FContentWidgetInfo&);
 
 /**
  * 
@@ -62,7 +59,6 @@ public:
 	virtual void BindCallBacksToDependencies();
 
 	void SelectContent(const FContentWidgetInfo& ContentWidgetInfo);
-	void DeselectPreviousContent(const FContentWidgetInfo& ContentWidgetInfo);
 
 protected:
 
@@ -74,7 +70,6 @@ protected:
 public:
 
 	FOnContentSelected OnContentSelected;
-	FOnOtherContentSelected OnOtherContentSelected;
 
 	UPROPERTY(BlueprintReadOnly, Category = "WidgetController")
 	TObjectPtr<APlayerController>PlayerController;

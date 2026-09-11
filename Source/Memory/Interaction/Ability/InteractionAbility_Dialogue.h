@@ -9,6 +9,8 @@
 
 struct FDialogueContent;
 
+class IInteractableTarget;
+
 /**
  * 
  */
@@ -28,14 +30,22 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "GA_Dialogue")
 	void ReceiveSelectionResult(const FText& Option);
 
+	UFUNCTION(BlueprintCallable, Category = "GA_Dialogue")
+	void InterruptDialogue();
+
 protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "GA_Dialogue")
 	FGameplayTag ActorTag;
 
-	int32 CurrentBranchIndex = 1;
+	UPROPERTY()
+	TScriptInterface<IInteractableTarget> InteractableTarget;
 
-	int32 CurrentSentenceIndex;
+	int32 CurrentBranchIndex = 0;
+
+	int32 NextSentenceIndex = 0;
 
 	FDialogueContent DialogueContent;
+
+	bool bInterrupted = false;
 };

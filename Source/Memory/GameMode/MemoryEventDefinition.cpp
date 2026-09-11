@@ -63,11 +63,6 @@ void UMemoryEventDefinition::RegisterEventAsyncAction(UEventAsyncAction* ActionT
 	}
 }
 
-void UMemoryEventDefinition::RegisterDialogueSelectionListener(UListenDialogueSelectionResult* Listener)
-{
-	DialogueSelectionListener = Listener;
-}
-
 void UMemoryEventDefinition::FinishEventAsyncAction(const FGameplayTag& ActorTag, EActionType ActionType)
 {
 	if (FTypeToAsyncAction* TypeToAsyncAction_Active = ActiveEventAsyncActions.Find(ActorTag))
@@ -94,14 +89,6 @@ void UMemoryEventDefinition::FinishEventAsyncAction(const FGameplayTag& ActorTag
 		if (!TargetAsyncAction)return;
 
 		TargetAsyncAction->Finish();
-		if (ActionType == EActionType::Dialogue)
-		{
-			if (DialogueSelectionListener)
-			{
-				DialogueSelectionListener->Destory();
-				DialogueSelectionListener = nullptr;
-			}
-		}
 
 		if (bAllFinished)
 		{
@@ -129,24 +116,16 @@ void UMemoryEventDefinition::PostFinishedActionsChange()
 			EActionType ActionType = Pair.Value->GetActionType();
 			const FGameplayTag& ActorTag = Pair.Value->GetActorTag();
 
-			if (ActiveEventAsyncActions.Find(ActorTag))
+			if (FTypeToAsyncAction* TypeToAsyncAction_Active = ActiveEventAsyncActions.Find(ActorTag))
 			{
-				if (!ActiveEventAsyncActions[ActorTag].TypeToAsyncAction.Find(ActionType))
+				if (!TypeToAsyncAction_Active->TypeToAsyncAction.Contains(ActionType))
 				{
-					ActiveEventAsyncActions[ActorTag].TypeToAsyncAction.Emplace(ActionType, Pair.Value);
+					TypeToAsyncAction_Active->TypeToAsyncAction.Emplace(ActionType, Pair.Value);
 					InactiveEventAsyncActions.Remove(Pair.Key);
 					Pair.Value->Start();
 				}
 			}
 		}
-	}
-}
-
-void UMemoryEventDefinition::SendDialogueSelectionResult(int32 SentenceIndex, int32 Result)
-{
-	if(DialogueSelectionListener)
-	{
-		DialogueSelectionListener->OnResultReceived.Broadcast(SentenceIndex, Result);
 	}
 }
 
@@ -180,6 +159,20 @@ bool UMemoryEventDefinition::CheckActionIsFinished(const FName& ActionName) cons
 	}
 
 	return false;
+}
+
+void UMemoryEventDefinition::SendDialogueResult(const FGameplayTag& ActorTag, int32 SentenceIndex, FText Result)
+{
+	if (FTypeToAsyncAction* TypeToAsyncAction_Active = ActiveEventAsyncActions.Find(ActorTag))
+	{
+		if (TypeToAsyncAction_Active->TypeToAsyncAction.Contains(EActionType::Dialogue))
+		{
+			if (UEventAsyncAction* AsyncAction_Dialogue = TypeToAsyncAction_Active->TypeToAsyncAction[EActionType::Dialogue])
+			{
+				AsyncAction_Dialogue->SendDialogueResult(SentenceIndex, Result);
+			}
+		}
+	}
 }
 
 void UMemoryEventDefinition::ClearSceneActor()
@@ -227,22 +220,6 @@ void UMemoryEventDefinition::SetDialogueContent(FGameplayTag ActorTag, const FDi
 {
 }
 
-void UMemoryEventDefinition::CharacterMove(FGameplayTag ActorTag, FGameplayTag TargetPointTag)
-{
-	if (SpawnPointSubsystem)
-	{
-		AActor* TargetActor = GetSceneActorByActorTag(ActorTag);
-		IInteractableTarget* InteractableTarget = Cast<IInteractableTarget>(TargetActor);
-
-		AActor* TargetPoint = SpawnPointSubsystem->GetSpawnPointByTag(TargetPointTag);
-
-		if (InteractableTarget && TargetPoint)
-		{
-			InteractableTarget->CharacterMove(TargetPoint);
-		}
-	}
-}
-
 void UMemoryEventDefinition::GrantNewAbilities(FGameplayTagContainer AbilityTags)
 {
 	if (!GetGlobalAbilitySystem())return;
@@ -283,7 +260,7 @@ UMemoryGlobalAbilitySystem* UMemoryEventDefinition::GetGlobalAbilitySystem()
 {
 	check(WorldContext);
 
-	if (GlobalAbilitySystem == nullptr)
+	if (!GlobalAbilitySystem)
 	{
 		GlobalAbilitySystem = WorldContext->GetSubsystem<UMemoryGlobalAbilitySystem>();
 	}
@@ -295,10 +272,9 @@ USpawnPointSubsystem* UMemoryEventDefinition::GetSpawnPointSubsystem()
 {
 	check(WorldContext);
 
-	if (SpawnPointSubsystem == nullptr)
+	if (!SpawnPointSubsystem)
 	{
 		SpawnPointSubsystem = WorldContext->GetSubsystem<USpawnPointSubsystem>();
-		check(SpawnPointSubsystem)
 	}
 
 	return SpawnPointSubsystem;
