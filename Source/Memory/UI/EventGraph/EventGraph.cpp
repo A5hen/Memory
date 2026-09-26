@@ -8,30 +8,8 @@
 #include "Memory/GameInstance/MemoryGameInstance.h"//
 #include "Memory/GameMode/MemoryEventSet.h"//
 #include "Memory/Player/MemoryPlayerState.h"//
-#include "Memory/UI/WidgetController/EventGraphWidgetController.h"//
 #include "Memory/UI/EventGraph/EventGraphNode.h"//
 #include "Memory/UI/CurveWidget.h"//
-
-void UEventGraph::SetWidgetController(UMemoryWidgetController* InWidgetController)
-{
-	if (!WidgetController)
-	{
-		WidgetController = InWidgetController;
-
-		//BindCallbacks and Call BroadcastInitialValues
-
-		UEventGraphWidgetController* EventGraphWidgetController = Cast<UEventGraphWidgetController>(WidgetController);
-		if (EventGraphWidgetController)
-		{
-			EventGraphWidgetController->UpdateEventGraph.AddUObject(this, &UEventGraph::UpdateEventGraph);
-			EventGraphWidgetController->BroadcastInitialValues();
-		}
-	}
-	else
-	{
-
-	}
-}
 
 void UEventGraph::ClearGraph()
 {
@@ -46,14 +24,6 @@ void UEventGraph::ClearGraph()
 	GeneratedEventGraphNodes.Empty();
 
 	Super::ClearGraph();
-}
-
-void UEventGraph::UnbindCallBacks()
-{
-	if (UEventGraphWidgetController* EventGraphWidgetController = Cast<UEventGraphWidgetController>(WidgetController))
-	{
-		EventGraphWidgetController->UpdateEventGraph.RemoveAll(this);
-	}
 }
 
 void UEventGraph::UpdateEventGraph(const FExperiencedEventInfomation& ExperiencedEventInfomation)
@@ -85,12 +55,12 @@ void UEventGraph::UpdateEventGraph(const FExperiencedEventInfomation& Experience
 			{
 				if(const FMemoryEventInfo* PreEventInfo = EventSet->GetEventInfoByEventTag(PreEventTag))
 				{
-					if (EventInfo->PreEventConnectRule.Find(PreEventTag))
+					if (const EPreEventConnectType* PreEventConnectType = EventInfo->PreEventConnectRule.Find(PreEventTag))
 					{
 						FVector2D Start;
 						FVector2D End;
 
-						EventSet->GenerateEventConnectInfo(EventInfo->PreEventConnectRule[PreEventTag],
+						EventSet->GenerateEventConnectInfo(*PreEventConnectType,
 							EventInfo->PositionOnGraph, PreEventInfo->PositionOnGraph, EventInfo->Size, PreEventInfo->Size, Start, End);
 
 						TArray<FVector2D>& Array_End = PositionsToConnect.FindOrAdd(Start);
@@ -110,24 +80,23 @@ void UEventGraph::UpdateEventGraphNode(const FGameplayTag& EventTag, const FExpe
 
 	if (!bGenerated)
 	{
-		UEventGraphNode* EventGraphNode = CreateWidget<UEventGraphNode>(this, EventGraphNodeClass);
-		CanvasPanel_Root->AddChild(EventGraphNode);
+		UEventGraphNode* NewEventGraphNode = CreateWidget<UEventGraphNode>(this, EventGraphNodeClass);
+		CanvasPanel_Root->AddChild(NewEventGraphNode);
 
-		UCanvasPanelSlot* CanvasPanelSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(EventGraphNode);
+		UCanvasPanelSlot* CanvasPanelSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(NewEventGraphNode);
 		CanvasPanelSlot->SetAnchors(FAnchors(0.5f, 0.5f));
 		CanvasPanelSlot->SetAlignment(FVector2D(0.5f, 0.5f));
 		CanvasPanelSlot->SetPosition(PositionOnGraph);
 		CanvasPanelSlot->SetAutoSize(true);
 
-		EventGraphNode->UpdateNode(EventTag, ExperiencedEventInfo);
+		NewEventGraphNode->UpdateNode(EventTag, ExperiencedEventInfo);
 
-		GeneratedEventGraphNodes.Add(EventTag, EventGraphNode);
+		GeneratedEventGraphNodes.Add(EventTag, NewEventGraphNode);
 	}
 	else
 	{
-		if (GeneratedEventGraphNodes.Find(EventTag))
+		if (UEventGraphNode* EventGraphNode = GeneratedEventGraphNodes.FindRef(EventTag).Get())
 		{
-			UEventGraphNode* EventGraphNode = GeneratedEventGraphNodes[EventTag];
 			EventGraphNode->UpdateNode(EventTag, ExperiencedEventInfo);
 		}
 	}

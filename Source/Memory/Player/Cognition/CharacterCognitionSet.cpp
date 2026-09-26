@@ -5,9 +5,9 @@
 
 const FBehaviorCognition* UCharacterCognitionSet::GetBehaviorCognition(const FGameplayTag& CharacterTag, const FName& BehaviorDesc) const
 {
-	if (const FBehaviorCognitions* BehaviorCognitions = CharacterBehaviorCognitions.Find(CharacterTag))
+	if (const FBehavior* Behavior = CharacterBehaviors.Find(CharacterTag))
 	{
-		return BehaviorCognitions->DescToCognition.Find(BehaviorDesc);
+		return Behavior->DescToCognition.Find(BehaviorDesc);
 	}
 
 	return nullptr;

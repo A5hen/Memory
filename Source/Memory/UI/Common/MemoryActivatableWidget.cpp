@@ -108,6 +108,8 @@ void UMemoryActivatableWidget::OnContentSelected(const FContentWidgetInfo& Conte
 
 void UMemoryActivatableWidget::ReactContentSelection()
 {
+	if (bReactContentSelection)return;
+
 	if (WidgetController)
 	{
 		bReactContentSelection = true;

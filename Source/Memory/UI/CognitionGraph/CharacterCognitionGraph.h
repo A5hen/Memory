@@ -7,10 +7,9 @@
 #include "GameplayTagContainer.h"//
 #include "CharacterCognitionGraph.generated.h"
 
-class UMemoryWidgetController;
 class UCognitionGraphNode;
 
-struct FBehaviorCognitionInfomation;
+struct FGeneratedBehavior;
 
 class UCharacterCognitionSet;
 
@@ -24,25 +23,26 @@ class MEMORY_API UCharacterCognitionGraph : public UGraphWidget
 
 public:
 
-	virtual void SetWidgetController(UMemoryWidgetController* InWidgetController)override;
 	virtual void ClearGraph()override;
-	virtual void UnbindCallBacks() override;
+
+	void UpdateCognitionGraph(const FGeneratedBehavior& GeneratedBehavior);
+
+	const FGameplayTag& GetCharacterTag() const { return CharacterTag; }
+	void SetCharacterTag(const FGameplayTag& InCharacterTag) { CharacterTag = InCharacterTag; }
 
 protected:
-
-	void UpdateCognitionGraph(const FBehaviorCognitionInfomation& BehaviorCognitionInfomation);
 
 	UCharacterCognitionSet* GetCharacterCognitionSet();
 	
 protected:
 
-	UPROPERTY()
-	TMap<FName, TObjectPtr<UCognitionGraphNode>> GeneratedCognitionGraphNodes;
+	FGameplayTag CharacterTag;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Node")
 	TSubclassOf<UCognitionGraphNode> CognitionGraphNodeClass;
 
-	FGameplayTag SelectedCharacter;
+	UPROPERTY()
+	TMap<FName, TObjectPtr<UCognitionGraphNode>> GeneratedCognitionGraphNodes;
 
 	UPROPERTY()
 	TObjectPtr<UCharacterCognitionSet> CharacterCognitionSet;

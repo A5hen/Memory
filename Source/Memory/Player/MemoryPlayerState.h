@@ -7,6 +7,7 @@
 #include "AbilitySystemInterface.h"//
 #include "GameplayTagContainer.h"//
 #include "Memory/Memory.h"//
+#include "Memory/MemoryType.h"//
 #include "MemoryPlayerState.generated.h"
 
 class UAbilitySystemComponent;
@@ -55,7 +56,7 @@ struct FExperiencedEventInfomation
 }; 
 
 USTRUCT(BlueprintType)
-struct FBehaviorCognitionInfo
+struct FGeneratedBehaviorCognition
 {
 	GENERATED_BODY()
 
@@ -70,20 +71,18 @@ struct FBehaviorCognitionInfo
 };
 
 USTRUCT(BlueprintType)
-struct FBehaviorCognitionInfomation
+struct FGeneratedBehavior
 {
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TMap<FName, FBehaviorCognitionInfo> DescToInfo;
+	TMap<FName, FGeneratedBehaviorCognition> DescToCognition;
 };
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnSelfAwarenessChanged, const FGameplayTag&);
 
-DECLARE_MULTICAST_DELEGATE_TwoParams(FOnCharacterBehaviorCognitionInfoGenerated, const FGameplayTag&, const FBehaviorCognitionInfo&);
-
-typedef TMap<FGameplayTag, FBehaviorCognitionInfomation> CharacterBehaviorCognitionInfomationType;
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnCharacterBehaviorCognitionInfomationChanged, const CharacterBehaviorCognitionInfomationType&);
+DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnCharacterBehaviorUpdated, const FGameplayTag&, const FGeneratedBehavior&, bool);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnCharacterBehaviorsUpdated, const TGeneratedCharacterBehaviors&);
 
 USTRUCT(BlueprintType)
 struct FSelfAwarenessInfo
@@ -113,22 +112,26 @@ public:
 	void SetPawnData();
 	/**/
 
-	void GenerateCharacterBehaviorCognition(const FGameplayTag& CharacterTag, const FName& BehaviorDesc, const FGameplayTag& EventTag);
+	void UpdateCharacterBehaviorCognition(const FGameplayTag& CharacterTag, const FName& BehaviorDesc, const FGameplayTag& EventTag);
 
 	void GenerateSelfAwareness(const FGameplayTag& AwarenessTag, const FGameplayTag& EventTag, bool bInGroup = false, int32 Index = -1);
 	void HandleSelfAwarenessGeneration(
 		const FGameplayTagContainer& AwarenessTags, const FAwarenessInfo* InAwarenessInfo,
-		TMap<FGameplayTag, FBehaviorCognitionInfomation>& ChangedCharacterBehaviorCognitionInfomation);
+		TMap<FGameplayTag, FGeneratedBehavior>& ChangedCharacterBehaviors);
 
 	const FExperiencedEventInfomation* GetExperiencedEventInfomation(EEventStage InEventStage) const;
-	const FBehaviorCognitionInfomation* GetBehaviorCognitionInfomation(const FGameplayTag& CharacterTag) const;
+
+	const FGeneratedBehavior* GetGeneratedBehavior(const FGameplayTag& CharacterTag) const;
+	const TGeneratedCharacterBehaviors& GetGeneratedCharacterBehaviors() const;
+
+	const TExperiencedEventInfomation_AllStage& GetExperiencedEventInfomation_AllStage() const;
 
 public:
 
 	FOnSelfAwarenessChanged OnSelfAwarenessChanged;
 
-	FOnCharacterBehaviorCognitionInfoGenerated OnCharacterBehaviorCognitionInfoGenerated;
-	FOnCharacterBehaviorCognitionInfomationChanged OnCharacterBehaviorCognitionInfomationChanged;
+	FOnCharacterBehaviorUpdated OnCharacterBehaviorUpdated;
+	FOnCharacterBehaviorsUpdated OnCharacterBehaviorsUpdated;
 
 protected:
 
@@ -141,16 +144,16 @@ protected:
 
 	/*Event*/
 	UPROPERTY(EditDefaultsOnly, Category = "ExperiencedEvent")
-	TMap<EEventStage, FExperiencedEventInfomation> ExperiencedEventInfomation_Stage;
+	TMap<EEventStage, FExperiencedEventInfomation> ExperiencedEventInfomation_AllStage;
 	/*Event*/
 
-	/*BehaviorCognition*/
-	UPROPERTY(EditDefaultsOnly, Category = "CharacterBehaviorCognition")
-	TMap<FGameplayTag, FBehaviorCognitionInfomation> CharacterBehaviorCognitionInfomation_Generated;
+	/*CharacterBehavior*/
+	UPROPERTY(EditDefaultsOnly, Category = "CharacterBehavior")
+	TMap<FGameplayTag, FGeneratedBehavior> GeneratedCharacterBehaviors;
 
-	UPROPERTY(EditDefaultsOnly, Category = "CharacterBehaviorCognition")
-	TMap<FGameplayTag, FBehaviorCognitionInfomation> CharacterBehaviorCognitionInfomation_Ungenerated;
-	/*BehaviorCognition*/
+	UPROPERTY(EditDefaultsOnly, Category = "CharacterBehavior")
+	TMap<FGameplayTag, FGeneratedBehavior> UngeneratedCharacterBehaviors;
+	/*CharacterBehavior*/
 
 	/*SelfAwareness*/
 	UPROPERTY(EditDefaultsOnly, Category = "SelfAwareness_Single")

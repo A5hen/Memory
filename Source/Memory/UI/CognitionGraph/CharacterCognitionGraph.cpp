@@ -8,22 +8,7 @@
 #include "Memory/GameInstance/MemoryGameInstance.h"//
 #include "Memory/Player/MemoryPlayerState.h"//
 #include "Memory/Player/Cognition/CharacterCognitionSet.h"//
-#include "Memory/UI/WidgetController/CognitionGraphWidgetController.h"//
 #include "Memory/UI/CognitionGraph/CognitionGraphNode.h"//
-
-void UCharacterCognitionGraph::SetWidgetController(UMemoryWidgetController* InWidgetController)
-{
-	WidgetController = InWidgetController;
-
-	UCognitionGraphWidgetController* CognitionGraphWidgetController = Cast<UCognitionGraphWidgetController>(InWidgetController);
-	if (CognitionGraphWidgetController)
-	{
-		SelectedCharacter = CognitionGraphWidgetController->GetSelectedCharacter();
-
-		CognitionGraphWidgetController->UpdateCognitionGraph.AddUObject(this, &UCharacterCognitionGraph::UpdateCognitionGraph);
-		CognitionGraphWidgetController->BroadcastInitialValues();
-	}
-}
 
 void UCharacterCognitionGraph::ClearGraph()
 {
@@ -37,48 +22,39 @@ void UCharacterCognitionGraph::ClearGraph()
 
 	GeneratedCognitionGraphNodes.Empty();
 
-	SelectedCharacter = FGameplayTag();
+	CharacterTag = FGameplayTag();
 
 	Super::ClearGraph();
 }
 
-void UCharacterCognitionGraph::UnbindCallBacks()
-{
-	if (UCognitionGraphWidgetController* CognitionGraphWidgetController = Cast<UCognitionGraphWidgetController>(WidgetController))
-	{
-		CognitionGraphWidgetController->UpdateCognitionGraph.RemoveAll(this);
-	}
-}
-
-void UCharacterCognitionGraph::UpdateCognitionGraph(const FBehaviorCognitionInfomation& BehaviorCognitionInfomation)
+void UCharacterCognitionGraph::UpdateCognitionGraph(const FGeneratedBehavior& GeneratedBehavior)
 {
 	check(CognitionGraphNodeClass);
 
 	if (!GetCharacterCognitionSet())return;
 
-	for (const auto& Pair : BehaviorCognitionInfomation.DescToInfo)
+	for (const auto& Pair : GeneratedBehavior.DescToCognition)
 	{
-		if (GeneratedCognitionGraphNodes.Find(Pair.Key))
+		if (UCognitionGraphNode* CognitionGraphNode = GeneratedCognitionGraphNodes.FindRef(Pair.Key).Get())
 		{
-			UCognitionGraphNode* CognitionGraphNode = GeneratedCognitionGraphNodes[Pair.Key];
-			CognitionGraphNode->UpdateNode(SelectedCharacter, Pair.Key, Pair.Value);	
+			CognitionGraphNode->UpdateNode(CharacterTag, Pair.Key, Pair.Value);	
 		}
 		else
 		{
-			if (const FBehaviorCognition* BehaviorCognition = CharacterCognitionSet->GetBehaviorCognition(SelectedCharacter, Pair.Key))
+			if (const FBehaviorCognition* BehaviorCognition = CharacterCognitionSet->GetBehaviorCognition(CharacterTag, Pair.Key))
 			{
-				UCognitionGraphNode* CognitionGraphNode = CreateWidget<UCognitionGraphNode>(this, CognitionGraphNodeClass);
-				CanvasPanel_Root->AddChild(CognitionGraphNode);
+				UCognitionGraphNode* NewCognitionGraphNode = CreateWidget<UCognitionGraphNode>(this, CognitionGraphNodeClass);
+				CanvasPanel_Root->AddChild(NewCognitionGraphNode);
 
-				UCanvasPanelSlot* CanvasPanelSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(CognitionGraphNode);
+				UCanvasPanelSlot* CanvasPanelSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(NewCognitionGraphNode);
 				CanvasPanelSlot->SetAnchors(FAnchors(0.5f, 0.5f));
 				CanvasPanelSlot->SetAlignment(FVector2D(0.5f, 0.5f));
 				CanvasPanelSlot->SetPosition(BehaviorCognition->PositionOnGraph);
 				CanvasPanelSlot->SetAutoSize(true);
 
-				CognitionGraphNode->UpdateNode(SelectedCharacter, Pair.Key, Pair.Value);
+				NewCognitionGraphNode->UpdateNode(CharacterTag, Pair.Key, Pair.Value);
 
-				GeneratedCognitionGraphNodes.Add(Pair.Key, CognitionGraphNode);
+				GeneratedCognitionGraphNodes.Add(Pair.Key, NewCognitionGraphNode);
 			}
 		}
 	}
@@ -86,7 +62,7 @@ void UCharacterCognitionGraph::UpdateCognitionGraph(const FBehaviorCognitionInfo
 
 UCharacterCognitionSet* UCharacterCognitionGraph::GetCharacterCognitionSet()
 {
-	if (CharacterCognitionSet)
+	if (!CharacterCognitionSet)
 	{
 		if (UMemoryGameInstance* MemoryGI = GetGameInstance<UMemoryGameInstance>())
 		{

@@ -165,12 +165,9 @@ void UMemoryEventDefinition::SendDialogueResult(const FGameplayTag& ActorTag, in
 {
 	if (FTypeToAsyncAction* TypeToAsyncAction_Active = ActiveEventAsyncActions.Find(ActorTag))
 	{
-		if (TypeToAsyncAction_Active->TypeToAsyncAction.Contains(EActionType::Dialogue))
+		if (UEventAsyncAction* AsyncAction_Dialogue = TypeToAsyncAction_Active->TypeToAsyncAction.FindRef(EActionType::Dialogue).Get())
 		{
-			if (UEventAsyncAction* AsyncAction_Dialogue = TypeToAsyncAction_Active->TypeToAsyncAction[EActionType::Dialogue])
-			{
-				AsyncAction_Dialogue->SendDialogueResult(SentenceIndex, Result);
-			}
+			AsyncAction_Dialogue->SendDialogueResult(SentenceIndex, Result);
 		}
 	}
 }
@@ -242,7 +239,7 @@ void UMemoryEventDefinition::GenerateCharacterBehaviorCognition(const FGameplayT
 
 	if (AMemoryPlayerState* MemoryPS = PlayerController->GetPlayerState<AMemoryPlayerState>())
 	{
-		MemoryPS->GenerateCharacterBehaviorCognition(CharacterTag, ActionDesc, EventTag);
+		MemoryPS->UpdateCharacterBehaviorCognition(CharacterTag, ActionDesc, EventTag);
 	}
 }
 

@@ -4,20 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "MemoryWidgetController.h"
-#include "Memory/Memory.h"//
+#include "Memory/MemoryType.h"//
 #include "GameplayTagContainer.h"//
 #include "EventGraphWidgetController.generated.h"
 
-struct FExperiencedEventInfomation;
-
-DECLARE_MULTICAST_DELEGATE_OneParam(FUpdateEventGraph , const FExperiencedEventInfomation&);
-
-struct FGraphTransform
-{
-	FVector2D GraphOffset;
-
-	float GraphScale;
-};
+DECLARE_MULTICAST_DELEGATE_OneParam(FUpdateEventMenu, const TExperiencedEventInfomation_AllStage&)
+DECLARE_MULTICAST_DELEGATE_ThreeParams(FUpdateEventGraph, EEventStage, const FExperiencedEventInfomation&, bool);
 
 /**
  * 
@@ -29,24 +21,10 @@ class MEMORY_API UEventGraphWidgetController : public UMemoryWidgetController
 	
 public:
 
+	FUpdateEventMenu UpdateEventMenu;
 	FUpdateEventGraph UpdateEventGraph;
 
 	virtual void BroadcastInitialValues() override;
 
 	virtual void BindCallBacksToDependencies() override;
-
-	void RecordGraphTransform_Stage(const FVector2D& Offset, float Scale);
-	const FGraphTransform* GetGraphTransform_Stage(EEventStage InEventStage);
-
-	void SwitchEventStage(EEventStage TargetEventStage);
-
-protected:
-
-	UPROPERTY(EditDefaultsOnly, Category = "EventStage")
-	EEventStage CurrentEventStage;
-
-	UPROPERTY(EditDefaultsOnly, Category = "EventStage")
-	EEventStage EventStage_Graph;
-
-	TMap<EEventStage, FGraphTransform> GraphTransform_Stage;
 };

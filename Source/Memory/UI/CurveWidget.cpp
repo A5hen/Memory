@@ -3,7 +3,10 @@
 
 #include "CurveWidget.h"
 
-void UCurveWidget::UpdateCurveSpawnInfo(const FGameplayTag& Tag, const FVector2D& Position, const TArray<FVector2D>& RelativePositionsToConnect, const TMap<FVector2D, TArray<FVector2D>>& PositionsToConnect)
+void UCurveWidget::UpdateCurveSpawnInfo(const FGameplayTag& Tag,
+	const FVector2D& Position,
+	const TArray<FVector2D>& RelativePositionsToConnect,
+	const TMap<FVector2D, TArray<FVector2D>>& PositionsToConnect)
 {
 	FCurveSpawnInfo NewInfo;
 	NewInfo.Position = Position;
@@ -23,11 +26,11 @@ int32 UCurveWidget::NativePaint(const FPaintArgs& Args, const FGeometry& Allotte
 		{
 			if (Positions.Value.Num() == 0)continue;
 
-			FVector2D ActualStart = Positions.Key + Center + CurveOffset;
+			FVector2D ActualStart = Positions.Key + Center;
 
 			for (const FVector2D& End : Positions.Value)
 			{
-				FVector2D ActualEnd = End + Center + CurveOffset;
+				FVector2D ActualEnd = End + Center;
 
 				int32 ControlPonitX = ActualEnd.X + (ActualStart.X - ActualEnd.X) / 2;
 
@@ -37,7 +40,7 @@ int32 UCurveWidget::NativePaint(const FPaintArgs& Args, const FGeometry& Allotte
 			}
 		}
 
-		FVector2D ActualNodePosition = Pair.Value.Position + Center + CurveOffset;
+		FVector2D ActualNodePosition = Pair.Value.Position + Center;
 
 		for (const FVector2D& RelativePosition : Pair.Value.RelativePositionsToConnect)
 		{

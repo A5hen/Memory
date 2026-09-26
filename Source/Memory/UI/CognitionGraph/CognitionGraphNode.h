@@ -11,7 +11,7 @@ class UWidgetSwitcher;
 class UButton;
 
 class UGraphContentWidget;
-struct FBehaviorCognitionInfo;
+struct FGeneratedBehaviorCognition;
 
 /**
  * 
@@ -23,7 +23,7 @@ class MEMORY_API UCognitionGraphNode : public UGraphNodeWidget
 
 public:
 
-	void UpdateNode(const FGameplayTag& InCharactertag, const FName& InBehaviorDesc, const FBehaviorCognitionInfo& BehaviorCognitionInfo);
+	void UpdateNode(const FGameplayTag& InCharactertag, const FName& InBehaviorDesc, const FGeneratedBehaviorCognition& GeneratedBehaviorCognition);
 
 protected:
 
@@ -37,9 +37,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Content")
 	TSubclassOf<UGraphContentWidget> ContentClass_CharacterBehavior;
-
-	FGameplayTag CharacterTag;
-	FName BehaviorDesc;
 
 	FGameplayTagContainer SourceEvnetTags;
 

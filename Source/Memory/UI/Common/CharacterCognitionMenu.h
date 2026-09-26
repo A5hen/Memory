@@ -7,6 +7,7 @@
 #include "CharacterCognitionMenu.generated.h"
 
 class UScrollBox;
+class UWidgetSwitcher;
 
 class UCharacterCognitionGraph;
 class UBehaviorCognitionDetail;
@@ -45,7 +46,11 @@ protected:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void HideDetail();
 
-	void UpdateCharacterSwitcher(const FGameplayTagContainer& CharacterTags);
+	void UpdateCognitionMenu(const TMap<FGameplayTag, FGeneratedBehavior>& GeneratedCharacterBehaviors);
+	void GenerateCognitionGraph(const FGameplayTag& CharacterTag, const FGeneratedBehavior& GeneratedBehavior);
+	void UpdateCognitionGraph(const FGameplayTag& CharacterTag,	const FGeneratedBehavior& GeneratedBehavior, bool bNewCharacter);
+
+	void UpdateCharacterSwitcher(const FGameplayTagContainer& NewSelectableCharacters);
 	void OnCharacterSelected(const FContentWidgetInfo& ContentWidgetInfo);
 
 protected:
@@ -53,10 +58,24 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	UScrollBox* ScrollBox_Character;
 
-	FGameplayTagContainer SelectableCharacterTags;
+	FGameplayTagContainer SelectableCharacters;
+
+	/*CharacterCognitionGraph*/
+	UPROPERTY(EditDefaultsOnly, Category = "CharacterCognitionGraph")
+	TSubclassOf<UCharacterCognitionGraph> CharacterCognitionGraphClass;
 
 	UPROPERTY(meta = (BindWidget))
-	UCharacterCognitionGraph* CharacterCognitionGraph;
+	UWidgetSwitcher* GraphSwitcher;
+
+	UPROPERTY()
+	TMap<FGameplayTag, TObjectPtr<UCharacterCognitionGraph>> GeneratedCharacterCognitionGraphs;
+
+	UPROPERTY(EditDefaultsOnly, Category = "CharacterCognitionGraph")
+	FGameplayTag CurrentCharacterTag;
+
+	UPROPERTY()
+	TObjectPtr<UCharacterCognitionGraph> CurrentCharacterCognitionGraph;
+	/*CharacterCognitionGraph*/
 
 	UPROPERTY(meta = (BindWidget))
 	UBehaviorCognitionDetail* BehaviorCognitionDetail;
@@ -66,8 +85,7 @@ protected:
 	
 	bool bMouseDown = false;
 
-	FVector2D MousePosition;
-	FVector2D MousePositionLastFrame;
-
-	FVector2D GraphOffset;
+	FVector2D MouseStartPosition;
+	FVector2D MouseCurrentPosition;
+	FWidgetTransform GraphStartTransform;
 };

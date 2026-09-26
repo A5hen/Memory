@@ -5,67 +5,59 @@
 #include "Components/ScrollBox.h"//
 #include "Memory/UI/OptionWidget.h"//
 
-void UOptionWidgetContainer::AddOptionWidget(const FName& ID, UOptionWidget* OptionWidget)
+void UOptionWidgetContainer::AddOptionWidget(int32 OptionIndex, UOptionWidget* OptionWidget)
 {
 	ScrollBox_Root->AddChild(OptionWidget);
 
 	FOptionWidgetInfo OptionWidgetInfo;
 	OptionWidgetInfo.OptionWidget = OptionWidget;
 
-	OptionWidgetInfomation.Add(ID, OptionWidgetInfo);
+	OptionWidgetInfomation.Add(OptionIndex, OptionWidgetInfo);
 }
 
-void UOptionWidgetContainer::DisplayOptionWidget(const FName& ID, bool bDisplay)
+void UOptionWidgetContainer::DisplayOptionWidget(int32 OptionIndex, bool bDisplay)
 {
-	if (OptionWidgetInfomation.Find(ID))
+	if (FOptionWidgetInfo* Info = OptionWidgetInfomation.Find(OptionIndex))
 	{
-		FOptionWidgetInfo& Info = OptionWidgetInfomation[ID];
-
 		if (bDisplay)
 		{
-			Info.OptionWidget->SetVisibility(ESlateVisibility::Visible);
+			Info->OptionWidget->SetVisibility(ESlateVisibility::Visible);
 		}
 		else
 		{
-			Info.OptionWidget->SetVisibility(ESlateVisibility::Collapsed);
+			Info->OptionWidget->SetVisibility(ESlateVisibility::Collapsed);
 		}
 
-		Info.bDisplayed = bDisplay;
+		Info->bDisplayed = bDisplay;
 
 		DisplayedOptionNum += bDisplay ? 1 : -1;
 	}
 }
 
-bool UOptionWidgetContainer::IsOptionWidgetDisplayed(const FName& ID) const
+bool UOptionWidgetContainer::IsOptionWidgetDisplayed(int32 OptionIndex) const
 {
-	if (OptionWidgetInfomation.Find(ID))
+	if (const FOptionWidgetInfo* Info = OptionWidgetInfomation.Find(OptionIndex))
 	{
-		const FOptionWidgetInfo& Info = OptionWidgetInfomation[ID];
-
-		return Info.bDisplayed;
+		return Info->bDisplayed;
 	}
 
 	return false;
 }
 
-void UOptionWidgetContainer::SelectOptionWidget(const FName& ID, bool bSelect)
+void UOptionWidgetContainer::SelectOptionWidget(int32 OptionIndex, bool bSelect)
 {
-	if (OptionWidgetInfomation.Find(ID))
+	if (FOptionWidgetInfo* Info = OptionWidgetInfomation.Find(OptionIndex))
 	{
-		FOptionWidgetInfo& Info = OptionWidgetInfomation[ID];
-
-		Info.OptionWidget->Select(bSelect);
-		Info.bSelected = bSelect;
+		Info->OptionWidget->Select(bSelect);
+		Info->bSelected = bSelect;
 	}
 }
 
-bool UOptionWidgetContainer::IsOptionWidgetSelected(const FName& ID) const
+bool UOptionWidgetContainer::IsOptionWidgetSelected(int32 OptionIndex) const
 {
-	if (OptionWidgetInfomation.Find(ID))
+	if (const FOptionWidgetInfo* Info = OptionWidgetInfomation.Find(OptionIndex))
 	{
-		const FOptionWidgetInfo& Info = OptionWidgetInfomation[ID];
-
-		return Info.bSelected;
+		return Info->bSelected;
 	}
 
 	return false;

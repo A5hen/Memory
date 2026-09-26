@@ -74,8 +74,6 @@ protected:
 
 	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 
-	void HandleDeselection(const FContentWidgetInfo& InContentWidgetInfo);
-
 public:
 
 	FOnSelected OnSelected;

@@ -16,10 +16,10 @@ struct FInteractionOption
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText Option;
+	FText Option = FText();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName ID;
+	int32 OptionIndex = 0;
 
 	UPROPERTY(BlueprintReadWrite)
 	TScriptInterface<IInteractableTarget> InteractableTarget;
@@ -46,7 +46,7 @@ public:
 	FORCEINLINE bool operator==(const FInteractionOption& Other) const
 	{
 		return Option.IdenticalTo(Other.Option) &&
-			ID.IsEqual(Other.ID) &&
+			OptionIndex == (Other.OptionIndex) &&
 			InteractableTarget == Other.InteractableTarget &&
 			InteractionAbilityToGrant == Other.InteractionAbilityToGrant &&
 			TargetAbilitySystem == Other.TargetAbilitySystem &&

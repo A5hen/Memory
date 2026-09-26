@@ -26,9 +26,9 @@ void UMemoryEventManager::SetPlayerController(APlayerController* InPlayerControl
 
 void UMemoryEventManager::ConfirmStartEventCondition(const FString& ConditionKey)
 {
-	if(StartEventConditions.Find(ConditionKey))
+	if (bool* Value = StartEventConditions.Find(ConditionKey))
 	{
-		StartEventConditions[ConditionKey] = true;
+		*Value = true;
 	}
 
 	int32 Count = 0;

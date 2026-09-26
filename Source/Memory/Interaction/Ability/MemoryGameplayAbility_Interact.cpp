@@ -127,7 +127,7 @@ void UMemoryGameplayAbility_Interact::DisplayOption_Check(const FInteractionOpti
 {
 	if (Option.InteractableTarget)
 	{
-		Option.InteractableTarget->DisplayOption(Option.ID, bDisplay);
+		Option.InteractableTarget->DisplayOption(Option.OptionIndex, bDisplay);
 	}
 }
 
@@ -135,6 +135,6 @@ void UMemoryGameplayAbility_Interact::SelectOption_Check(const FInteractionOptio
 {
 	if (Option.InteractableTarget)
 	{
-		Option.InteractableTarget->SelectOption(Option.ID, bSelect);
+		Option.InteractableTarget->SelectOption(Option.OptionIndex, bSelect);
 	}
 }

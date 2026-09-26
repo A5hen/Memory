@@ -29,7 +29,7 @@ void UEGLN_CharacterBehavior::UpdateLeafNode(const FGameplayTag& EventTag, const
 
 	for (const auto& Pair : CharacterBehavior)
 	{
-		if (!GeneratedCharacterBehavior.Find(Pair.Key))
+		if (!GeneratedCharacterBehavior.Contains(Pair.Key))
 		{
 			UGraphContentWidget* Overview_Character = CreateWidget<UGraphContentWidget>(this, OverviewClass_Character);
 			Overview_Character->ContentWidgetInfo.OwnerWidgetTag = GameplayTags.Widget_EventMenu;

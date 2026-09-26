@@ -10,7 +10,6 @@ class UOverlay;
 class UCanvasPanel;
 
 class UCurveWidget;
-class UMemoryWidgetController;
 
 /**
  * 
@@ -22,12 +21,12 @@ class MEMORY_API UGraphWidget : public UUserWidget
 
 public:
 
-	virtual void SetWidgetController(UMemoryWidgetController* InWidgetController);
 	virtual void ClearGraph();
-	virtual void UnbindCallBacks();
 
-	const FWidgetTransform& GetRelativeTransform() { return RelativeTransform; }
-	void SetRelativeTransform(const FWidgetTransform& InTransform);
+	void SetRenderTranslation(const FVector2D& NewTranslation);
+
+	float GetGraphScale() const { return GraphScale; }
+	void ScaleGraph(float DeltaScale);
 
 protected:
 
@@ -40,8 +39,5 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	UCurveWidget* CurveWidget;
 
-	UPROPERTY()
-	TObjectPtr<UMemoryWidgetController>WidgetController;
-
-	FWidgetTransform RelativeTransform;
+	float GraphScale = 1.f;
 };

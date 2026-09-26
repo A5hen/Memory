@@ -28,8 +28,10 @@ class MEMORY_API UCurveWidget : public UUserWidget
 
 public:
 
-	void UpdateCurveSpawnInfo(const FGameplayTag& Tag, const FVector2D& Position, const TArray<FVector2D>& RelativePositionsToConnect, const TMap<FVector2D, TArray<FVector2D>>& PositionsToConnect);
-	void SetCurveOffset(const FVector2D& Offset) { CurveOffset = Offset; }
+	void UpdateCurveSpawnInfo(const FGameplayTag& Tag,
+		const FVector2D& Position,
+		const TArray<FVector2D>& RelativePositionsToConnect,
+		const TMap<FVector2D, TArray<FVector2D>>& PositionsToConnect);
 
 	void ClearCurveSpawnInfomation() { CurveSpawnInfomation.Empty(); }
 
@@ -43,6 +45,4 @@ protected:
 	UOverlay* Overlay_Root;
 
 	TMap<FGameplayTag, FCurveSpawnInfo>CurveSpawnInfomation;
-
-	FVector2D CurveOffset;
 };

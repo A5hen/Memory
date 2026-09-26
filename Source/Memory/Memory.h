@@ -14,10 +14,3 @@ enum class EActionType : uint8
 	Move,
 	None,
 };
-
-UENUM(BlueprintType)
-enum class EEventStage : uint8
-{
-	Childhood,
-	None,
-};

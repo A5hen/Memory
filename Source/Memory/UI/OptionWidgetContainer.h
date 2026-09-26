@@ -33,20 +33,20 @@ class MEMORY_API UOptionWidgetContainer : public UUserWidget
 
 public:
 
-	void AddOptionWidget(const FName& ID, UOptionWidget* OptionWidget);
+	void AddOptionWidget(int32 OptionIndex, UOptionWidget* OptionWidget);
 
-	void DisplayOptionWidget(const FName& ID, bool bDisplay);
-	bool IsOptionWidgetDisplayed(const FName& ID) const;
+	void DisplayOptionWidget(int32 OptionIndex, bool bDisplay);
+	bool IsOptionWidgetDisplayed(int32 OptionIndex) const;
 
-	void SelectOptionWidget(const FName& ID, bool bSelect);
-	bool IsOptionWidgetSelected(const FName& ID) const;
+	void SelectOptionWidget(int32 OptionIndex, bool bSelect);
+	bool IsOptionWidgetSelected(int32 OptionIndex) const;
 
 	bool IsAnyOptionDisplayed() const;
 
 protected:
 
 	UPROPERTY()
-	TMap<FName, FOptionWidgetInfo> OptionWidgetInfomation;
+	TMap<int32, FOptionWidgetInfo> OptionWidgetInfomation;
 
 	UPROPERTY(meta = (BindWidget))
 	UScrollBox* ScrollBox_Root;

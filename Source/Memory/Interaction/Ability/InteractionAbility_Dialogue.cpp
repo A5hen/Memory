@@ -32,10 +32,14 @@ bool UInteractionAbility_Dialogue::UpdateDialogueContent(FText& Sentence, TArray
 	FDialogueBranch* DialogueBranch = DialogueContent.DialogueBranches.Find(CurrentBranchIndex);
 	if (DialogueBranch)
 	{
-		if (NextSentenceIndex >= DialogueBranch->DialogueContent.Num())
+		bool bFinished = NextSentenceIndex >= DialogueBranch->DialogueContent.Num();
+
+		if (InteractableTarget)
 		{
-			return false;
+			InteractableTarget->SetDialogueSentenceIndex(bFinished ? 0 : NextSentenceIndex);
 		}
+
+		if (bFinished)return false;
 
 		Sentence = DialogueBranch->DialogueContent[NextSentenceIndex];
 
@@ -65,6 +69,7 @@ void UInteractionAbility_Dialogue::ReceiveSelectionResult(const FText& Option)
 			if (InteractableTarget)
 			{
 				InteractableTarget->SetDialogueBranchIndex(CurrentBranchIndex);
+				InteractableTarget->SetDialogueSentenceIndex(NextSentenceIndex);
 			}
 
 			return;

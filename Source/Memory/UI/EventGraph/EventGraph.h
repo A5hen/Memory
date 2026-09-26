@@ -4,15 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Memory/UI/GraphWidget.h"
+#include "Memory/MemoryType.h"//
 #include "GameplayTagContainer.h"//
 #include "EventGraph.generated.h"
 
 class UEventGraphNode;
 
-class UMemoryWidgetController;
-
 struct FExperiencedEventInfo;
-struct FExperiencedEventInfomation;
 
 class UMemoryEventSet;
 
@@ -26,18 +24,22 @@ class MEMORY_API UEventGraph : public UGraphWidget
 
 public:
 
-	virtual void SetWidgetController(UMemoryWidgetController* InWidgetController) override;
 	virtual void ClearGraph() override;
-	virtual void UnbindCallBacks() override;
+
+	void UpdateEventGraph(const FExperiencedEventInfomation& ExperiencedEventInfomation);
+
+	EEventStage GetEventStage() const { return EventStage; }
+	void SetEventStage(EEventStage InEventStage) { EventStage = InEventStage; }
 
 protected:
 
-	void UpdateEventGraph(const FExperiencedEventInfomation& ExperiencedEventInfomation);
 	void UpdateEventGraphNode(const FGameplayTag& EventTag, const FExperiencedEventInfo& ExperiencedEventInfo, bool bGenerated = false, const FVector2D& PositionOnGraph = FVector2D());
 
 	UMemoryEventSet* GetEventSet();
 
 protected:
+
+	EEventStage EventStage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Node")
 	TSubclassOf<UEventGraphNode> EventGraphNodeClass;

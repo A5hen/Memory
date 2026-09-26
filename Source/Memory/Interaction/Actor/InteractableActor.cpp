@@ -54,7 +54,7 @@ void AInteractableActor::BeginPlay()
 			UOptionWidget* OptionWidget = CreateWidget<UOptionWidget>(GetWorld(), OptionWidgetClass);
 			OptionWidget->SetOptionText(InteractionOption.Option);
 
-			OptionContainer->AddOptionWidget(InteractionOption.ID, OptionWidget);
+			OptionContainer->AddOptionWidget(InteractionOption.OptionIndex, OptionWidget);
 		}
 	}
 }

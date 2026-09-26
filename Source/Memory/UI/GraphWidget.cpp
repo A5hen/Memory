@@ -2,27 +2,33 @@
 
 
 #include "GraphWidget.h"
+#include "Components/Overlay.h"//
 #include "Components/CanvasPanel.h"//
 #include "Memory/UI/CurveWidget.h"//
-
-void UGraphWidget::SetWidgetController(UMemoryWidgetController* InWidgetController)
-{
-	WidgetController = InWidgetController;
-}
 
 void UGraphWidget::ClearGraph()
 {
 }
 
-void UGraphWidget::UnbindCallBacks()
+void UGraphWidget::SetRenderTranslation(const FVector2D& NewTranslation)
 {
+	RenderTransform.Translation = NewTranslation;
+
+	SetRenderTransform(RenderTransform);
 }
 
-void UGraphWidget::SetRelativeTransform(const FWidgetTransform& InTransform)
+void UGraphWidget::ScaleGraph(float DeltaScale)
 {
-	RelativeTransform = InTransform;
+	if (DeltaScale < 0)
+	{
+		GraphScale = FMath::Max(0.5f, GraphScale - 0.1);
+	}
+	else
+	{
+		GraphScale = FMath::Min(1.f, GraphScale + 0.1);
+	}
 
-	CanvasPanel_Root->SetRenderTransform(InTransform);
+	FVector2D Scale = FVector2D(GraphScale, GraphScale);
 
-	CurveWidget->SetCurveOffset(InTransform.Translation);
+	SetRenderScale(Scale);
 }

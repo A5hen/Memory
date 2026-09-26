@@ -31,8 +31,8 @@ public:
 
 	/*~InteractableTarget Interface*/
 	virtual void GatherInteractionOptions(const FInteractionQuery& InteractQuery, FInteractionOptionBuilder& OptionBuilder) override;
-	virtual void DisplayOption(const FName& ID, bool bDisplay) override;
-	virtual void SelectOption(const FName& ID, bool bSelect) override;
+	virtual void DisplayOption(int32 OptionIndex, bool bDisplay) override;
+	virtual void SelectOption(int32 OptionIndex, bool bSelect) override;
 	virtual bool IsInteractable() const override;
 
 	virtual FGameplayTag GetActorTag()const override;

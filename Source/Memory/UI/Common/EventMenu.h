@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "MemoryActivatableWidget.h"
-#include "Memory/Memory.h"//
+#include "Memory/MemoryType.h"//
 #include "EventMenu.generated.h"
 
-class USizeBox;
+class UWidgetSwitcher;;
 class UCommonButtonBase;
 
 class UEventGraph;
@@ -46,7 +46,11 @@ protected:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void HideDetail();
 
-	void UpdateEventStageSwitcher(EEventStage CurrentEventStage);
+	void UpdateEventMenu(const TMap<EEventStage, FExperiencedEventInfomation>& ExperiencedEventInfomation_AllStage);
+	void GenerateEventGraph(EEventStage EventStage, const FExperiencedEventInfomation& FExperiencedEventInfomation);
+	void UpdateEventGraph(EEventStage EventStage, const FExperiencedEventInfomation& ExperiencedEventInfomation, bool bNewStage);
+
+	void UpdateEventStageSwitcher(TArray<EEventStage> NewEventStages);
 	void OnEventStageSelected(EEventStage TargetStage);
 
 	void StartGraphScale();
@@ -54,8 +58,22 @@ protected:
 
 protected:
 
+	/*EventGraph*/
+	UPROPERTY(EditDefaultsOnly, Category = "EventGraph")
+	TSubclassOf<UEventGraph> EventGraphClass;
+
 	UPROPERTY(meta = (BindWidget))
-	UEventGraph* EventGraph;
+	UWidgetSwitcher* GraphSwitcher;
+
+	UPROPERTY()
+	TMap<EEventStage, TObjectPtr<UEventGraph>> GeneratedEventGraphs;
+
+	UPROPERTY(EditDefaultsOnly, Category = "EventGraph")
+	EEventStage CurrentEventStage = EEventStage::None;
+
+	UPROPERTY()
+	TObjectPtr<UEventGraph> CurrentEventGraph;
+	/*CharacterCognitionGraph*/
 
 	UPROPERTY(meta = (BindWidget))
 	UEventDetail* EventDetail;
@@ -68,11 +86,9 @@ protected:
 
 	bool bMouseDown = false;
 
-	FVector2D MousePosition;
-	FVector2D MousePositionLastFrame;
+	FVector2D MouseStartPosition;
+	FVector2D MouseCurrentPosition;
+	FWidgetTransform GraphStartTransform;
 
-	FVector2D GraphOffset;
-
-	float GraphScale = 1.f;
 	bool bScalable = false;
 };

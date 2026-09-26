@@ -3,3 +3,6 @@
 
 #include "Memory/UI/EventGraph/EventDetail.h"
 
+void UEventDetail::UpdateDetail(const FContentWidgetInfo& ContentWidgetInfo)
+{
+}

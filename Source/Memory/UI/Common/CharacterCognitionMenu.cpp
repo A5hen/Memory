@@ -3,6 +3,7 @@
 
 #include "CharacterCognitionMenu.h"
 #include "Components/ScrollBox.h"//
+#include "Components/WidgetSwitcher.h"//
 #include "Memory/UI/WidgetController/CognitionGraphWidgetController.h"//
 #include "Memory/UI/CognitionGraph/CharacterCognitionGraph.h"//
 #include "Memory/UI/CognitionGraph/BehaviorCognitionDetail.h"//
@@ -14,12 +15,15 @@ void UCharacterCognitionMenu::SetWidgetController(UMemoryWidgetController* InWid
 {
 	Super::SetWidgetController(InWidgetController);
 
-	UCognitionGraphWidgetController* CognitionGraphWidgetController = Cast<UCognitionGraphWidgetController>(WidgetController);
-	if (CognitionGraphWidgetController)
+	if (WidgetController)
 	{
-		CharacterCognitionGraph->SetWidgetController(WidgetController);
+		if (UCognitionGraphWidgetController* CognitionGraphWidgetController = Cast<UCognitionGraphWidgetController>(WidgetController))
+		{
+			CognitionGraphWidgetController->GenerateCognitionMenu.AddUObject(this, &UCharacterCognitionMenu::UpdateCognitionMenu);
+			CognitionGraphWidgetController->UpdateCognitionGraph.AddUObject(this, &UCharacterCognitionMenu::UpdateCognitionGraph);
 
-		UpdateCharacterSwitcher(CognitionGraphWidgetController->GetSelectableCharacters());
+			CognitionGraphWidgetController->BroadcastInitialValues();
+		}
 	}
 }
 
@@ -38,10 +42,6 @@ void UCharacterCognitionMenu::NativeOnActivated()
 			SetWidgetController(CognitionGraphWidgetController);
 		}
 	}
-	else
-	{
-
-	}
 
 	ReactContentSelection();
 
@@ -50,22 +50,24 @@ void UCharacterCognitionMenu::NativeOnActivated()
 
 void UCharacterCognitionMenu::NativeOnDeactivated()
 {
-	ScrollBox_Character->ClearChildren();
-
-	CharacterCognitionGraph->UnbindCallBacks();
-
 	bMouseDown = false;
 
-	MousePosition = FVector2D::ZeroVector;
-	MousePositionLastFrame = FVector2D::ZeroVector;
+	MouseStartPosition = FVector2D::ZeroVector;
+	MouseCurrentPosition = FVector2D::ZeroVector;
+	GraphStartTransform = FWidgetTransform();
 
 	Super::NativeOnDeactivated();
 }
 
 FReply UCharacterCognitionMenu::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
-	MousePosition = InMouseEvent.GetScreenSpacePosition();
+	MouseStartPosition = InGeometry.AbsoluteToLocal(InMouseEvent.GetScreenSpacePosition());
 	bMouseDown = true;
+
+	if (CurrentCharacterCognitionGraph)
+	{
+		GraphStartTransform = CurrentCharacterCognitionGraph->GetRenderTransform();
+	}
 
 	return FReply::Handled();
 }
@@ -81,17 +83,14 @@ FReply UCharacterCognitionMenu::NativeOnMouseMove(const FGeometry& InGeometry, c
 {
 	if (bMouseDown)
 	{
-		MousePositionLastFrame = MousePosition;
-		MousePosition = InMouseEvent.GetScreenSpacePosition();
+		MouseCurrentPosition = InGeometry.AbsoluteToLocal(InMouseEvent.GetScreenSpacePosition());
 
-		FVector2D DeltaPosition = (MousePosition - MousePositionLastFrame);
+		FVector2D DeltaPosition = (MouseCurrentPosition - MouseStartPosition);
 
-		FWidgetTransform NewTransform = CharacterCognitionGraph->GetRelativeTransform();
-		NewTransform.Translation += DeltaPosition;
-
-		GraphOffset += DeltaPosition;
-
-		CharacterCognitionGraph->SetRelativeTransform(NewTransform);
+		if (CurrentCharacterCognitionGraph)
+		{
+			CurrentCharacterCognitionGraph->SetRenderTranslation(GraphStartTransform.Translation + DeltaPosition);
+		}
 	}
 
 	return FReply::Handled();
@@ -107,19 +106,70 @@ void UCharacterCognitionMenu::OnContentSelected(const FContentWidgetInfo& Conten
 	{
 		ShowDetail();
 
-		BehaviorCognitionDetail->UpdateContent(ContentWidgetInfo);
+		BehaviorCognitionDetail->UpdateDetail(ContentWidgetInfo);
 	}
 }
 
-void UCharacterCognitionMenu::UpdateCharacterSwitcher(const FGameplayTagContainer& CharacterTags)
+void UCharacterCognitionMenu::UpdateCognitionMenu(const TMap<FGameplayTag, FGeneratedBehavior>& GeneratedCharacterBehaviors)
+{
+	check(CharacterCognitionGraphClass);
+
+	FGameplayTagContainer NewSelectableCharacters;
+
+	for (const auto& Pair : GeneratedCharacterBehaviors)
+	{
+		if (GeneratedCharacterCognitionGraphs.FindRef(Pair.Key).Get())continue;
+
+		GenerateCognitionGraph(Pair.Key, Pair.Value);
+
+		NewSelectableCharacters.AddTag(Pair.Key);
+	}
+
+	UpdateCharacterSwitcher(NewSelectableCharacters);
+}
+
+void UCharacterCognitionMenu::GenerateCognitionGraph(const FGameplayTag& CharacterTag, const FGeneratedBehavior& GeneratedBehavior)
+{
+	UCharacterCognitionGraph* NewCharacterCognitonGraph = CreateWidget<UCharacterCognitionGraph>(this, CharacterCognitionGraphClass);
+	NewCharacterCognitonGraph->SetCharacterTag(CharacterTag);
+	NewCharacterCognitonGraph->UpdateCognitionGraph(GeneratedBehavior);
+
+	GraphSwitcher->AddChild(NewCharacterCognitonGraph);
+	GeneratedCharacterCognitionGraphs.Emplace(CharacterTag, NewCharacterCognitonGraph);
+
+	if (!CurrentCharacterCognitionGraph)
+	{
+		if (!CurrentCharacterTag.IsValid() || CharacterTag.MatchesTagExact(CurrentCharacterTag))
+		{
+			CurrentCharacterCognitionGraph = NewCharacterCognitonGraph;
+			GraphSwitcher->SetActiveWidget(CurrentCharacterCognitionGraph);
+
+			CurrentCharacterTag = CharacterTag;
+		}
+	}
+}
+
+void UCharacterCognitionMenu::UpdateCognitionGraph(const FGameplayTag& CharacterTag, const FGeneratedBehavior& GeneratedBehavior, bool bNewCharacter)
+{
+	if (bNewCharacter)
+	{
+		GenerateCognitionGraph(CharacterTag, GeneratedBehavior);
+	}
+	else if (UCharacterCognitionGraph* CharacterCognitionGraph = GeneratedCharacterCognitionGraphs.FindRef(CharacterTag).Get())
+	{
+		CharacterCognitionGraph->UpdateCognitionGraph(GeneratedBehavior);
+	}
+}
+
+void UCharacterCognitionMenu::UpdateCharacterSwitcher(const FGameplayTagContainer& NewSelectableCharacters)
 {
 	check(OverviewClass_Character);
 
 	const FMemoryGameplayTags& GameplayTags = FMemoryGameplayTags::Get();
 
-	for (const FGameplayTag& CharacterTag : CharacterTags)
+	for (const FGameplayTag& CharacterTag : NewSelectableCharacters)
 	{
-		if (SelectableCharacterTags.HasTagExact(CharacterTag))continue;
+		if (SelectableCharacters.HasTagExact(CharacterTag))continue;
 
 		UGraphContentWidget* Overview_Character = CreateWidget<UGraphContentWidget>(this, OverviewClass_Character);
 		Overview_Character->ContentWidgetInfo.OwnerWidgetTag = GameplayTags.Widget_CharacterCognitionMenu;
@@ -131,11 +181,18 @@ void UCharacterCognitionMenu::UpdateCharacterSwitcher(const FGameplayTagContaine
 		Overview_Character->DisplayContent();
 
 		ScrollBox_Character->AddChild(Overview_Character);
-		SelectableCharacterTags.AddTag(CharacterTag);
+		SelectableCharacters.AddTag(CharacterTag);
 	}
 }
 
 void UCharacterCognitionMenu::OnCharacterSelected(const FContentWidgetInfo& ContentWidgetInfo)
 {
+	if (ContentWidgetInfo.CharacterTag.MatchesTagExact(CurrentCharacterTag))return;
 
+	if (UCharacterCognitionGraph* CharacterCognitionGraph = GeneratedCharacterCognitionGraphs.FindRef(ContentWidgetInfo.CharacterTag).Get())
+	{
+		GraphSwitcher->SetActiveWidget(CharacterCognitionGraph);
+		CurrentCharacterTag = ContentWidgetInfo.CharacterTag;
+		CurrentCharacterCognitionGraph = CharacterCognitionGraph;
+	}
 }

@@ -7,16 +7,13 @@
 #include "Memory/UI/GraphContentWidget.h"//
 #include "Memory/MemoryGameplayTag.h"//
 
-void UCognitionGraphNode::UpdateNode(const FGameplayTag& InCharactertag, const FName& InBehaviorDesc, const FBehaviorCognitionInfo& BehaviorCognitionInfo)
+void UCognitionGraphNode::UpdateNode(const FGameplayTag& InCharactertag, const FName& InBehaviorDesc, const FGeneratedBehaviorCognition& GeneratedBehaviorCognition)
 {
 	check(ContentClass_CharacterBehavior);
 
 	const FMemoryGameplayTags& GameplayTags = FMemoryGameplayTags::Get();
 
-	CharacterTag = InCharactertag;
-	BehaviorDesc = InBehaviorDesc;
-
-	for (const FGameplayTag& SourceEvent : BehaviorCognitionInfo.Source)
+	for (const FGameplayTag& SourceEvent : GeneratedBehaviorCognition.Source)
 	{
 		if (SourceEvnetTags.HasTagExact(SourceEvent))continue;
 
@@ -25,9 +22,9 @@ void UCognitionGraphNode::UpdateNode(const FGameplayTag& InCharactertag, const F
 		UGraphContentWidget* Content_CharacterBehavior = CreateWidget<UGraphContentWidget>(this, ContentClass_CharacterBehavior);
 		Content_CharacterBehavior->ContentWidgetInfo.OwnerWidgetTag = GameplayTags.Widget_CharacterCognitionMenu;
 		Content_CharacterBehavior->ContentWidgetInfo.ContentTag = GameplayTags.Content_CharacterBehavior;
-		Content_CharacterBehavior->ContentWidgetInfo.CharacterTag = CharacterTag;
-		Content_CharacterBehavior->ContentWidgetInfo.BehaviorDesc = BehaviorDesc;
-		Content_CharacterBehavior->ContentWidgetInfo.CognitionLevel = BehaviorCognitionInfo.CurrentCognitionLevel;
+		Content_CharacterBehavior->ContentWidgetInfo.CharacterTag = InCharactertag;
+		Content_CharacterBehavior->ContentWidgetInfo.BehaviorDesc = InBehaviorDesc;
+		Content_CharacterBehavior->ContentWidgetInfo.CognitionLevel = GeneratedBehaviorCognition.CurrentCognitionLevel;
 		Content_CharacterBehavior->ContentWidgetInfo.EventTag = SourceEvent;
 
 		Content_CharacterBehavior->DisplayContent();

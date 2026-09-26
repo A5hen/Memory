@@ -6,6 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "EventDetail.generated.h"
 
+class UGraphContentWidget;
+struct FContentWidgetInfo;
+
 /**
  * 
  */
@@ -14,4 +17,7 @@ class MEMORY_API UEventDetail : public UUserWidget
 {
 	GENERATED_BODY()
 
+public:
+
+	void UpdateDetail(const FContentWidgetInfo& ContentWidgetInfo);
 };

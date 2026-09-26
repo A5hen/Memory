@@ -22,7 +22,7 @@ class MEMORY_API UBehaviorCognitionDetail : public UUserWidget
 
 public:
 
-	void UpdateContent(const FContentWidgetInfo& ContentWidgetInfo);
+	void UpdateDetail(const FContentWidgetInfo& ContentWidgetInfo);
 	
 protected:
 

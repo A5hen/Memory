@@ -34,9 +34,9 @@ void UEventGraphNode::UpdateLeafNode_CharacterBehavior(const FGameplayTag& Event
 			CanvasPanelSlot->SetAlignment(FVector2D(0.5f, 0.5f));
 
 			FVector2D Position = FVector2D::ZeroVector;
-			if (ExperiencedEventInfo.RelativePositions.Find(GameplayTags.Content_CharacterBehavior))
+			if (const FVector2D* RelativePosition = ExperiencedEventInfo.RelativePositions.Find(GameplayTags.Content_CharacterBehavior))
 			{
-				Position = ExperiencedEventInfo.RelativePositions[GameplayTags.Content_CharacterBehavior];
+				Position = *RelativePosition;
 			}
 			CanvasPanelSlot->SetPosition(Position);
 
@@ -79,9 +79,9 @@ void UEventGraphNode::UpdateLeafNode_SelfAwareness(const FGameplayTag& EventTag,
 			CanvasPanelSlot->SetAlignment(FVector2D(0.5f, 0.5f));
 
 			FVector2D Position = FVector2D::ZeroVector;
-			if (ExperiencedEventInfo.RelativePositions.Find(GameplayTags.Content_SelfAwareness))
+			if (const FVector2D* RelativePosition = ExperiencedEventInfo.RelativePositions.Find(GameplayTags.Content_SelfAwareness))
 			{
-				Position = ExperiencedEventInfo.RelativePositions[GameplayTags.Content_SelfAwareness];
+				Position = *RelativePosition;
 			}
 			CanvasPanelSlot->SetPosition(Position);
 

@@ -65,7 +65,7 @@ void AInteractableCharacter::BeginPlay()
 			UOptionWidget* OptionWidget = CreateWidget<UOptionWidget>(GetWorld(), OptionWidgetClass);
 			OptionWidget->SetOptionText(InteractionOption.Option);
 
-			OptionContainer->AddOptionWidget(InteractionOption.ID, OptionWidget);
+			OptionContainer->AddOptionWidget(InteractionOption.OptionIndex, OptionWidget);
 		}
 	}
 }
@@ -118,10 +118,10 @@ void AInteractableCharacter::GatherInteractionOptions(const FInteractionQuery& I
 	}
 }
 
-void AInteractableCharacter::DisplayOption(const FName& ID, bool bDisplay)
+void AInteractableCharacter::DisplayOption(int32 OptionIndex, bool bDisplay)
 {
 	UOptionWidgetContainer* OptionContainer = Cast<UOptionWidgetContainer>(WidgetContainer->GetUserWidgetObject());
-	OptionContainer->DisplayOptionWidget(ID, bDisplay);
+	OptionContainer->DisplayOptionWidget(OptionIndex, bDisplay);
 
 	if (UWorld* World = GetWorld())
 	{
@@ -153,7 +153,7 @@ void AInteractableCharacter::DisplayOption(const FName& ID, bool bDisplay)
 	}
 }
 
-void AInteractableCharacter::SelectOption(const FName& ID, bool bSelect)
+void AInteractableCharacter::SelectOption(int32 OptionIndex, bool bSelect)
 {
 }
 

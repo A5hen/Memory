@@ -96,12 +96,14 @@ class MEMORY_API IInteractableTarget
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
+	/*InteractionOption*/
 	virtual void GatherInteractionOptions(const FInteractionQuery& InteractQuery, FInteractionOptionBuilder& OptionBuilder) = 0;
 
-	virtual void DisplayOption(const FName& ID, bool bDisplay) {}
-	virtual void SelectOption(const FName& ID, bool bSelect) {}
+	virtual void DisplayOption(int32 OptionIndex, bool bDisplay) {}
+	virtual void SelectOption(int32 OptionIndex, bool bSelect) {}
 
 	virtual bool IsInteractable() const { return true; }
+	/*InteractionOption*/
 
 	virtual FGameplayTag GetActorTag() const { return FGameplayTag(); }
 

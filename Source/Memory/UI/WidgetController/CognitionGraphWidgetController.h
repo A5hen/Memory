@@ -5,11 +5,13 @@
 #include "CoreMinimal.h"
 #include "MemoryWidgetController.h"
 #include "GameplayTagContainer.h"//
+#include "Memory/MemoryType.h"//
 #include "CognitionGraphWidgetController.generated.h"
 
-struct FBehaviorCognitionInfomation;
+struct FGeneratedBehavior;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUpdateCognitionGraph, const FBehaviorCognitionInfomation&);
+DECLARE_MULTICAST_DELEGATE_OneParam(FGenerateCognitionMenu, const TGeneratedCharacterBehaviors&);
+DECLARE_MULTICAST_DELEGATE_ThreeParams(FUpdateCognitionGraph, const FGameplayTag&, const FGeneratedBehavior&, bool);
 
 /**
  * 
@@ -21,20 +23,10 @@ class MEMORY_API UCognitionGraphWidgetController : public UMemoryWidgetControlle
 
 public:
 
+	FGenerateCognitionMenu GenerateCognitionMenu;
 	FUpdateCognitionGraph UpdateCognitionGraph;
 
 	virtual void BroadcastInitialValues() override;
 
 	virtual void BindCallBacksToDependencies() override;
-
-	const FGameplayTag& GetSelectedCharacter() const { return SelectedCharacter; }
-	const FGameplayTagContainer& GetSelectableCharacters() const { return SelectableCharacters; }
-	
-protected:
-
-	UPROPERTY(EditDefaultsOnly, Category = "Character")
-	FGameplayTagContainer SelectableCharacters;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Character")
-	FGameplayTag SelectedCharacter;
 };

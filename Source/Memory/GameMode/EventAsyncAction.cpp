@@ -96,7 +96,6 @@ UListenDialogueResult* UListenDialogueResult::ListenDialogueResult(UEventAsyncAc
 
 void UListenDialogueResult::Activate()
 {
-
 }
 
 void UListenDialogueResult::Destory()

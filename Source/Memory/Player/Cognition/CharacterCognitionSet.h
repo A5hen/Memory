@@ -35,7 +35,7 @@ struct FBehaviorCognition
 };
 
 USTRUCT(BlueprintType)
-struct FBehaviorCognitions
+struct FBehavior
 {
 	GENERATED_BODY()
 
@@ -57,6 +57,6 @@ public:
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly, Category = "CharacterCognitions")
-	TMap<FGameplayTag, FBehaviorCognitions> CharacterBehaviorCognitions;
+	UPROPERTY(EditDefaultsOnly, Category = "CharacterBehaviors")
+	TMap<FGameplayTag, FBehavior> CharacterBehaviors;
 };

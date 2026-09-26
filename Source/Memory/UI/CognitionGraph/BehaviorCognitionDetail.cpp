@@ -8,7 +8,7 @@
 #include "Memory/Player/Cognition/CharacterCognitionSet.h"//
 #include "Memory/MemoryGameplayTag.h"//
 
-void UBehaviorCognitionDetail::UpdateContent(const FContentWidgetInfo& ContentWidgetInfo)
+void UBehaviorCognitionDetail::UpdateDetail(const FContentWidgetInfo& ContentWidgetInfo)
 {
 	check(Content_BehaviorCognitionClass);
 
