@@ -26,10 +26,13 @@ public:
 
 	virtual void ClearGraph() override;
 
+	bool CheckEventStage(const FGameplayTag& EventTag) const;
+	FVector2D JumptoEventGraphNode(const FGameplayTag& EventTag);
+
 	void UpdateEventGraph(const FExperiencedEventInfomation& ExperiencedEventInfomation);
 
-	EEventStage GetEventStage() const { return EventStage; }
-	void SetEventStage(EEventStage InEventStage) { EventStage = InEventStage; }
+	const FGameplayTag& GetEventStage() const { return EventStage; }
+	void SetEventStage(const FGameplayTag& InEventStage) { EventStage = InEventStage; }
 
 protected:
 
@@ -39,7 +42,7 @@ protected:
 
 protected:
 
-	EEventStage EventStage;
+	FGameplayTag EventStage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Node")
 	TSubclassOf<UEventGraphNode> EventGraphNodeClass;

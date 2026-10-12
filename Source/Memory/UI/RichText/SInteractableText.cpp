@@ -4,8 +4,9 @@
 #include "SInteractableText.h"
 #include "SlateOptMacros.h"
 #include "Components/RichTextBlock.h"//
+#include "Kismet/GameplayStatics.h"//
 #include "MemoryRichText.h"//
-#include "Memory/UI/Explanation/ExplanationInterface.h"//
+#include "Memory/UI/Common/CommonUIExtension.h"//
 
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 void SInteractableText::Construct(const FArguments& InArgs)
@@ -31,18 +32,6 @@ void SInteractableText::Construct(const FArguments& InArgs)
 							TextBlock->SetTextStyle(&HoveredStyle->TextStyle);
 						}
 					}
-
-					if(Owner.IsValid())
-					{
-						if (UMemoryRichText* MemoryRichText = Cast<UMemoryRichText>(Owner.Get()))
-						{
-							if (IExplanationInterface* EI = Cast<IExplanationInterface>(MemoryRichText->GetOwner()))
-							{
-								EI->ShowExplanation(true, Text);
-								bExplanationDisplaying = true;
-							}
-						}
-					}
 				}
 			)
 			.OnUnhovered_Lambda
@@ -56,18 +45,19 @@ void SInteractableText::Construct(const FArguments& InArgs)
 							TextBlock->SetTextStyle(&UnhoveredStyle->TextStyle);
 						}
 					}
-
+				}
+			)
+			.OnClicked_Lambda
+			([this]()
+				{
 					if (Owner.IsValid())
 					{
-						if (UMemoryRichText* MemoryRichText = Cast<UMemoryRichText>(Owner.Get()))
+						if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(Owner.Get(), 0))
 						{
-							if (IExplanationInterface* EI = Cast<IExplanationInterface>(MemoryRichText->GetOwner()))
-							{
-								EI->ShowExplanation(false, Text);
-								bExplanationDisplaying = false;
-							}
+							UCommonUIExtension::PushExplanationToLayerForPlayer(PlayerController);
 						}
 					}
+					return FReply::Handled();
 				}
 			)
 			.Content()
@@ -82,19 +72,6 @@ void SInteractableText::Construct(const FArguments& InArgs)
 
 SInteractableText::~SInteractableText()
 {
-	if (bExplanationDisplaying)
-	{
-		if (Owner.IsValid())
-		{
-			if (UMemoryRichText* MemoryRichText = Cast<UMemoryRichText>(Owner.Get()))
-			{
-				if (IExplanationInterface* EI = Cast<IExplanationInterface>(MemoryRichText->GetOwner()))
-				{
-					EI->ShowExplanation(true, Text);
-				}
-			}
-		}
-	}
 }
 
 END_SLATE_FUNCTION_BUILD_OPTIMIZATION

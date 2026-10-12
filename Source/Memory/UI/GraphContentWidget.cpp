@@ -6,7 +6,32 @@
 #include "Memory/AbilitySystem/MemoryAbilitySystemLibrary.h"//
 #include "Memory/UI/WidgetController/MemoryWidgetController.h"//
 
+void UGraphContentWidget::DisplayContent()
+{
+	//TODO:
+
+	DisplayContentDelegate.Broadcast(ContentDisplayInfo);
+}
+
+FReply UGraphContentWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	HandleMouseButtonDown();
+
+	return FReply::Handled();
+}
+
 void UGraphContentWidget::HandleMouseButtonDown()
+{
+	OnSelected.Broadcast(ContentWidgetInfo);
+	BP_OnSelected.Broadcast();
+
+	if (bNotifyController)
+	{
+		HandleNotification();
+	}
+}
+
+void UGraphContentWidget::HandleNotification()
 {
 	const FMemoryGameplayTags& GameplayTags = FMemoryGameplayTags::Get();
 
@@ -30,24 +55,5 @@ void UGraphContentWidget::HandleMouseButtonDown()
 
 	if (!WidgetController)return;
 
-	bSelected = true;
-
 	WidgetController->SelectContent(ContentWidgetInfo);
-
-	OnSelected.Broadcast(ContentWidgetInfo);
-	BP_OnSelected.Broadcast();
-}
-
-void UGraphContentWidget::DisplayContent()
-{
-	//TODO:
-
-	DisplayContentDelegate.Broadcast(ContentDisplayInfo);
-}
-
-FReply UGraphContentWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
-{
-	HandleMouseButtonDown();
-
-	return FReply::Handled();
 }

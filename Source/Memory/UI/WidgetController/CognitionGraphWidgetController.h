@@ -10,7 +10,7 @@
 
 struct FGeneratedBehavior;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FGenerateCognitionMenu, const TGeneratedCharacterBehaviors&);
+DECLARE_MULTICAST_DELEGATE_OneParam(FUpdateCognitionMenu, const TGeneratedCharacterBehaviors&);
 DECLARE_MULTICAST_DELEGATE_ThreeParams(FUpdateCognitionGraph, const FGameplayTag&, const FGeneratedBehavior&, bool);
 
 /**
@@ -23,7 +23,7 @@ class MEMORY_API UCognitionGraphWidgetController : public UMemoryWidgetControlle
 
 public:
 
-	FGenerateCognitionMenu GenerateCognitionMenu;
+	FUpdateCognitionMenu UpdateCognitionMenu;
 	FUpdateCognitionGraph UpdateCognitionGraph;
 
 	virtual void BroadcastInitialValues() override;

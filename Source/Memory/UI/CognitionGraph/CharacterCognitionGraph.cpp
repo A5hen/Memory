@@ -27,6 +27,17 @@ void UCharacterCognitionGraph::ClearGraph()
 	Super::ClearGraph();
 }
 
+FVector2D UCharacterCognitionGraph::JumptoCognitionGraphNode(FName BehaviorDec)
+{
+	if (UCognitionGraphNode* TargetNode = GeneratedCognitionGraphNodes.FindRef(BehaviorDec).Get())
+	{
+		UCanvasPanelSlot* CanvasPanelSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(TargetNode);
+		return CanvasPanelSlot->GetPosition();
+	}
+
+	return FVector2D();
+}
+
 void UCharacterCognitionGraph::UpdateCognitionGraph(const FGeneratedBehavior& GeneratedBehavior)
 {
 	check(CognitionGraphNodeClass);

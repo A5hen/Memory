@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "GameplayTagContainer.h"//
+#include "Memory/MemoryType.h"//
 #include "GraphContentWidget.generated.h"
 
 class UMemoryWidgetController;
@@ -12,23 +13,6 @@ class UMemoryWidgetController;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBP_OnSelected);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBP_OnDeselected);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnSelected, const FContentWidgetInfo&);
-
-USTRUCT()
-struct FContentWidgetInfo
-{
-	GENERATED_BODY()
-
-	FGameplayTag OwnerWidgetTag;
-	FGameplayTag ContentTag;
-
-	FGameplayTag EventTag;
-
-	FGameplayTag CharacterTag;
-	FName BehaviorDesc;
-	int32 CognitionLevel;
-
-	FGameplayTag SelfAwarenessTag;
-};
 
 USTRUCT(BlueprintType)
 struct FContentDisplayInfo
@@ -66,13 +50,17 @@ class MEMORY_API UGraphContentWidget : public UUserWidget
 
 public:
 
-	void HandleMouseButtonDown();
-
 	void DisplayContent();
+
+	void NotifyController(bool bNotify) { bNotifyController = bNotify; }
 
 protected:
 
 	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+
+	void HandleMouseButtonDown();
+
+	void HandleNotification();
 
 public:
 
@@ -91,11 +79,8 @@ protected:
 	UPROPERTY(BlueprintAssignable, Category = "Selection")
 	FBP_OnSelected BP_OnSelected;
 
-	UPROPERTY(BlueprintAssignable, Category = "Selection")
-	FBP_OnDeselected BP_OnDeselected;
-
 	UPROPERTY()
 	TObjectPtr<UMemoryWidgetController> WidgetController;
 
-	bool bSelected = false;
+	bool bNotifyController = true;
 };

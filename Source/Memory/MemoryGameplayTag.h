@@ -30,7 +30,7 @@ public:
 	FGameplayTag Layer_Game;
 	FGameplayTag Layer_Menu;
 	FGameplayTag Layer_Dialogue;
-	FGameplayTag Layer_Selection;
+	FGameplayTag Layer_Cue;
 
 	FGameplayTag Widget_MainMenu;
 	FGameplayTag Widget_EventMenu;
@@ -49,6 +49,8 @@ public:
 	FGameplayTag Character_Grandmother;
 	FGameplayTag Character_Father;
 	FGameplayTag Character_Mother;
+
+	FGameplayTag EventStage_Childhood;
 
 	FGameplayTag Event_Test;
 	FGameplayTag Event_Test2;

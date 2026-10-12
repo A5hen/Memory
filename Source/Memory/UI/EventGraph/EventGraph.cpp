@@ -26,6 +26,22 @@ void UEventGraph::ClearGraph()
 	Super::ClearGraph();
 }
 
+bool UEventGraph::CheckEventStage(const FGameplayTag& EventTag) const
+{
+	return GeneratedEventGraphNodes.Contains(EventTag);
+}
+
+FVector2D UEventGraph::JumptoEventGraphNode(const FGameplayTag& EventTag)
+{
+	if (UEventGraphNode* TargetNode = GeneratedEventGraphNodes.FindRef(EventTag).Get())
+	{
+		UCanvasPanelSlot* CanvasPanelSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(TargetNode);
+		return CanvasPanelSlot->GetPosition();
+	}
+
+	return FVector2D();
+}
+
 void UEventGraph::UpdateEventGraph(const FExperiencedEventInfomation& ExperiencedEventInfomation)
 {
 	if (!GetEventSet())return;

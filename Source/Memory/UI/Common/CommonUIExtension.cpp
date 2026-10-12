@@ -8,6 +8,7 @@
 #include "Memory/UI/Common/PrimaryGameLayout.h"//
 #include "Memory/UI/Common/MemoryActivatableWidget.h"//
 #include "Memory/UI/Common/CommonUIInterface.h"//
+#include "Memory/MemoryGameplayTag.h"//
 
 int32 UCommonUIExtension::InputSuspensions = 0;
 
@@ -27,6 +28,22 @@ UMemoryActivatableWidget* UCommonUIExtension::PushContentToLayerForPlayer(
 	}
 
 	return nullptr;
+}
+
+void UCommonUIExtension::PushStreamedContentToLayerForPlayer(
+	APlayerController* PlayerController, FGameplayTag LayerTag, TSoftClassPtr<UMemoryActivatableWidget> WidgetSoftClassPtr)
+{
+	if (!PlayerController)return;
+
+	AMemoryHUD* MemoryHUD = Cast<AMemoryHUD>(PlayerController->GetHUD());
+	if (MemoryHUD)
+	{
+		UPrimaryGameLayout* RootLayout = MemoryHUD->GetRootLayout();
+		if (RootLayout)
+		{
+			RootLayout->PushWidgetToLayerStackAsync(LayerTag, true, WidgetSoftClassPtr);
+		}
+	}
 }
 
 UMemoryActivatableWidget* UCommonUIExtension::PushCoreWidgetToLayerForPlayer(
@@ -69,10 +86,11 @@ UMemoryActivatableWidget* UCommonUIExtension::PushCoreWidgetToLayerForPlayer(
 	return nullptr;
 }
 
-void UCommonUIExtension::PushStreamedContentToLayerForPlayer(
-	APlayerController* PlayerController, FGameplayTag LayerTag, TSoftClassPtr<UMemoryActivatableWidget> WidgetSoftClassPtr)
+UMemoryActivatableWidget* UCommonUIExtension::PushExplanationToLayerForPlayer(APlayerController* PlayerController)
 {
-	if (!PlayerController)return;
+	if (!PlayerController)return nullptr;
+
+	const FMemoryGameplayTags& GameplayTags = FMemoryGameplayTags::Get();
 
 	AMemoryHUD* MemoryHUD = Cast<AMemoryHUD>(PlayerController->GetHUD());
 	if (MemoryHUD)
@@ -80,9 +98,11 @@ void UCommonUIExtension::PushStreamedContentToLayerForPlayer(
 		UPrimaryGameLayout* RootLayout = MemoryHUD->GetRootLayout();
 		if (RootLayout)
 		{
-			RootLayout->PushWidgetToLayerStackAsync(LayerTag, true, WidgetSoftClassPtr);
+			//return RootLayout->PushWidgetToLayerStack(GameplayTags.Layer_Cue, WidgetClass);
 		}
 	}
+
+	return nullptr;
 }
 
 void UCommonUIExtension::PopContentFromLayer(APlayerController* PlayerController, FGameplayTag LayerTag, UMemoryActivatableWidget* ActivatableWidget)

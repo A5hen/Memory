@@ -14,16 +14,4 @@ class MEMORY_API UMemoryRichText : public URichTextBlock
 {
 	GENERATED_BODY()
 
-public:
-
-	UFUNCTION(BlueprintCallable, Category = "MemoryRichText")
-	void SetOwner(UObject* InOwner) { Owner = InOwner; }
-
-	UFUNCTION(BlueprintCallable, Category = "MemoryRichText")
-	UObject* GetOwner() const { return Owner; }
-
-protected:
-
-	UPROPERTY()
-	TObjectPtr<UObject> Owner;
 };

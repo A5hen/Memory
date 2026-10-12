@@ -9,7 +9,7 @@
 #include "EventGraphWidgetController.generated.h"
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FUpdateEventMenu, const TExperiencedEventInfomation_AllStage&)
-DECLARE_MULTICAST_DELEGATE_ThreeParams(FUpdateEventGraph, EEventStage, const FExperiencedEventInfomation&, bool);
+DECLARE_MULTICAST_DELEGATE_ThreeParams(FUpdateEventGraph, const FGameplayTag&, const FExperiencedEventInfomation&, bool);
 
 /**
  * 

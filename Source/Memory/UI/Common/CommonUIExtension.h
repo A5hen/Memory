@@ -24,12 +24,16 @@ public:
 		APlayerController* PlayerController, FGameplayTag LayerTag, TSubclassOf<UMemoryActivatableWidget>WidgetClass);
 
 	UFUNCTION(BlueprintCallable, Category = "UI Extensions")
+	static void PushStreamedContentToLayerForPlayer(
+		APlayerController* PlayerController, FGameplayTag LayerTag, TSoftClassPtr<UMemoryActivatableWidget> WidgetSoftClassPtr);
+
+	UFUNCTION(BlueprintCallable, Category = "UI Extensions")
 	static UMemoryActivatableWidget* PushCoreWidgetToLayerForPlayer(
 		APlayerController* PlayerController, FGameplayTag WidgetTag, FGameplayTag LayerTag);
 
 	UFUNCTION(BlueprintCallable, Category = "UI Extensions")
-	static void PushStreamedContentToLayerForPlayer(
-		APlayerController* PlayerController, FGameplayTag LayerTag, TSoftClassPtr<UMemoryActivatableWidget> WidgetSoftClassPtr);
+	static UMemoryActivatableWidget* PushExplanationToLayerForPlayer(
+		APlayerController* PlayerController);
 
 	UFUNCTION(BlueprintCallable, Category = "UI Extensions")
 	static void PopContentFromLayer(APlayerController* PlayerController, FGameplayTag LayerTag, UMemoryActivatableWidget* ActivatableWidget);

@@ -39,6 +39,8 @@ protected:
 	virtual FReply NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 	virtual FReply NativeOnMouseMove(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 
+	virtual void HandleCoreWidgetJump(const FContentWidgetInfo& ContentWidgetInfo) override;
+
 	virtual void OnContentSelected(const FContentWidgetInfo& ContentWidgetInfo) override;
 
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
@@ -71,7 +73,7 @@ protected:
 	TMap<FGameplayTag, TObjectPtr<UCharacterCognitionGraph>> GeneratedCharacterCognitionGraphs;
 
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterCognitionGraph")
-	FGameplayTag CurrentCharacterTag;
+	FGameplayTag CurrentCharacter;
 
 	UPROPERTY()
 	TObjectPtr<UCharacterCognitionGraph> CurrentCharacterCognitionGraph;
@@ -80,7 +82,7 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	UBehaviorCognitionDetail* BehaviorCognitionDetail;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Overview")
+	UPROPERTY(EditDefaultsOnly, Category = "Overview_Character")
 	TSubclassOf<UGraphContentWidget> OverviewClass_Character;
 	
 	bool bMouseDown = false;
@@ -88,4 +90,6 @@ protected:
 	FVector2D MouseStartPosition;
 	FVector2D MouseCurrentPosition;
 	FWidgetTransform GraphStartTransform;
+
+	bool bFirstUpdate = true;
 };

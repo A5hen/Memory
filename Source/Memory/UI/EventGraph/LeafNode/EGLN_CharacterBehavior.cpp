@@ -24,6 +24,8 @@ void UEGLN_CharacterBehavior::UpdateLeafNode(const FGameplayTag& EventTag, const
 		Overview_AllCharacter->OnSelected.AddUObject(this, &UEGLN_CharacterBehavior::OnCharacterSelected);
 		Overview_AllCharacter->DisplayContent();
 
+		Overview_AllCharacter->NotifyController(false);
+
 		ScrollBox_Character->AddChild(Overview_AllCharacter);
 	}
 

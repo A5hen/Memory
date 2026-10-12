@@ -7,12 +7,14 @@
 #include "Memory/MemoryType.h"//
 #include "EventMenu.generated.h"
 
+class UScrollBox;
 class UWidgetSwitcher;;
 class UCommonButtonBase;
 
 class UEventGraph;
 class UEventDetail;
 
+class UGraphContentWidget;
 struct FContentWidgetInfo;
 
 /**
@@ -39,6 +41,8 @@ protected:
 	virtual FReply NativeOnMouseMove(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 	virtual FReply NativeOnMouseWheel(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 
+	virtual void HandleCoreWidgetJump(const FContentWidgetInfo& ContentWidgetInfo) override;
+
 	virtual void OnContentSelected(const FContentWidgetInfo& ContentWidgetInfo) override;
 
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
@@ -46,30 +50,35 @@ protected:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void HideDetail();
 
-	void UpdateEventMenu(const TMap<EEventStage, FExperiencedEventInfomation>& ExperiencedEventInfomation_AllStage);
-	void GenerateEventGraph(EEventStage EventStage, const FExperiencedEventInfomation& FExperiencedEventInfomation);
-	void UpdateEventGraph(EEventStage EventStage, const FExperiencedEventInfomation& ExperiencedEventInfomation, bool bNewStage);
+	void UpdateEventMenu(const TMap<FGameplayTag, FExperiencedEventInfomation>& ExperiencedEventInfomation_AllStage);
+	void GenerateEventGraph(const FGameplayTag& EventStage, const FExperiencedEventInfomation& FExperiencedEventInfomation);
+	void UpdateEventGraph(const FGameplayTag& EventStage, const FExperiencedEventInfomation& ExperiencedEventInfomation, bool bNewStage);
 
-	void UpdateEventStageSwitcher(TArray<EEventStage> NewEventStages);
-	void OnEventStageSelected(EEventStage TargetStage);
+	void UpdateEventStageSwitcher(const FGameplayTagContainer& NewEventStages);
+	void OnEventStageSelected(const FContentWidgetInfo& ContentWidgetInfo);
 
 	void StartGraphScale();
 	void EndGraphScale();
 
 protected:
 
+	UPROPERTY(meta = (BindWidget))
+	UScrollBox* ScrollBox_EventStage;
+
+	FGameplayTagContainer SelectableEventStages;
+
 	/*EventGraph*/
-	UPROPERTY(EditDefaultsOnly, Category = "EventGraph")
+	UPROPERTY(EditDefaultsOnly, Category = "EventMenu")
 	TSubclassOf<UEventGraph> EventGraphClass;
 
 	UPROPERTY(meta = (BindWidget))
 	UWidgetSwitcher* GraphSwitcher;
 
 	UPROPERTY()
-	TMap<EEventStage, TObjectPtr<UEventGraph>> GeneratedEventGraphs;
+	TMap<FGameplayTag, TObjectPtr<UEventGraph>> GeneratedEventGraphs;
 
-	UPROPERTY(EditDefaultsOnly, Category = "EventGraph")
-	EEventStage CurrentEventStage = EEventStage::None;
+	UPROPERTY(EditDefaultsOnly, Category = "EventMenu")
+	FGameplayTag CurrentEventStage;
 
 	UPROPERTY()
 	TObjectPtr<UEventGraph> CurrentEventGraph;
@@ -77,6 +86,9 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	UEventDetail* EventDetail;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Overview_Event")
+	TSubclassOf<UGraphContentWidget> OverviewClass_Event;
 
 	UPROPERTY(meta = (BindWidget))
 	UCommonButtonBase* CoreWidgetJumpButton;
@@ -91,4 +103,6 @@ protected:
 	FWidgetTransform GraphStartTransform;
 
 	bool bScalable = false;
+
+	bool bFirstUpdate = true;
 };

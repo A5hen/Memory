@@ -43,9 +43,9 @@ void FMemoryGameplayTags::InitializeNativeGameplayTags()
         FName("Layer.Dialogue"),
         FString("DialogueLayer"));
 
-    GameplayTags.Layer_Selection = UGameplayTagsManager::Get().AddNativeGameplayTag(
-        FName("Layer.Selection"),
-        FString("SelectionLayer"));
+    GameplayTags.Layer_Cue = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Layer.Cue"),
+        FString("CueLayer"));
     /*Layer*/
 
     /*Widget*/
@@ -113,6 +113,12 @@ void FMemoryGameplayTags::InitializeNativeGameplayTags()
         FName("Character.Mother"),
         FString("Mother"));
     /*ActorTag*/
+
+    /*EventStage*/
+    GameplayTags.EventStage_Childhood = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("EventStage.Childhood"),
+        FString("Childhood"));
+    /*EventStage*/
 
     //Test
     GameplayTags.Event_Test = UGameplayTagsManager::Get().AddNativeGameplayTag(

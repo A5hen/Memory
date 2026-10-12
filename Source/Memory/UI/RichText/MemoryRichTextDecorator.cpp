@@ -46,7 +46,6 @@ TSharedRef<ISlateRun> FHoverDecorator::Create(const TSharedRef<class FTextLayout
 		DecoratorWidget = CreateDecoratorWidget(RunInfo, TextStyle);
 	}
 
-
 	if (DecoratorWidget.IsValid())
 	{
 		*InOutModelText += TEXT('\u200B'); // Zero-Width Breaking Space

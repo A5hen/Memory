@@ -26,7 +26,10 @@ void UBehaviorCognitionDetail::UpdateDetail(const FContentWidgetInfo& ContentWid
 		if (i > CurrentCognitionLevel)
 		{
 			UGraphContentWidget* Content_BehaviorCognition = CreateWidget<UGraphContentWidget>(this, Content_BehaviorCognitionClass);
-			Content_BehaviorCognition->ContentWidgetInfo = ContentWidgetInfo;
+			Content_BehaviorCognition->ContentWidgetInfo.OwnerWidgetTag = GameplayTags.Widget_CharacterCognitionMenu;
+			Content_BehaviorCognition->ContentWidgetInfo.ContentTag = GameplayTags.Content_CharacterBehavior;
+			Content_BehaviorCognition->ContentWidgetInfo.CharacterTag= ContentWidgetInfo.CharacterTag;
+			Content_BehaviorCognition->ContentWidgetInfo.BehaviorDesc = ContentWidgetInfo.BehaviorDesc;
 			Content_BehaviorCognition->ContentWidgetInfo.CognitionLevel = i;
 
 			Content_BehaviorCognition->DisplayContent();

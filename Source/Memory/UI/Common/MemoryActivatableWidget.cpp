@@ -2,8 +2,8 @@
 
 
 #include "MemoryActivatableWidget.h"
-#include "Memory/AbilitySystem/MemoryAbilitySystemLibrary.h"
 #include "Memory/UI/WidgetController/MemoryWidgetController.h"//
+#include "Memory/UI/GraphContentWidget.h"//
 #include "Memory/UI/Common/CommonUIExtension.h"//
 #include "Memory/MemoryGameplayTag.h"//
 
@@ -76,34 +76,41 @@ UMemoryActivatableWidget* UMemoryActivatableWidget::PushCoreWidget(const FGamepl
 
 void UMemoryActivatableWidget::JumpToCoreWidget()
 {
-	if (!bReactContentSelection || !TargetCoreWidget.IsValid())return;
+	if (!bReactContentSelection)return;
 
 	const FMemoryGameplayTags& GameplayTags = FMemoryGameplayTags::Get();
 
-	PushCoreWidget(TargetCoreWidget, GameplayTags.Layer_Menu);
+	FGameplayTag TargetCoreWidgetTag = FGameplayTag();
 
-	//TODO
+	if (SelectedContentWidgetInfo.ContentTag.MatchesTagExact(GameplayTags.Content_Event))
+	{
+		TargetCoreWidgetTag = GameplayTags.Widget_EventMenu;
+	}
+
+	if (SelectedContentWidgetInfo.ContentTag.MatchesTagExact(GameplayTags.Content_Character) ||
+		SelectedContentWidgetInfo.ContentTag.MatchesTagExact(GameplayTags.Content_CharacterBehavior))
+	{
+		TargetCoreWidgetTag = GameplayTags.Widget_CharacterCognitionMenu;
+	}
+
+	if (SelectedContentWidgetInfo.ContentTag.MatchesTagExact(GameplayTags.Content_SelfAwareness))
+	{
+		TargetCoreWidgetTag = GameplayTags.Widget_SelfAwarenessMenu;
+	}
+	
+	UMemoryActivatableWidget* TargeCoretWidget = PushCoreWidget(TargetCoreWidgetTag, GameplayTags.Layer_Menu);
+	TargeCoretWidget->HandleCoreWidgetJump(SelectedContentWidgetInfo);
+}
+
+void UMemoryActivatableWidget::HandleCoreWidgetJump(const FContentWidgetInfo& ContentWidgetInfo)
+{
 }
 
 void UMemoryActivatableWidget::OnContentSelected(const FContentWidgetInfo& ContentWidgetInfo)
 {
 	const FMemoryGameplayTags& GameplayTags = FMemoryGameplayTags::Get();
 
-	if (ContentWidgetInfo.ContentTag.MatchesTagExact(GameplayTags.Content_Event))
-	{
-		TargetCoreWidget = GameplayTags.Widget_EventMenu;
-	}
-
-	if (ContentWidgetInfo.ContentTag.MatchesTagExact(GameplayTags.Content_Character) ||
-		ContentWidgetInfo.ContentTag.MatchesTagExact(GameplayTags.Content_CharacterBehavior))
-	{
-		TargetCoreWidget = GameplayTags.Widget_CharacterCognitionMenu;
-	}
-
-	if (ContentWidgetInfo.ContentTag.MatchesTagExact(GameplayTags.Content_SelfAwareness))
-	{
-		TargetCoreWidget = GameplayTags.Widget_SelfAwarenessMenu;
-	}
+	SelectedContentWidgetInfo = ContentWidgetInfo;
 }
 
 void UMemoryActivatableWidget::ReactContentSelection()

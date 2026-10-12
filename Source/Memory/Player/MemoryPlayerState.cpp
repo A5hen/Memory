@@ -61,17 +61,17 @@ void AMemoryPlayerState::UpdateCharacterBehaviorCognition(const FGameplayTag& Ch
 		}
 	}
 
-	FGeneratedBehavior* UngeneratedBehavior = UngeneratedCharacterBehaviors.Find(CharacterTag);
-	if (!ChangedBehaviorCognition && UngeneratedBehavior)
+	FGeneratedBehavior* UngenerateBehavior = UngenerateCharacterBehaviors.Find(CharacterTag);
+	if (!ChangedBehaviorCognition && UngenerateBehavior)
 	{
-		if (FGeneratedBehaviorCognition* UngeneratedBehaviorCognition = UngeneratedBehavior->DescToCognition.Find(BehaviorDesc))
+		if (FGeneratedBehaviorCognition* UngenerateBehaviorCognition = UngenerateBehavior->DescToCognition.Find(BehaviorDesc))
 		{
-			UngeneratedBehaviorCognition->Source.AddTag(EventTag);
+			UngenerateBehaviorCognition->Source.AddTag(EventTag);
 
-			GeneratedBehavior->DescToCognition.Emplace(BehaviorDesc, *UngeneratedBehaviorCognition);
-			UngeneratedBehavior->DescToCognition.Remove(BehaviorDesc);
+			GeneratedBehavior->DescToCognition.Emplace(BehaviorDesc, *UngenerateBehaviorCognition);
+			UngenerateBehavior->DescToCognition.Remove(BehaviorDesc);
 
-			ChangedBehaviorCognition = UngeneratedBehaviorCognition;
+			ChangedBehaviorCognition = UngenerateBehaviorCognition;
 		}
 	}
 
@@ -80,6 +80,7 @@ void AMemoryPlayerState::UpdateCharacterBehaviorCognition(const FGameplayTag& Ch
 		FGeneratedBehaviorCognition NewBehaviorCognition;
 		NewBehaviorCognition.CurrentCognitionLevel = 0;
 		NewBehaviorCognition.Source.AddTag(EventTag);
+
 		GeneratedBehavior->DescToCognition.Emplace(BehaviorDesc, NewBehaviorCognition);
 
 		ChangedBehaviorCognition = &NewBehaviorCognition;
@@ -171,19 +172,19 @@ void AMemoryPlayerState::HandleSelfAwarenessGeneration(
 
 			if (!bBehaviorGenerated)
 			{
-				FGeneratedBehavior& UngeneratedBehavior = UngeneratedCharacterBehaviors.FindOrAdd(CharacterBehaviorCognitionEffect.Key);
+				FGeneratedBehavior& UngenerateBehavior = UngenerateCharacterBehaviors.FindOrAdd(CharacterBehaviorCognitionEffect.Key);
 
 				FGeneratedBehaviorCognition NewBehaviorCognition;
 				NewBehaviorCognition.CognitionLevelToAwareness.Emplace(Pair.Value, AwarenessTags);
-				UngeneratedBehavior.DescToCognition.Emplace(Pair.Key, NewBehaviorCognition);
+				UngenerateBehavior.DescToCognition.Emplace(Pair.Key, NewBehaviorCognition);
 			}
 		}
 	}
 }
 
-const FExperiencedEventInfomation* AMemoryPlayerState::GetExperiencedEventInfomation(EEventStage InEventStage) const
+const FExperiencedEventInfomation* AMemoryPlayerState::GetExperiencedEventInfomation(FGameplayTag EventStageTag) const
 {
-	return ExperiencedEventInfomation_AllStage.Find(InEventStage);
+	return ExperiencedEventInfomation_AllStage.Find(EventStageTag);
 }
 
 const FGeneratedBehavior* AMemoryPlayerState::GetGeneratedBehavior(const FGameplayTag& CharacterTag) const

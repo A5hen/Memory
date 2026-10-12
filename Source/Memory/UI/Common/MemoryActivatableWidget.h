@@ -6,7 +6,7 @@
 #include "CommonActivatableWidget.h"
 #include "GameplayTagContainer.h"//
 #include "Memory/UI/Common/CommonUIInterface.h"//
-#include "Memory/UI/GraphContentWidget.h"//
+#include "Memory/MemoryType.h"//
 #include "MemoryActivatableWidget.generated.h"
 
 struct FUIInputConfig;
@@ -52,6 +52,7 @@ protected:
 	UMemoryActivatableWidget* PushCoreWidget(const FGameplayTag& InWidgetTag, const FGameplayTag& LayerTag);
 
 	void JumpToCoreWidget();
+	virtual void HandleCoreWidgetJump(const FContentWidgetInfo& ContentWidgetInfo);
 
 	virtual void OnContentSelected(const FContentWidgetInfo& ContentWidgetInfo);
 	void ReactContentSelection();
@@ -76,6 +77,6 @@ protected:
 	/*ReactContentSelection*/
 	bool bReactContentSelection = false;
 
-	FGameplayTag TargetCoreWidget;
+	FContentWidgetInfo SelectedContentWidgetInfo;;
 	/*ReactContentSelection*/
 };

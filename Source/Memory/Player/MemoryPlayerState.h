@@ -119,7 +119,7 @@ public:
 		const FGameplayTagContainer& AwarenessTags, const FAwarenessInfo* InAwarenessInfo,
 		TMap<FGameplayTag, FGeneratedBehavior>& ChangedCharacterBehaviors);
 
-	const FExperiencedEventInfomation* GetExperiencedEventInfomation(EEventStage InEventStage) const;
+	const FExperiencedEventInfomation* GetExperiencedEventInfomation(FGameplayTag EventStageTag) const;
 
 	const FGeneratedBehavior* GetGeneratedBehavior(const FGameplayTag& CharacterTag) const;
 	const TGeneratedCharacterBehaviors& GetGeneratedCharacterBehaviors() const;
@@ -144,7 +144,7 @@ protected:
 
 	/*Event*/
 	UPROPERTY(EditDefaultsOnly, Category = "ExperiencedEvent")
-	TMap<EEventStage, FExperiencedEventInfomation> ExperiencedEventInfomation_AllStage;
+	TMap<FGameplayTag, FExperiencedEventInfomation> ExperiencedEventInfomation_AllStage;
 	/*Event*/
 
 	/*CharacterBehavior*/
@@ -152,7 +152,7 @@ protected:
 	TMap<FGameplayTag, FGeneratedBehavior> GeneratedCharacterBehaviors;
 
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterBehavior")
-	TMap<FGameplayTag, FGeneratedBehavior> UngeneratedCharacterBehaviors;
+	TMap<FGameplayTag, FGeneratedBehavior> UngenerateCharacterBehaviors;
 	/*CharacterBehavior*/
 
 	/*SelfAwareness*/

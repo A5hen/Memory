@@ -9,7 +9,7 @@ void UCognitionGraphWidgetController::BroadcastInitialValues()
 	if (GetMemoryPS())
 	{
 		const TMap<FGameplayTag, FGeneratedBehavior>& GeneratedCharacterBehaviors = MemoryPS->GetGeneratedCharacterBehaviors();
-		GenerateCognitionMenu.Broadcast(GeneratedCharacterBehaviors);
+		UpdateCognitionMenu.Broadcast(GeneratedCharacterBehaviors);
 	}
 }
 
@@ -21,6 +21,12 @@ void UCognitionGraphWidgetController::BindCallBacksToDependencies()
 			[this](const FGameplayTag& CharacterTag, const FGeneratedBehavior& GeneratedBehavior, bool bNewCharacter)
 			{
 				UpdateCognitionGraph.Broadcast(CharacterTag, GeneratedBehavior, bNewCharacter);
+			});
+
+		MemoryPS->OnCharacterBehaviorsUpdated.AddLambda(
+			[this](const TGeneratedCharacterBehaviors& GeneratedCharacterBehaviors)
+			{
+				UpdateCognitionMenu.Broadcast(GeneratedCharacterBehaviors);
 			});
 	}
 }

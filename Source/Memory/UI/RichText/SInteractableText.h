@@ -36,8 +36,6 @@ protected:
 	FTextBlockStyle DefaultTextStyle;
 
 	TWeakObjectPtr<UDataTable> RichTextStyleSet;
-
+	
 	TWeakObjectPtr<UObject> Owner;
-
-	bool bExplanationDisplaying = false;
 };

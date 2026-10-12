@@ -12,9 +12,10 @@ void UGraphWidget::ClearGraph()
 
 void UGraphWidget::SetRenderTranslation(const FVector2D& NewTranslation)
 {
-	RenderTransform.Translation = NewTranslation;
+	FWidgetTransform CurrentWidgetTranform = GetRenderTransform();
+	CurrentWidgetTranform.Translation = NewTranslation;
 
-	SetRenderTransform(RenderTransform);
+	SetRenderTransform(CurrentWidgetTranform);
 }
 
 void UGraphWidget::ScaleGraph(float DeltaScale)

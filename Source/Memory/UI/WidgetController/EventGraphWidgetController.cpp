@@ -8,7 +8,7 @@ void UEventGraphWidgetController::BroadcastInitialValues()
 {
 	if (GetMemoryPS())
 	{
-		const TMap<EEventStage, FExperiencedEventInfomation>& ExperiencedEventInfomation_AllStage = MemoryPS->GetExperiencedEventInfomation_AllStage();
+		const TMap<FGameplayTag, FExperiencedEventInfomation>& ExperiencedEventInfomation_AllStage = MemoryPS->GetExperiencedEventInfomation_AllStage();
 		UpdateEventMenu.Broadcast(ExperiencedEventInfomation_AllStage);
 	}
 }

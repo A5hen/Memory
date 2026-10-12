@@ -25,6 +25,8 @@ public:
 
 	virtual void ClearGraph()override;
 
+	FVector2D JumptoCognitionGraphNode(FName BehaviorDec);
+
 	void UpdateCognitionGraph(const FGeneratedBehavior& GeneratedBehavior);
 
 	const FGameplayTag& GetCharacterTag() const { return CharacterTag; }

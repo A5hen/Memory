@@ -19,7 +19,7 @@ void UCharacterCognitionMenu::SetWidgetController(UMemoryWidgetController* InWid
 	{
 		if (UCognitionGraphWidgetController* CognitionGraphWidgetController = Cast<UCognitionGraphWidgetController>(WidgetController))
 		{
-			CognitionGraphWidgetController->GenerateCognitionMenu.AddUObject(this, &UCharacterCognitionMenu::UpdateCognitionMenu);
+			CognitionGraphWidgetController->UpdateCognitionMenu.AddUObject(this, &UCharacterCognitionMenu::UpdateCognitionMenu);
 			CognitionGraphWidgetController->UpdateCognitionGraph.AddUObject(this, &UCharacterCognitionMenu::UpdateCognitionGraph);
 
 			CognitionGraphWidgetController->BroadcastInitialValues();
@@ -96,6 +96,16 @@ FReply UCharacterCognitionMenu::NativeOnMouseMove(const FGeometry& InGeometry, c
 	return FReply::Handled();
 }
 
+void UCharacterCognitionMenu::HandleCoreWidgetJump(const FContentWidgetInfo& ContentWidgetInfo)
+{
+	if (UCharacterCognitionGraph* TargetCognitionGraph = GeneratedCharacterCognitionGraphs.FindRef(ContentWidgetInfo.CharacterTag).Get())
+	{
+		GraphSwitcher->SetActiveWidget(TargetCognitionGraph);
+
+		TargetCognitionGraph->JumptoCognitionGraphNode(ContentWidgetInfo.BehaviorDesc);
+	}
+}
+
 void UCharacterCognitionMenu::OnContentSelected(const FContentWidgetInfo& ContentWidgetInfo)
 {
 	Super::OnContentSelected(ContentWidgetInfo);
@@ -118,11 +128,35 @@ void UCharacterCognitionMenu::UpdateCognitionMenu(const TMap<FGameplayTag, FGene
 
 	for (const auto& Pair : GeneratedCharacterBehaviors)
 	{
-		if (GeneratedCharacterCognitionGraphs.FindRef(Pair.Key).Get())continue;
+		if (!CurrentCharacter.IsValid())
+		{
+			CurrentCharacter = Pair.Key;
+		}
+
+		if (UCharacterCognitionGraph* CharacterCognitionGraph = GeneratedCharacterCognitionGraphs.FindRef(Pair.Key).Get())
+		{
+			CharacterCognitionGraph->UpdateCognitionGraph(Pair.Value);
+
+			continue;
+		}
 
 		GenerateCognitionGraph(Pair.Key, Pair.Value);
 
 		NewSelectableCharacters.AddTag(Pair.Key);
+	}
+
+	if (bFirstUpdate)
+	{
+		if (CurrentCharacter.IsValid())
+		{
+			if (UCharacterCognitionGraph* CharacterCognitionGraph = GeneratedCharacterCognitionGraphs.FindRef(CurrentCharacter).Get())
+			{
+				GraphSwitcher->SetActiveWidget(CharacterCognitionGraph);
+				CurrentCharacterCognitionGraph = CharacterCognitionGraph;
+			}
+		}
+
+		bFirstUpdate = false;
 	}
 
 	UpdateCharacterSwitcher(NewSelectableCharacters);
@@ -136,17 +170,6 @@ void UCharacterCognitionMenu::GenerateCognitionGraph(const FGameplayTag& Charact
 
 	GraphSwitcher->AddChild(NewCharacterCognitonGraph);
 	GeneratedCharacterCognitionGraphs.Emplace(CharacterTag, NewCharacterCognitonGraph);
-
-	if (!CurrentCharacterCognitionGraph)
-	{
-		if (!CurrentCharacterTag.IsValid() || CharacterTag.MatchesTagExact(CurrentCharacterTag))
-		{
-			CurrentCharacterCognitionGraph = NewCharacterCognitonGraph;
-			GraphSwitcher->SetActiveWidget(CurrentCharacterCognitionGraph);
-
-			CurrentCharacterTag = CharacterTag;
-		}
-	}
 }
 
 void UCharacterCognitionMenu::UpdateCognitionGraph(const FGameplayTag& CharacterTag, const FGeneratedBehavior& GeneratedBehavior, bool bNewCharacter)
@@ -172,12 +195,11 @@ void UCharacterCognitionMenu::UpdateCharacterSwitcher(const FGameplayTagContaine
 		if (SelectableCharacters.HasTagExact(CharacterTag))continue;
 
 		UGraphContentWidget* Overview_Character = CreateWidget<UGraphContentWidget>(this, OverviewClass_Character);
-		Overview_Character->ContentWidgetInfo.OwnerWidgetTag = GameplayTags.Widget_CharacterCognitionMenu;
-		Overview_Character->ContentWidgetInfo.ContentTag = GameplayTags.Content_Character;
 		Overview_Character->ContentWidgetInfo.CharacterTag = CharacterTag;
 
 		Overview_Character->OnSelected.AddUObject(this, &UCharacterCognitionMenu::OnCharacterSelected);
 
+		Overview_Character->NotifyController(false);
 		Overview_Character->DisplayContent();
 
 		ScrollBox_Character->AddChild(Overview_Character);
@@ -187,12 +209,12 @@ void UCharacterCognitionMenu::UpdateCharacterSwitcher(const FGameplayTagContaine
 
 void UCharacterCognitionMenu::OnCharacterSelected(const FContentWidgetInfo& ContentWidgetInfo)
 {
-	if (ContentWidgetInfo.CharacterTag.MatchesTagExact(CurrentCharacterTag))return;
+	if (ContentWidgetInfo.CharacterTag.MatchesTagExact(CurrentCharacter))return;
 
 	if (UCharacterCognitionGraph* CharacterCognitionGraph = GeneratedCharacterCognitionGraphs.FindRef(ContentWidgetInfo.CharacterTag).Get())
 	{
 		GraphSwitcher->SetActiveWidget(CharacterCognitionGraph);
-		CurrentCharacterTag = ContentWidgetInfo.CharacterTag;
+		CurrentCharacter = ContentWidgetInfo.CharacterTag;
 		CurrentCharacterCognitionGraph = CharacterCognitionGraph;
 	}
 }
