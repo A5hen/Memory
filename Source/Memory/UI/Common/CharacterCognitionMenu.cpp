@@ -15,15 +15,12 @@ void UCharacterCognitionMenu::SetWidgetController(UMemoryWidgetController* InWid
 {
 	Super::SetWidgetController(InWidgetController);
 
-	if (WidgetController)
+	if (UCognitionGraphWidgetController* CognitionGraphWidgetController = Cast<UCognitionGraphWidgetController>(WidgetController))
 	{
-		if (UCognitionGraphWidgetController* CognitionGraphWidgetController = Cast<UCognitionGraphWidgetController>(WidgetController))
-		{
-			CognitionGraphWidgetController->UpdateCognitionMenu.AddUObject(this, &UCharacterCognitionMenu::UpdateCognitionMenu);
-			CognitionGraphWidgetController->UpdateCognitionGraph.AddUObject(this, &UCharacterCognitionMenu::UpdateCognitionGraph);
+		CognitionGraphWidgetController->UpdateCognitionMenu.AddUObject(this, &UCharacterCognitionMenu::UpdateCognitionMenu);
+		CognitionGraphWidgetController->UpdateCognitionGraph.AddUObject(this, &UCharacterCognitionMenu::UpdateCognitionGraph);
 
-			CognitionGraphWidgetController->BroadcastInitialValues();
-		}
+		CognitionGraphWidgetController->BroadcastInitialValues();
 	}
 }
 
@@ -116,7 +113,13 @@ void UCharacterCognitionMenu::OnContentSelected(const FContentWidgetInfo& Conten
 	{
 		ShowDetail();
 
-		BehaviorCognitionDetail->UpdateDetail(ContentWidgetInfo);
+		if (UCognitionGraphWidgetController* CognitionGraphWidgetController = Cast<UCognitionGraphWidgetController>(WidgetController))
+		{
+			if (const FGeneratedBehaviorCognition* GenerateBehaviordCognition = CognitionGraphWidgetController->GetGeneratedBehaviorCognition(ContentWidgetInfo.CharacterTag, ContentWidgetInfo.BehaviorDesc))
+			{
+				BehaviorCognitionDetail->UpdateDetail(ContentWidgetInfo.CharacterTag, ContentWidgetInfo.BehaviorDesc, *GenerateBehaviordCognition);
+			}
+		}
 	}
 }
 

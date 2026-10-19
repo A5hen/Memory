@@ -167,9 +167,9 @@ FGameplayTag AInteractableCharacter::GetActorTag() const
 	return CharacterTag;
 }
 
-void AInteractableCharacter::GetDialogueContent(FDialogueContent& OutDialogueContent) const
+FDialogueContent* AInteractableCharacter::GetDialogueContent()
 {
-	OutDialogueContent = DialogueContent;
+	return &DialogueContent;
 }
 
 void AInteractableCharacter::SetDialogueContent(const FDialogueContent& NewDialogueContent)

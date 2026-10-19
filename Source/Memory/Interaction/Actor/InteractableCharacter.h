@@ -37,7 +37,7 @@ public:
 
 	virtual FGameplayTag GetActorTag()const override;
 
-	virtual void GetDialogueContent(FDialogueContent& OutDialogueContent) const override;
+	virtual FDialogueContent* GetDialogueContent() override;
 	virtual void SetDialogueContent(const FDialogueContent& NewDialogueContent) override;
 
 	virtual int32 GetDialogueBranchIndex() const override;

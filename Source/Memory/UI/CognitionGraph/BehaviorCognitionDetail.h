@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "GameplayTagContainer.h"//
 #include "BehaviorCognitionDetail.generated.h"
 
 class UTextBlock;
 class UScrollBox;
 
 class UGraphContentWidget;
-struct FContentWidgetInfo;
+struct FGeneratedBehaviorCognition;
 
 /**
  * 
@@ -22,15 +23,12 @@ class MEMORY_API UBehaviorCognitionDetail : public UUserWidget
 
 public:
 
-	void UpdateDetail(const FContentWidgetInfo& ContentWidgetInfo);
+	void UpdateDetail(const FGameplayTag& InCharacterTag, FName InBehaviorDesc, const FGeneratedBehaviorCognition& GeneratedBehaviorCognition);
 	
 protected:
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* BehaviorDesc;
-
-	UPROPERTY(meta = (BindWidget))
-	UGraphContentWidget* Overview_Event;
+	UTextBlock* Text_BehaviorDesc;
 
 	UPROPERTY(meta = (BindWidget))
 	UScrollBox* ScrollBox_BehaviorCognition;
@@ -39,4 +37,7 @@ protected:
 	TSubclassOf<UGraphContentWidget> Content_BehaviorCognitionClass;
 
 	int32 CurrentCognitionLevel = -1;
+
+	FGameplayTag CharacterTag;
+	FName BehaviorDesc;
 };

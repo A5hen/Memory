@@ -29,6 +29,8 @@ public:
 
 	void UpdateCognitionGraph(const FGeneratedBehavior& GeneratedBehavior);
 
+	UCognitionGraphNode* GetCognitionGraphNode(FName BehaviorDesc);
+
 	const FGameplayTag& GetCharacterTag() const { return CharacterTag; }
 	void SetCharacterTag(const FGameplayTag& InCharacterTag) { CharacterTag = InCharacterTag; }
 

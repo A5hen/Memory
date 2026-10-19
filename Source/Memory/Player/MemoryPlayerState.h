@@ -61,7 +61,7 @@ struct FGeneratedBehaviorCognition
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 CurrentCognitionLevel = 0;
+	int32 CurrentCognitionLevel = -1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TMap<int32, FGameplayTagContainer> CognitionLevelToAwareness;

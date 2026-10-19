@@ -26,7 +26,7 @@ void UEventGraph::ClearGraph()
 	Super::ClearGraph();
 }
 
-bool UEventGraph::CheckEventStage(const FGameplayTag& EventTag) const
+bool UEventGraph::CheckEvent(const FGameplayTag& EventTag) const
 {
 	return GeneratedEventGraphNodes.Contains(EventTag);
 }

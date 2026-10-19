@@ -2,15 +2,19 @@
 
 
 #include "BehaviorCognitionDetail.h"
+#include "Components/TextBlock.h"//
 #include "Components/ScrollBox.h"//
 #include "Memory/GameInstance/MemoryGameInstance.h"//
 #include "Memory/UI/GraphContentWidget.h"//
 #include "Memory/Player/Cognition/CharacterCognitionSet.h"//
+#include "Memory/Player/MemoryPlayerState.h"//
 #include "Memory/MemoryGameplayTag.h"//
 
-void UBehaviorCognitionDetail::UpdateDetail(const FContentWidgetInfo& ContentWidgetInfo)
+void UBehaviorCognitionDetail::UpdateDetail(const FGameplayTag& InCharacterTag, FName InBehaviorDesc, const FGeneratedBehaviorCognition& GeneratedBehaviorCognition)
 {
 	check(Content_BehaviorCognitionClass);
+
+	if (InCharacterTag.MatchesTagExact(CharacterTag) && InBehaviorDesc.IsEqual(BehaviorDesc))return;
 
 	const FMemoryGameplayTags& GameplayTags = FMemoryGameplayTags::Get();
 
@@ -21,22 +25,40 @@ void UBehaviorCognitionDetail::UpdateDetail(const FContentWidgetInfo& ContentWid
 	}
 	if (!CharacterCognitionSet)return;
 
-	for (int32 i = 0; i <= ContentWidgetInfo.CognitionLevel; ++i)
+	CharacterTag = InCharacterTag;
+	BehaviorDesc = InBehaviorDesc;//Set Text_BehaviorDesc;
+
+	int32 WidgetNum = ScrollBox_BehaviorCognition->GetChildrenCount();
+
+	for (int32 i = GeneratedBehaviorCognition.CurrentCognitionLevel + 1; i < WidgetNum; ++i)
 	{
-		if (i > CurrentCognitionLevel)
+		ScrollBox_BehaviorCognition->GetChildAt(i)->RemoveFromParent();
+	}
+
+	TArray<UWidget*> GeneratedWidgets = ScrollBox_BehaviorCognition->GetAllChildren();
+
+	for (int32 i = 0; i <= GeneratedBehaviorCognition.CurrentCognitionLevel; ++i)
+	{
+		UGraphContentWidget* Content_BehaviorCognition = nullptr;
+
+		if (i < GeneratedWidgets.Num())
 		{
-			UGraphContentWidget* Content_BehaviorCognition = CreateWidget<UGraphContentWidget>(this, Content_BehaviorCognitionClass);
-			Content_BehaviorCognition->ContentWidgetInfo.OwnerWidgetTag = GameplayTags.Widget_CharacterCognitionMenu;
-			Content_BehaviorCognition->ContentWidgetInfo.ContentTag = GameplayTags.Content_CharacterBehavior;
-			Content_BehaviorCognition->ContentWidgetInfo.CharacterTag= ContentWidgetInfo.CharacterTag;
-			Content_BehaviorCognition->ContentWidgetInfo.BehaviorDesc = ContentWidgetInfo.BehaviorDesc;
-			Content_BehaviorCognition->ContentWidgetInfo.CognitionLevel = i;
-
-			Content_BehaviorCognition->DisplayContent();
-
+			Content_BehaviorCognition = Cast<UGraphContentWidget>(GeneratedWidgets[i]);
+		}
+		else
+		{
+			Content_BehaviorCognition = CreateWidget<UGraphContentWidget>(this, Content_BehaviorCognitionClass);
 			ScrollBox_BehaviorCognition->AddChild(Content_BehaviorCognition);
 
 			CurrentCognitionLevel = i;
 		}
+
+		Content_BehaviorCognition->ContentWidgetInfo.OwnerWidgetTag = GameplayTags.Widget_CharacterCognitionMenu;
+		Content_BehaviorCognition->ContentWidgetInfo.ContentTag = GameplayTags.Content_CharacterBehavior;
+		Content_BehaviorCognition->ContentWidgetInfo.CharacterTag = InCharacterTag;
+		Content_BehaviorCognition->ContentWidgetInfo.BehaviorDesc = InBehaviorDesc;
+		Content_BehaviorCognition->ContentWidgetInfo.CognitionLevel = i;
+
+		Content_BehaviorCognition->DisplayContent();
 	}
 }

@@ -108,7 +108,7 @@ public:
 	virtual FGameplayTag GetActorTag() const { return FGameplayTag(); }
 
 	/*Dialogue*/
-	virtual void GetDialogueContent(FDialogueContent& OutDialogueContent) const {}
+	virtual FDialogueContent* GetDialogueContent() { return nullptr; }
 	virtual void SetDialogueContent(const FDialogueContent& NewDialogueContent) {}
 
 	virtual int32 GetDialogueBranchIndex() const { return -1; }

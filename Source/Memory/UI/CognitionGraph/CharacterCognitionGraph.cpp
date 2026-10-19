@@ -71,6 +71,11 @@ void UCharacterCognitionGraph::UpdateCognitionGraph(const FGeneratedBehavior& Ge
 	}
 }
 
+UCognitionGraphNode* UCharacterCognitionGraph::GetCognitionGraphNode(FName BehaviorDesc)
+{
+	return GeneratedCognitionGraphNodes.FindRef(BehaviorDesc).Get();
+}
+
 UCharacterCognitionSet* UCharacterCognitionGraph::GetCharacterCognitionSet()
 {
 	if (!CharacterCognitionSet)

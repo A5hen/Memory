@@ -17,15 +17,12 @@ void UEventMenu::SetWidgetController(UMemoryWidgetController* InWidgetController
 {
 	Super::SetWidgetController(InWidgetController);
 
-	if (WidgetController)
+	if (UEventGraphWidgetController* EventGraphWidgetController = Cast<UEventGraphWidgetController>(WidgetController))
 	{
-		if (UEventGraphWidgetController* EventGraphWidgetController = Cast<UEventGraphWidgetController>(WidgetController))
-		{
-			EventGraphWidgetController->UpdateEventMenu.AddUObject(this, &UEventMenu::UpdateEventMenu);
-			EventGraphWidgetController->UpdateEventGraph.AddUObject(this, &UEventMenu::UpdateEventGraph);
+		EventGraphWidgetController->UpdateEventMenu.AddUObject(this, &UEventMenu::UpdateEventMenu);
+		EventGraphWidgetController->UpdateEventGraph.AddUObject(this, &UEventMenu::UpdateEventGraph);
 
-			EventGraphWidgetController->BroadcastInitialValues();
-		}
+		EventGraphWidgetController->BroadcastInitialValues();
 	}
 }
 
@@ -131,7 +128,7 @@ void UEventMenu::HandleCoreWidgetJump(const FContentWidgetInfo& ContentWidgetInf
 {
 	for (auto& Pair : GeneratedEventGraphs)
 	{
-		if (Pair.Value->CheckEventStage(ContentWidgetInfo.EventTag))
+		if (Pair.Value->CheckEvent(ContentWidgetInfo.EventTag))
 		{
 			GraphSwitcher->SetActiveWidget(Pair.Value);
 
@@ -196,7 +193,6 @@ void UEventMenu::UpdateEventMenu(const TMap<FGameplayTag, FExperiencedEventInfom
 void UEventMenu::GenerateEventGraph(const FGameplayTag& EventStage, const FExperiencedEventInfomation& FExperiencedEventInfomation)
 {
 	UEventGraph* NewEventGraph = CreateWidget<UEventGraph>(this, EventGraphClass);
-	NewEventGraph->SetEventStage(EventStage);
 	NewEventGraph->UpdateEventGraph(FExperiencedEventInfomation);
 
 	GraphSwitcher->AddChild(NewEventGraph);

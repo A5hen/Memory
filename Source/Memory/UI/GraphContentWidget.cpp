@@ -8,9 +8,7 @@
 
 void UGraphContentWidget::DisplayContent()
 {
-	//TODO:
-
-	DisplayContentDelegate.Broadcast(ContentDisplayInfo);
+	DisplayContentDelegate.Broadcast(ContentWidgetInfo);
 }
 
 FReply UGraphContentWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)

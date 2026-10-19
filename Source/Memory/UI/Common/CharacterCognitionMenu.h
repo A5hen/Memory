@@ -12,6 +12,8 @@ class UWidgetSwitcher;
 class UCharacterCognitionGraph;
 class UBehaviorCognitionDetail;
 
+struct FGeneratedBehaviorCognition;
+
 class UGraphContentWidget;
 struct FContentWidgetInfo;
 

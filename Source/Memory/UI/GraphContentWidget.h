@@ -11,34 +11,9 @@
 class UMemoryWidgetController;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBP_OnSelected);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBP_OnDeselected);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnSelected, const FContentWidgetInfo&);
 
-USTRUCT(BlueprintType)
-struct FContentDisplayInfo
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText Event;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText Character;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText BehaviorDesc;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 CognitionLevel;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText BehaviorCognition;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText SelfAwareness;
-};
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDisplayContentDelegate, const FContentDisplayInfo&, Info);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDisplayContentDelegate, const FContentWidgetInfo&, Info);
 
 /**
  * 
@@ -70,9 +45,6 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "ContentDisplay")
 	FDisplayContentDelegate DisplayContentDelegate;
-
-	UPROPERTY(BlueprintReadOnly, Category = "ContentDisplay")
-	FContentDisplayInfo ContentDisplayInfo;
 
 protected:
 

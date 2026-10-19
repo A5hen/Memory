@@ -9,17 +9,20 @@ bool UInteractionAbility_Dialogue::SetParams(const FGameplayEventData& EventData
 	InteractableTarget = TScriptInterface<IInteractableTarget>(const_cast<AActor*>(ToRawPtr(EventData.Target)));
 	if (InteractableTarget)
 	{
-		ActorTag = InteractableTarget->GetActorTag();
-		CurrentBranchIndex = InteractableTarget->GetDialogueBranchIndex();
-		NextSentenceIndex = InteractableTarget->GetDialogueSentenceIndex();
-
-		InteractableTarget->GetDialogueContent(DialogueContent);
-
-		if (FDialogueBranch* DialogueBranch = DialogueContent.DialogueBranches.Find(CurrentBranchIndex))
+		DialogueContent = InteractableTarget->GetDialogueContent();
+		if (DialogueContent)
 		{
-			if (DialogueBranch->DialogueContent.Num() != 0)
+			ActorTag = InteractableTarget->GetActorTag();
+			CurrentBranchIndex = InteractableTarget->GetDialogueBranchIndex();
+			NextSentenceIndex = InteractableTarget->GetDialogueSentenceIndex();
+
+
+			if (FDialogueBranch* DialogueBranch = DialogueContent->DialogueBranches.Find(CurrentBranchIndex))
 			{
-				return true;
+				if (DialogueBranch->DialogueContent.Num() != 0)
+				{
+					return true;
+				}
 			}
 		}
 	}
@@ -29,7 +32,7 @@ bool UInteractionAbility_Dialogue::SetParams(const FGameplayEventData& EventData
 
 bool UInteractionAbility_Dialogue::UpdateDialogueContent(FText& Sentence, TArray<FText>& Options)
 {
-	FDialogueBranch* DialogueBranch = DialogueContent.DialogueBranches.Find(CurrentBranchIndex);
+	FDialogueBranch* DialogueBranch = DialogueContent->DialogueBranches.Find(CurrentBranchIndex);
 	if (DialogueBranch)
 	{
 		bool bFinished = NextSentenceIndex >= DialogueBranch->DialogueContent.Num();
@@ -59,7 +62,7 @@ bool UInteractionAbility_Dialogue::UpdateDialogueContent(FText& Sentence, TArray
 
 void UInteractionAbility_Dialogue::ReceiveSelectionResult(const FText& Option)
 {
-	for (const FDialogueOptionEffect& OptionEffect : DialogueContent.DialogueOptionEffects)
+	for (const FDialogueOptionEffect& OptionEffect : DialogueContent->DialogueOptionEffects)
 	{
 		if (OptionEffect.Option.EqualTo(Option))
 		{

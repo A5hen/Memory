@@ -30,3 +30,16 @@ void UCognitionGraphWidgetController::BindCallBacksToDependencies()
 			});
 	}
 }
+
+const FGeneratedBehaviorCognition* UCognitionGraphWidgetController::GetGeneratedBehaviorCognition(const FGameplayTag& CharacterTag, const FName& BehaviorDesc)
+{
+	if (GetMemoryPS())
+	{
+		if (const FGeneratedBehavior* GeneratedBehavior = MemoryPS->GetGeneratedBehavior(CharacterTag))
+		{
+			return GeneratedBehavior->DescToCognition.Find(BehaviorDesc);
+		}
+	}
+
+	return nullptr;
+}

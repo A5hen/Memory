@@ -45,7 +45,7 @@ protected:
 
 	int32 NextSentenceIndex = 0;
 
-	FDialogueContent DialogueContent;
+	FDialogueContent* DialogueContent;
 
 	bool bInterrupted = false;
 };

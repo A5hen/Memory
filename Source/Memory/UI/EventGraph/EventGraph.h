@@ -26,13 +26,10 @@ public:
 
 	virtual void ClearGraph() override;
 
-	bool CheckEventStage(const FGameplayTag& EventTag) const;
+	bool CheckEvent(const FGameplayTag& EventTag) const;
 	FVector2D JumptoEventGraphNode(const FGameplayTag& EventTag);
 
 	void UpdateEventGraph(const FExperiencedEventInfomation& ExperiencedEventInfomation);
-
-	const FGameplayTag& GetEventStage() const { return EventStage; }
-	void SetEventStage(const FGameplayTag& InEventStage) { EventStage = InEventStage; }
 
 protected:
 

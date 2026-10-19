@@ -28,9 +28,6 @@ struct FBehaviorCognition
 	FVector2D PositionOnGraph = FVector2D();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	TMap<FGameplayTag, FText> SourceEventDesc;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TArray<FCognitoinLevel> CognitionLevels;
 };
 

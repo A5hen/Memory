@@ -29,4 +29,6 @@ public:
 	virtual void BroadcastInitialValues() override;
 
 	virtual void BindCallBacksToDependencies() override;
+
+	const FGeneratedBehaviorCognition* GetGeneratedBehaviorCognition(const FGameplayTag& CharacterTag, const FName& BehaviorDesc);
 };
