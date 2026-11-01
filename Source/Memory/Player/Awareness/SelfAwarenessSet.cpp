@@ -8,12 +8,12 @@ const FAwarenessInfo* USelfAwarenessSet::GetAwarenessInfo_Single(const FGameplay
 	return AwarenessInfomation_Single.Find(AwarenessTag);
 }
 
-const FGameplayTagContainer* USelfAwarenessSet::GetTagContainerKey(int32 Index) const
+const FGameplayTagContainer* USelfAwarenessSet::GetSelfAwarenessGroup(FName GroupName) const
 {
-	return IndexToTagContainerKey.Find(Index);
+	return SelfAwarenessGroup.Find(GroupName);
 }
 
-const FAwarenessInfo* USelfAwarenessSet::GetAwarenessInfo_Group(int32 Index) const
+const FAwarenessInfo* USelfAwarenessSet::GetAwarenessInfo_Group(FName GroupName) const
 {
-	return AwarenessInfomation_Group.Find(Index);
+	return AwarenessInfomation_Group.Find(GroupName);
 }

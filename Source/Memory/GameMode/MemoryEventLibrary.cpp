@@ -17,14 +17,14 @@ void UMemoryEventLibrary::FinishEventAsyncAction(const UObject* WorldContextObje
 	}
 }
 
-void UMemoryEventLibrary::SendDialogueResult(const UObject* WorldContextObject, FGameplayTag ActorTag, int32 SentenceIndex, FText Result)
+void UMemoryEventLibrary::SendDialogueResult(const UObject* WorldContextObject, FGameplayTag ActorTag, int32 BranchIndex, int32 SentenceIndex, FText Result)
 {
 	if (UWorld* World = WorldContextObject->GetWorld())
 	{
 		UMemoryEventManager* EventManager = World->GetSubsystem<UMemoryEventManager>();
 		if (EventManager)
 		{
-			EventManager->SendDialogueResult(ActorTag, SentenceIndex, Result);
+			EventManager->SendDialogueResult(ActorTag, BranchIndex, SentenceIndex, Result);
 		}
 	}
 }

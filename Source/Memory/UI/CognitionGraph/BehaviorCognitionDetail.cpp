@@ -10,7 +10,7 @@
 #include "Memory/Player/MemoryPlayerState.h"//
 #include "Memory/MemoryGameplayTag.h"//
 
-void UBehaviorCognitionDetail::UpdateDetail(const FGameplayTag& InCharacterTag, FName InBehaviorDesc, const FGeneratedBehaviorCognition& GeneratedBehaviorCognition)
+void UBehaviorCognitionDetail::UpdateDetail(const FGameplayTag& InCharacterTag, const FName& InBehaviorDesc, const FGeneratedBehaviorCognition& GeneratedBehaviorCognition)
 {
 	check(Content_BehaviorCognitionClass);
 
@@ -26,7 +26,8 @@ void UBehaviorCognitionDetail::UpdateDetail(const FGameplayTag& InCharacterTag, 
 	if (!CharacterCognitionSet)return;
 
 	CharacterTag = InCharacterTag;
-	BehaviorDesc = InBehaviorDesc;//Set Text_BehaviorDesc;
+	BehaviorDesc = InBehaviorDesc;
+	//TODO: Set Text_BehaviorDesc
 
 	int32 WidgetNum = ScrollBox_BehaviorCognition->GetChildrenCount();
 

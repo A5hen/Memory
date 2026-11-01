@@ -17,7 +17,6 @@ class USpawnPointSubsystem;
 
 class UMemoryActivatableWidget;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEventSubstepStarted, int32, SubstepIndex);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnEventStepFinished, int32);
 
 USTRUCT(BlueprintType)
@@ -65,9 +64,6 @@ public:
 
 	FOnEventStepFinished OnEventStepFinished;
 
-	UPROPERTY(BlueprintAssignable, Category = "EventDefinition")
-	FOnEventSubstepStarted OnEventSubstepStarted;
-
 public:
 
 	const FGameplayTag& GetEventTag() { return EventTag; }
@@ -93,7 +89,7 @@ public:
 	void PostFinishedActionsChange();
 	bool CheckActionIsFinished(const FName& ActionName) const;
 
-	void SendDialogueResult(const FGameplayTag& ActorTag, int32 SentenceIndex, FText Result);
+	void SendDialogueResult(const FGameplayTag& ActorTag, int32 BranchIndex, int32 SentenceIndex, FText Result);
 	/*AsyncAction*/
 
 	/*SceneActor*/
@@ -123,7 +119,7 @@ protected:
 	void GenerateCharacterBehaviorCognition(const FGameplayTag& CharacterTag, const FName& BehaviorDesc);
 
 	UFUNCTION(BlueprintCallable, Category = "Action|Player")
-	void GenerateSelfAwareness(const FGameplayTag& AwarenessTag, bool bInGroup = false, int32 Index = -1);
+	void GenerateSelfAwareness(const FGameplayTag& AwarenessTag, const FName& GroupName);
 	/*Effect*/
 
 	UMemoryGlobalAbilitySystem* GetGlobalAbilitySystem();

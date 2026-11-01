@@ -17,14 +17,8 @@ void UCognitionGraphWidgetController::BindCallBacksToDependencies()
 {
 	if (GetMemoryPS())
 	{
-		MemoryPS->OnCharacterBehaviorUpdated.AddLambda(
-			[this](const FGameplayTag& CharacterTag, const FGeneratedBehavior& GeneratedBehavior, bool bNewCharacter)
-			{
-				UpdateCognitionGraph.Broadcast(CharacterTag, GeneratedBehavior, bNewCharacter);
-			});
-
 		MemoryPS->OnCharacterBehaviorsUpdated.AddLambda(
-			[this](const TGeneratedCharacterBehaviors& GeneratedCharacterBehaviors)
+			[this](const TMap<FGameplayTag, FGeneratedBehavior>& GeneratedCharacterBehaviors)
 			{
 				UpdateCognitionMenu.Broadcast(GeneratedCharacterBehaviors);
 			});

@@ -5,13 +5,11 @@
 
 void UCurveWidget::UpdateCurveSpawnInfo(const FGameplayTag& Tag,
 	const FVector2D& Position,
-	const TArray<FVector2D>& RelativePositionsToConnect,
-	const TMap<FVector2D, TArray<FVector2D>>& PositionsToConnect)
+	const TMap<FVector2D, FTargetPoint>& StartToEnd)
 {
 	FCurveSpawnInfo NewInfo;
 	NewInfo.Position = Position;
-	NewInfo.RelativePositionsToConnect = RelativePositionsToConnect;
-	NewInfo.PositionsToConnect = PositionsToConnect;
+	NewInfo.StartToEnd = StartToEnd;
 
 	CurveSpawnInfomation.Emplace(Tag, NewInfo);
 }
@@ -22,39 +20,24 @@ int32 UCurveWidget::NativePaint(const FPaintArgs& Args, const FGeometry& Allotte
 
 	for (const auto& Pair : CurveSpawnInfomation)
 	{
-		for (const auto& Positions : Pair.Value.PositionsToConnect)
+		for (const auto& Pair1 : Pair.Value.StartToEnd)
 		{
-			if (Positions.Value.Num() == 0)continue;
+			FVector2D ActualStart = Pair1.Key + Center;
+			FVector2D ActualEnd = Pair1.Value.Position + Center;
 
-			FVector2D ActualStart = Positions.Key + Center;
+			FVector2D Mid1 = (ActualStart + ActualEnd) / 2;
+			FVector2D Mid2 = (Pair.Value.Position - Pair1.Value.WidgetPosition) / 2 + Center;
 
-			for (const FVector2D& End : Positions.Value)
-			{
-				FVector2D ActualEnd = End + Center;
+			float Length = (Mid1 - Mid2).Length();
+			FVector2D PoleVector = (Mid1 - Mid2).GetSafeNormal();
 
-				int32 ControlPonitX = ActualEnd.X + (ActualStart.X - ActualEnd.X) / 2;
+			FVector2D ControlPonit = Mid1 + PoleVector * Length;
 
-				FSlateDrawElement::MakeCubicBezierSpline(OutDrawElements, LayerId, AllottedGeometry.ToPaintGeometry(),
-					ActualStart, FVector2D(ControlPonitX, ActualStart.Y),
-					FVector2D(ControlPonitX, ActualEnd.Y), ActualEnd, 4.f);
-			}
-		}
-
-		FVector2D ActualNodePosition = Pair.Value.Position + Center;
-
-		for (const FVector2D& RelativePosition : Pair.Value.RelativePositionsToConnect)
-		{
-			if (RelativePosition == FVector2D())continue;
-
-			FVector2D ActualPositionToConnect = ActualNodePosition + RelativePosition;
-
-			int32 ControlPonitX = ActualPositionToConnect.X + (ActualNodePosition.X - ActualPositionToConnect.X) / 2;
-
-			FSlateDrawElement::MakeCubicBezierSpline(OutDrawElements, LayerId + 1, AllottedGeometry.ToPaintGeometry(),
-				ActualNodePosition, FVector2D(ControlPonitX, ActualNodePosition.Y),
-				FVector2D(ControlPonitX, ActualPositionToConnect.Y), ActualPositionToConnect, 4.f, ESlateDrawEffect::None, FLinearColor::Gray);
+			FSlateDrawElement::MakeCubicBezierSpline(OutDrawElements, LayerId, AllottedGeometry.ToPaintGeometry(),
+				ActualStart, ControlPonit,
+				ControlPonit, ActualEnd, 4.f);
 		}
 	}
 
-	return LayerId + 2;
+	return LayerId + 1;
 }

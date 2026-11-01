@@ -9,13 +9,18 @@
 
 class UOverlay;
 
+struct FTargetPoint
+{
+	FVector2D Position;
+	
+	FVector2D WidgetPosition;
+};
+
 struct FCurveSpawnInfo
 {
 	FVector2D Position;
 
-	TArray<FVector2D> RelativePositionsToConnect;
-
-	TMap<FVector2D, TArray<FVector2D>> PositionsToConnect;
+	TMap<FVector2D, FTargetPoint> StartToEnd;
 };
 
 /**
@@ -30,8 +35,7 @@ public:
 
 	void UpdateCurveSpawnInfo(const FGameplayTag& Tag,
 		const FVector2D& Position,
-		const TArray<FVector2D>& RelativePositionsToConnect,
-		const TMap<FVector2D, TArray<FVector2D>>& PositionsToConnect);
+		const TMap<FVector2D, FTargetPoint>& PositionsToConnect);
 
 	void ClearCurveSpawnInfomation() { CurveSpawnInfomation.Empty(); }
 

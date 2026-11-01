@@ -8,10 +8,7 @@
 #include "Memory/MemoryType.h"//
 #include "CognitionGraphWidgetController.generated.h"
 
-struct FGeneratedBehavior;
-
-DECLARE_MULTICAST_DELEGATE_OneParam(FUpdateCognitionMenu, const TGeneratedCharacterBehaviors&);
-DECLARE_MULTICAST_DELEGATE_ThreeParams(FUpdateCognitionGraph, const FGameplayTag&, const FGeneratedBehavior&, bool);
+DECLARE_MULTICAST_DELEGATE_OneParam(FUpdateCognitionMenu, const TGeneratedCharacterBehaviorsType&);
 
 /**
  * 
@@ -24,7 +21,6 @@ class MEMORY_API UCognitionGraphWidgetController : public UMemoryWidgetControlle
 public:
 
 	FUpdateCognitionMenu UpdateCognitionMenu;
-	FUpdateCognitionGraph UpdateCognitionGraph;
 
 	virtual void BroadcastInitialValues() override;
 

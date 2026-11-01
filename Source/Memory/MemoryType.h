@@ -9,8 +9,8 @@
 struct FGeneratedBehavior;
 struct FExperiencedEventInfomation;
 
-typedef TMap<FGameplayTag, FGeneratedBehavior> TGeneratedCharacterBehaviors;
-typedef TMap<FGameplayTag, FExperiencedEventInfomation> TExperiencedEventInfomation_AllStage;
+typedef TMap<FGameplayTag, FGeneratedBehavior> TGeneratedCharacterBehaviorsType;
+typedef TMap<FGameplayTag, FExperiencedEventInfomation> TExperiencedEventInfomationType_AllStage;
 
 USTRUCT(BlueprintType)
 struct FContentWidgetInfo

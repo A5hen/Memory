@@ -55,11 +55,11 @@ void UMemoryEventManager::FinishEventAsyncAction(const FGameplayTag& ActorTag, E
 	}
 }
 
-void UMemoryEventManager::SendDialogueResult(const FGameplayTag& ActorTag, int32 SentenceIndex, FText Result)
+void UMemoryEventManager::SendDialogueResult(const FGameplayTag& ActorTag, int32 BranchIndex, int32 SentenceIndex, FText Result)
 {
 	if (OngoingEventDefinition)
 	{
-		OngoingEventDefinition->SendDialogueResult(ActorTag, SentenceIndex, Result);
+		OngoingEventDefinition->SendDialogueResult(ActorTag, BranchIndex, SentenceIndex, Result);
 	}
 }
 

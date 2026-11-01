@@ -161,13 +161,13 @@ bool UMemoryEventDefinition::CheckActionIsFinished(const FName& ActionName) cons
 	return false;
 }
 
-void UMemoryEventDefinition::SendDialogueResult(const FGameplayTag& ActorTag, int32 SentenceIndex, FText Result)
+void UMemoryEventDefinition::SendDialogueResult(const FGameplayTag& ActorTag, int32 BranchIndex, int32 SentenceIndex, FText Result)
 {
 	if (FTypeToAsyncAction* TypeToAsyncAction_Active = ActiveEventAsyncActions.Find(ActorTag))
 	{
 		if (UEventAsyncAction* AsyncAction_Dialogue = TypeToAsyncAction_Active->TypeToAsyncAction.FindRef(EActionType::Dialogue).Get())
 		{
-			AsyncAction_Dialogue->SendDialogueResult(SentenceIndex, Result);
+			AsyncAction_Dialogue->SendDialogueResult(BranchIndex, SentenceIndex, Result);
 		}
 	}
 }
@@ -243,13 +243,13 @@ void UMemoryEventDefinition::GenerateCharacterBehaviorCognition(const FGameplayT
 	}
 }
 
-void UMemoryEventDefinition::GenerateSelfAwareness(const FGameplayTag& AwarenessTag, bool bInGroup, int32 Index)
+void UMemoryEventDefinition::GenerateSelfAwareness(const FGameplayTag& AwarenessTag, const FName& GroupName)
 {
 	if (!PlayerController || !EventTag.IsValid())return;
 
 	if (AMemoryPlayerState* MemoryPS = PlayerController->GetPlayerState<AMemoryPlayerState>())
 	{
-		MemoryPS->GenerateSelfAwareness(AwarenessTag, EventTag, bInGroup, Index);
+		MemoryPS->GenerateSelfAwareness(AwarenessTag, EventTag, GroupName);
 	}
 }
 

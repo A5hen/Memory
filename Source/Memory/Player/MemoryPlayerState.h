@@ -6,7 +6,6 @@
 #include "GameFramework/PlayerState.h"
 #include "AbilitySystemInterface.h"//
 #include "GameplayTagContainer.h"//
-#include "Memory/Memory.h"//
 #include "Memory/MemoryType.h"//
 #include "MemoryPlayerState.generated.h"
 
@@ -43,7 +42,7 @@ struct FExperiencedEventInfo
 	TMap<FGameplayTag, int32> CausedAttributeEffects;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	TMap<FGameplayTag, FVector2D> RelativePositions;
+	TMap<FGameplayTag, FVector2D> RelativePositions;//Wait Adjust
 };
 
 USTRUCT(BlueprintType)
@@ -79,10 +78,7 @@ struct FGeneratedBehavior
 	TMap<FName, FGeneratedBehaviorCognition> DescToCognition;
 };
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnSelfAwarenessChanged, const FGameplayTag&);
-
-DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnCharacterBehaviorUpdated, const FGameplayTag&, const FGeneratedBehavior&, bool);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnCharacterBehaviorsUpdated, const TGeneratedCharacterBehaviors&);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnCharacterBehaviorsUpdated, const TGeneratedCharacterBehaviorsType&);
 
 USTRUCT(BlueprintType)
 struct FSelfAwarenessInfo
@@ -92,6 +88,18 @@ struct FSelfAwarenessInfo
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGameplayTagContainer Source;
 };
+
+USTRUCT(BlueprintType)
+struct FSelfAwarenessInfo_Group
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayTagContainer SelfAwarenessGroup;
+};
+
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnSelfAwarenessGenerated, const FGameplayTag&, const FSelfAwarenessInfo&);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnSelfAwarenessGenerated_Group, const FName&, const FSelfAwarenessInfo_Group&)
 
 /**
  * 
@@ -114,24 +122,23 @@ public:
 
 	void UpdateCharacterBehaviorCognition(const FGameplayTag& CharacterTag, const FName& BehaviorDesc, const FGameplayTag& EventTag);
 
-	void GenerateSelfAwareness(const FGameplayTag& AwarenessTag, const FGameplayTag& EventTag, bool bInGroup = false, int32 Index = -1);
+	void GenerateSelfAwareness(const FGameplayTag& AwarenessTag, const FGameplayTag& EventTag, const FName& GroupName);
 	void HandleSelfAwarenessGeneration(
 		const FGameplayTagContainer& AwarenessTags, const FAwarenessInfo* InAwarenessInfo,
 		TMap<FGameplayTag, FGeneratedBehavior>& ChangedCharacterBehaviors);
 
+	const TMap<FGameplayTag, FExperiencedEventInfomation>& GetExperiencedEventInfomation_AllStage() const;
 	const FExperiencedEventInfomation* GetExperiencedEventInfomation(FGameplayTag EventStageTag) const;
 
+	const TMap<FGameplayTag, FGeneratedBehavior>& GetGeneratedCharacterBehaviors() const;
 	const FGeneratedBehavior* GetGeneratedBehavior(const FGameplayTag& CharacterTag) const;
-	const TGeneratedCharacterBehaviors& GetGeneratedCharacterBehaviors() const;
-
-	const TExperiencedEventInfomation_AllStage& GetExperiencedEventInfomation_AllStage() const;
-
+	
 public:
 
-	FOnSelfAwarenessChanged OnSelfAwarenessChanged;
-
-	FOnCharacterBehaviorUpdated OnCharacterBehaviorUpdated;
 	FOnCharacterBehaviorsUpdated OnCharacterBehaviorsUpdated;
+
+	FOnSelfAwarenessGenerated OnSelfAwarenessGenerated;
+	FOnSelfAwarenessGenerated_Group OnSelfAwarenessGenerated_Group;
 
 protected:
 
@@ -160,7 +167,7 @@ protected:
 	TMap<FGameplayTag, FSelfAwarenessInfo> SelfAwarenessInfomation_Single;
 
 	UPROPERTY(EditDefaultsOnly, Category = "SelfAwareness_Group")
-	TMap<int32, FGameplayTagContainer>SelfAwarenessInfomation_Group;
+	TMap<FName, FSelfAwarenessInfo_Group>SelfAwarenessInfomation_Group;
 
 	UPROPERTY()
 	TObjectPtr<USelfAwarenessSet> SelfAwarenessSet;

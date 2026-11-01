@@ -14,6 +14,8 @@ class UCommonButtonBase;
 class UEventGraph;
 class UEventDetail;
 
+struct FExperiencedEventInfomation;
+
 class UGraphContentWidget;
 struct FContentWidgetInfo;
 
@@ -51,8 +53,7 @@ protected:
 	void HideDetail();
 
 	void UpdateEventMenu(const TMap<FGameplayTag, FExperiencedEventInfomation>& ExperiencedEventInfomation_AllStage);
-	void GenerateEventGraph(const FGameplayTag& EventStage, const FExperiencedEventInfomation& FExperiencedEventInfomation);
-	void UpdateEventGraph(const FGameplayTag& EventStage, const FExperiencedEventInfomation& ExperiencedEventInfomation, bool bNewStage);
+	void GenerateEventGraph(const FGameplayTag& EventStage, const FExperiencedEventInfomation& ExperiencedEventInfomation);
 
 	void UpdateEventStageSwitcher(const FGameplayTagContainer& NewEventStages);
 	void OnEventStageSelected(const FContentWidgetInfo& ContentWidgetInfo);

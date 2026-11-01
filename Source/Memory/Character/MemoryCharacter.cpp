@@ -39,7 +39,7 @@ void AMemoryCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	ShouldHideCharacter();
+	CharacterHideCheck();
 }
 
 void AMemoryCharacter::PossessedBy(AController* NewController)
@@ -56,6 +56,7 @@ void AMemoryCharacter::InitializeCharacter()
 	AbilitySystemComponent = MemoryPS->GetAbilitySystemComponent();
 	AbilitySystemComponent->InitAbilityActorInfo(MemoryPS, this);
 
+	//Initialize CharacterData
 	MemoryPS->SetPawnData();
 
 	if (AMemoryPlayerController* MemoryPC = Cast<AMemoryPlayerController>(GetController()))
@@ -74,7 +75,7 @@ void AMemoryCharacter::InitializeCharacter()
 	}
 }
 
-void AMemoryCharacter::ShouldHideCharacter()
+void AMemoryCharacter::CharacterHideCheck()
 {
 	if ((CameraComponent->GetComponentLocation() - GetActorLocation()).Size() < CameraThreshold)
 	{

@@ -11,7 +11,7 @@
 class UMemoryEventDefinition;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOutputNode);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOutputNode_Dialogue, int32, SentenceIndex, FText, Result);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOutputNode_Dialogue, int32, BranchIndex, int32, SentenceIndex, FText, Result);
 
 /**
  * 
@@ -34,8 +34,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "EventAsyncAction", 
 		meta = (DefaultToSelf = "InEventDefinition", BlueprintInternalUseOnly = "true"))
-	static UEventAsyncAction* EventAsyncAction(
-		UMemoryEventDefinition* InEventDefinition,
+	static UEventAsyncAction* EventAsyncAction(UMemoryEventDefinition* InEventDefinition,
 		FName InActionName, EActionType InActionType, FGameplayTag InActorTag, const TArray<FName>& InStartCondition);
 
 	virtual void Activate() override;
@@ -51,7 +50,7 @@ public:
 	/*Output*/
 
 	void ListenDialogue(UListenDialogueResult* InListenDialogueResult);
-	void SendDialogueResult(int32 SentenceIndex, FText Result);
+	void SendDialogueResult(int32 BranchIndex, int32 SentenceIndex, FText Result);
 
 	bool CheckStartCondition(const TArray<FName>& InFinishedActions) const;
 	bool IsFinished() const { return bFinished; }
@@ -89,8 +88,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOutputNode_Dialogue OnResultReceived;
 
-	UFUNCTION(BlueprintCallable, Category = "EventAsyncAction",
-		meta = (DefaultToSelf = "InEventDefinition", BlueprintInternalUseOnly = "true"))
+	UFUNCTION(BlueprintCallable, Category = "EventAsyncAction", meta = (BlueprintInternalUseOnly = "true"))
 	static UListenDialogueResult* ListenDialogueResult(UEventAsyncAction* InAsyncAction);
 
 	virtual void Activate() override;

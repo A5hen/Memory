@@ -3,6 +3,7 @@
 
 #include "InteractionAbility_Dialogue.h"
 #include "Memory/Interaction/InteractableTarget.h"//
+#include "Memory/GameMode/MemoryEventLibrary.h"//
 
 bool UInteractionAbility_Dialogue::SetParams(const FGameplayEventData& EventData)
 {
@@ -15,7 +16,6 @@ bool UInteractionAbility_Dialogue::SetParams(const FGameplayEventData& EventData
 			ActorTag = InteractableTarget->GetActorTag();
 			CurrentBranchIndex = InteractableTarget->GetDialogueBranchIndex();
 			NextSentenceIndex = InteractableTarget->GetDialogueSentenceIndex();
-
 
 			if (FDialogueBranch* DialogueBranch = DialogueContent->DialogueBranches.Find(CurrentBranchIndex))
 			{
@@ -62,18 +62,26 @@ bool UInteractionAbility_Dialogue::UpdateDialogueContent(FText& Sentence, TArray
 
 void UInteractionAbility_Dialogue::ReceiveSelectionResult(const FText& Option)
 {
+	UMemoryEventLibrary::SendDialogueResult(GetWorld(), ActorTag, CurrentBranchIndex, NextSentenceIndex - 1, Option);
+
 	for (const FDialogueOptionEffect& OptionEffect : DialogueContent->DialogueOptionEffects)
 	{
 		if (OptionEffect.Option.EqualTo(Option))
 		{
-			CurrentBranchIndex = OptionEffect.BranchToJump;
-			NextSentenceIndex = 0;
-
-			if (InteractableTarget)
+			//Jump to another branch
+			if (OptionEffect.BranchToJump != -1)
 			{
-				InteractableTarget->SetDialogueBranchIndex(CurrentBranchIndex);
-				InteractableTarget->SetDialogueSentenceIndex(NextSentenceIndex);
+				CurrentBranchIndex = OptionEffect.BranchToJump;
+				NextSentenceIndex = 0;
+
+				if (InteractableTarget)
+				{
+					InteractableTarget->SetDialogueBranchIndex(CurrentBranchIndex);
+					InteractableTarget->SetDialogueSentenceIndex(NextSentenceIndex);
+				}
 			}
+
+			//Other effects
 
 			return;
 		}

@@ -27,7 +27,7 @@ void UCharacterCognitionGraph::ClearGraph()
 	Super::ClearGraph();
 }
 
-FVector2D UCharacterCognitionGraph::JumptoCognitionGraphNode(FName BehaviorDec)
+FVector2D UCharacterCognitionGraph::JumptoCognitionGraphNode(const FName& BehaviorDec)
 {
 	if (UCognitionGraphNode* TargetNode = GeneratedCognitionGraphNodes.FindRef(BehaviorDec).Get())
 	{
@@ -65,13 +65,13 @@ void UCharacterCognitionGraph::UpdateCognitionGraph(const FGeneratedBehavior& Ge
 
 				NewCognitionGraphNode->UpdateNode(CharacterTag, Pair.Key, Pair.Value);
 
-				GeneratedCognitionGraphNodes.Add(Pair.Key, NewCognitionGraphNode);
+				GeneratedCognitionGraphNodes.Emplace(Pair.Key, NewCognitionGraphNode);
 			}
 		}
 	}
 }
 
-UCognitionGraphNode* UCharacterCognitionGraph::GetCognitionGraphNode(FName BehaviorDesc)
+UCognitionGraphNode* UCharacterCognitionGraph::GetCognitionGraphNode(const FName& BehaviorDesc)
 {
 	return GeneratedCognitionGraphNodes.FindRef(BehaviorDesc).Get();
 }

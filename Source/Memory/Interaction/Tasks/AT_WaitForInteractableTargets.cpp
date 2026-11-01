@@ -138,6 +138,7 @@ void UAT_WaitForInteractableTargets::TryGetInteractableTarget_LineTraceSingle()
 
     UpdateInteractableOptions(InteractableTargets);
 
+    /*Debug*/
     if (OutHitResult.bBlockingHit)
     {
         DrawDebugLine(World, ViewStart, OutHitResult.Location, FColor::Red, false, InteractionScanRate);

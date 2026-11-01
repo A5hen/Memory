@@ -33,7 +33,7 @@ protected:
 
 	void InitializeCharacter();
 
-	void ShouldHideCharacter();
+	void CharacterHideCheck();
 
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	TObjectPtr<USpringArmComponent> SpringArmComponent;

@@ -32,7 +32,7 @@ public:
 
 	/*EventDefinition*/
 	void FinishEventAsyncAction(const FGameplayTag& ActorTag, EActionType ActionType);
-	void SendDialogueResult(const FGameplayTag& ActorTag, int32 SentenceIndex, FText Result);
+	void SendDialogueResult(const FGameplayTag& ActorTag, int32 BranchIndex, int32 SentenceIndex, FText Result);
 	/*EventDefinition*/
 
 protected:

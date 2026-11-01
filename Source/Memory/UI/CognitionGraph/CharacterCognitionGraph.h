@@ -25,11 +25,11 @@ public:
 
 	virtual void ClearGraph()override;
 
-	FVector2D JumptoCognitionGraphNode(FName BehaviorDec);
+	FVector2D JumptoCognitionGraphNode(const FName& BehaviorDec);
 
 	void UpdateCognitionGraph(const FGeneratedBehavior& GeneratedBehavior);
 
-	UCognitionGraphNode* GetCognitionGraphNode(FName BehaviorDesc);
+	UCognitionGraphNode* GetCognitionGraphNode(const FName& BehaviorDesc);
 
 	const FGameplayTag& GetCharacterTag() const { return CharacterTag; }
 	void SetCharacterTag(const FGameplayTag& InCharacterTag) { CharacterTag = InCharacterTag; }

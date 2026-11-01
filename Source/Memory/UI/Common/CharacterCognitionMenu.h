@@ -12,7 +12,7 @@ class UWidgetSwitcher;
 class UCharacterCognitionGraph;
 class UBehaviorCognitionDetail;
 
-struct FGeneratedBehaviorCognition;
+struct FGeneratedBehavior;
 
 class UGraphContentWidget;
 struct FContentWidgetInfo;
@@ -52,7 +52,6 @@ protected:
 
 	void UpdateCognitionMenu(const TMap<FGameplayTag, FGeneratedBehavior>& GeneratedCharacterBehaviors);
 	void GenerateCognitionGraph(const FGameplayTag& CharacterTag, const FGeneratedBehavior& GeneratedBehavior);
-	void UpdateCognitionGraph(const FGameplayTag& CharacterTag,	const FGeneratedBehavior& GeneratedBehavior, bool bNewCharacter);
 
 	void UpdateCharacterSwitcher(const FGameplayTagContainer& NewSelectableCharacters);
 	void OnCharacterSelected(const FContentWidgetInfo& ContentWidgetInfo);

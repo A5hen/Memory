@@ -35,10 +35,9 @@ void AMemoryPlayerState::SetPawnData()
 
 void AMemoryPlayerState::UpdateCharacterBehaviorCognition(const FGameplayTag& CharacterTag, const FName& BehaviorDesc, const FGameplayTag& EventTag)
 {
-	bool bNewCharacter = false;
-
 	FGeneratedBehaviorCognition* ChangedBehaviorCognition = nullptr;
 
+	bool bNewCharacter = false;
 	FGeneratedBehavior* GeneratedBehavior = nullptr;
 	if (!GeneratedCharacterBehaviors.Contains(CharacterTag))
 	{
@@ -86,10 +85,13 @@ void AMemoryPlayerState::UpdateCharacterBehaviorCognition(const FGameplayTag& Ch
 		ChangedBehaviorCognition = &NewBehaviorCognition;
 	}
 
-	OnCharacterBehaviorUpdated.Broadcast(CharacterTag, *GeneratedBehavior, bNewCharacter);
+	TMap<FGameplayTag, FGeneratedBehavior> ChangedCharacterBehaviors;
+	ChangedCharacterBehaviors.Add(CharacterTag, *GeneratedBehavior);
+
+	OnCharacterBehaviorsUpdated.Broadcast(ChangedCharacterBehaviors);
 }
 
-void AMemoryPlayerState::GenerateSelfAwareness(const FGameplayTag& AwarenessTag, const FGameplayTag& EventTag, bool bInGroup, int32 Index)
+void AMemoryPlayerState::GenerateSelfAwareness(const FGameplayTag& AwarenessTag, const FGameplayTag& EventTag, const FName& GroupName)
 {
 	if (GetSelfAwarenessSet())return;
 
@@ -97,16 +99,21 @@ void AMemoryPlayerState::GenerateSelfAwareness(const FGameplayTag& AwarenessTag,
 	{
 		Info->Source.AddTag(EventTag);
 
-		//TODO: Broadcast SelfAwareness Changed
+		//TODO: Broadcast SelfAwareness changed
+		OnSelfAwarenessGenerated.Broadcast(AwarenessTag, *Info);
+		
 		return;
 	}
 
 	TMap<FGameplayTag, FGeneratedBehavior> ChangedCharacterBehaviors;
 
-	FSelfAwarenessInfo NewInfo;
-	NewInfo.Source.AddTag(EventTag);
+	FSelfAwarenessInfo NewSelfAwarenessInfo;
+	NewSelfAwarenessInfo.Source.AddTag(EventTag);
 
-	SelfAwarenessInfomation_Single.Emplace(AwarenessTag, NewInfo);
+	SelfAwarenessInfomation_Single.Emplace(AwarenessTag, NewSelfAwarenessInfo);
+
+	//TODO: Broadcast SelfAwareness changed
+	OnSelfAwarenessGenerated.Broadcast(AwarenessTag, NewSelfAwarenessInfo);
 
 	const FAwarenessInfo* AwarenessInfo_Single = SelfAwarenessSet->GetAwarenessInfo_Single(AwarenessTag);
 
@@ -115,24 +122,29 @@ void AMemoryPlayerState::GenerateSelfAwareness(const FGameplayTag& AwarenessTag,
 
 	HandleSelfAwarenessGeneration(TagContainer_Single, AwarenessInfo_Single, ChangedCharacterBehaviors);
 
-	if (bInGroup)
+	if (!GroupName.IsNone())
 	{
-		const FGameplayTagContainer* TagContainerkey = SelfAwarenessSet->GetTagContainerKey(Index);
-		if (TagContainerkey && !TagContainerkey->IsEmpty())
+		const FGameplayTagContainer* SelfAwarenessGroup = SelfAwarenessSet->GetSelfAwarenessGroup(GroupName);
+		if (SelfAwarenessGroup && !SelfAwarenessGroup->IsEmpty())
 		{
 			TArray<FGameplayTag> KeyArray;
 			SelfAwarenessInfomation_Single.GenerateKeyArray(KeyArray);
 
-			FGameplayTagContainer GeneratedAwareness;
-			GeneratedAwareness.AppendTags(FGameplayTagContainer::CreateFromArray(KeyArray));
+			FGameplayTagContainer GeneratedSelfAwareness;
+			GeneratedSelfAwareness.AppendTags(FGameplayTagContainer::CreateFromArray(KeyArray));
 			
-			if (GeneratedAwareness.HasAllExact(*TagContainerkey))
+			if (GeneratedSelfAwareness.HasAllExact(*SelfAwarenessGroup))
 			{
-				const FAwarenessInfo* Awareness_Group = SelfAwarenessSet->GetAwarenessInfo_Group(Index);
+				const FAwarenessInfo* Awareness_Group = SelfAwarenessSet->GetAwarenessInfo_Group(GroupName);
 
-				SelfAwarenessInfomation_Group.Emplace(Index, *TagContainerkey);
+				FSelfAwarenessInfo_Group NewSelfAwarenessInfo_Group;
+				NewSelfAwarenessInfo_Group.SelfAwarenessGroup = *SelfAwarenessGroup;
+				SelfAwarenessInfomation_Group.Emplace(GroupName, NewSelfAwarenessInfo_Group);
 
-				HandleSelfAwarenessGeneration(*TagContainerkey, Awareness_Group, ChangedCharacterBehaviors);
+				//TODO: Broadcast SelfAwareness_Group changed
+				OnSelfAwarenessGenerated_Group.Broadcast(GroupName, NewSelfAwarenessInfo_Group);
+
+				HandleSelfAwarenessGeneration(*SelfAwarenessGroup, Awareness_Group, ChangedCharacterBehaviors);
 			}
 		}
 	}
@@ -182,24 +194,24 @@ void AMemoryPlayerState::HandleSelfAwarenessGeneration(
 	}
 }
 
+const TMap<FGameplayTag, FExperiencedEventInfomation>& AMemoryPlayerState::GetExperiencedEventInfomation_AllStage() const
+{
+	return ExperiencedEventInfomation_AllStage;
+}
+
 const FExperiencedEventInfomation* AMemoryPlayerState::GetExperiencedEventInfomation(FGameplayTag EventStageTag) const
 {
 	return ExperiencedEventInfomation_AllStage.Find(EventStageTag);
 }
 
-const FGeneratedBehavior* AMemoryPlayerState::GetGeneratedBehavior(const FGameplayTag& CharacterTag) const
-{
-	return GeneratedCharacterBehaviors.Find(CharacterTag);;
-}
-
-const TGeneratedCharacterBehaviors& AMemoryPlayerState::GetGeneratedCharacterBehaviors() const
+const TMap<FGameplayTag, FGeneratedBehavior>& AMemoryPlayerState::GetGeneratedCharacterBehaviors() const
 {
 	return GeneratedCharacterBehaviors;
 }
 
-const TExperiencedEventInfomation_AllStage& AMemoryPlayerState::GetExperiencedEventInfomation_AllStage() const
+const FGeneratedBehavior* AMemoryPlayerState::GetGeneratedBehavior(const FGameplayTag& CharacterTag) const
 {
-	return ExperiencedEventInfomation_AllStage;
+	return GeneratedCharacterBehaviors.Find(CharacterTag);;
 }
 
 USelfAwarenessSet* AMemoryPlayerState::GetSelfAwarenessSet()

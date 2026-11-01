@@ -8,6 +8,7 @@
 #include "Memory/UI/CognitionGraph/CharacterCognitionGraph.h"//
 #include "Memory/UI/CognitionGraph/BehaviorCognitionDetail.h"//
 #include "Memory/UI/GraphContentWidget.h"//
+#include "Memory/Player/MemoryPlayerState.h"//
 #include "Memory/AbilitySystem/MemoryAbilitySystemLibrary.h"//
 #include "Memory/MemoryGameplayTag.h"//
 
@@ -18,7 +19,6 @@ void UCharacterCognitionMenu::SetWidgetController(UMemoryWidgetController* InWid
 	if (UCognitionGraphWidgetController* CognitionGraphWidgetController = Cast<UCognitionGraphWidgetController>(WidgetController))
 	{
 		CognitionGraphWidgetController->UpdateCognitionMenu.AddUObject(this, &UCharacterCognitionMenu::UpdateCognitionMenu);
-		CognitionGraphWidgetController->UpdateCognitionGraph.AddUObject(this, &UCharacterCognitionMenu::UpdateCognitionGraph);
 
 		CognitionGraphWidgetController->BroadcastInitialValues();
 	}
@@ -98,6 +98,8 @@ void UCharacterCognitionMenu::HandleCoreWidgetJump(const FContentWidgetInfo& Con
 	if (UCharacterCognitionGraph* TargetCognitionGraph = GeneratedCharacterCognitionGraphs.FindRef(ContentWidgetInfo.CharacterTag).Get())
 	{
 		GraphSwitcher->SetActiveWidget(TargetCognitionGraph);
+		CurrentCharacter = ContentWidgetInfo.CharacterTag;
+		CurrentCharacterCognitionGraph = TargetCognitionGraph;
 
 		TargetCognitionGraph->JumptoCognitionGraphNode(ContentWidgetInfo.BehaviorDesc);
 	}
@@ -173,18 +175,6 @@ void UCharacterCognitionMenu::GenerateCognitionGraph(const FGameplayTag& Charact
 
 	GraphSwitcher->AddChild(NewCharacterCognitonGraph);
 	GeneratedCharacterCognitionGraphs.Emplace(CharacterTag, NewCharacterCognitonGraph);
-}
-
-void UCharacterCognitionMenu::UpdateCognitionGraph(const FGameplayTag& CharacterTag, const FGeneratedBehavior& GeneratedBehavior, bool bNewCharacter)
-{
-	if (bNewCharacter)
-	{
-		GenerateCognitionGraph(CharacterTag, GeneratedBehavior);
-	}
-	else if (UCharacterCognitionGraph* CharacterCognitionGraph = GeneratedCharacterCognitionGraphs.FindRef(CharacterTag).Get())
-	{
-		CharacterCognitionGraph->UpdateCognitionGraph(GeneratedBehavior);
-	}
 }
 
 void UCharacterCognitionMenu::UpdateCharacterSwitcher(const FGameplayTagContainer& NewSelectableCharacters)

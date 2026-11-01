@@ -37,9 +37,9 @@ public:
 
 	const FAwarenessInfo* GetAwarenessInfo_Single(const FGameplayTag& AwarenessTag) const;
 
-	const FGameplayTagContainer* GetTagContainerKey(int32 Index) const;
+	const FGameplayTagContainer* GetSelfAwarenessGroup(FName GroupName) const;
 
-    const FAwarenessInfo* GetAwarenessInfo_Group(int32 Index) const;
+    const FAwarenessInfo* GetAwarenessInfo_Group(FName GroupName) const;
 
 protected:
 
@@ -47,8 +47,8 @@ protected:
 	TMap<FGameplayTag, FAwarenessInfo>AwarenessInfomation_Single;
 
     UPROPERTY(EditDefaultsOnly, Category = "TagContainerKey")
-    TMap<int32, FGameplayTagContainer> IndexToTagContainerKey;
+    TMap<FName, FGameplayTagContainer> SelfAwarenessGroup;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AwarenessInfomation_Group")
-	TMap<int32, FAwarenessInfo>AwarenessInfomation_Group;
+	TMap<FName, FAwarenessInfo>AwarenessInfomation_Group;
 };

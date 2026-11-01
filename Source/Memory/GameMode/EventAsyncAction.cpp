@@ -38,6 +38,7 @@ void UEventAsyncAction::Destory()
 	if (ListenDialogueResult)
 	{
 		ListenDialogueResult->Destory();
+		ListenDialogueResult = nullptr;
 	}
 
 	SetReadyToDestroy();
@@ -66,11 +67,11 @@ void UEventAsyncAction::ListenDialogue(UListenDialogueResult* InListenDialogueRe
 	ListenDialogueResult = InListenDialogueResult;
 }
 
-void UEventAsyncAction::SendDialogueResult(int32 SentenceIndex, FText Result)
+void UEventAsyncAction::SendDialogueResult(int32 BranchIndex, int32 SentenceIndex, FText Result)
 {
 	if (ListenDialogueResult)
 	{
-		ListenDialogueResult->OnResultReceived.Broadcast(SentenceIndex, Result);
+		ListenDialogueResult->OnResultReceived.Broadcast(BranchIndex, SentenceIndex, Result);
 	}
 }
 

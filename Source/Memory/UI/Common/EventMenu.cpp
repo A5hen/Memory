@@ -10,6 +10,7 @@
 #include "Memory/UI/EventGraph/EventGraph.h"//
 #include "Memory/UI/EventGraph/EventDetail.h"//
 #include "Memory/UI/GraphContentWidget.h"//
+#include "Memory/Player/MemoryPlayerState.h"//
 #include "Memory/AbilitySystem/MemoryAbilitySystemLibrary.h"//
 #include "Memory/MemoryGameplayTag.h"//
 
@@ -20,7 +21,6 @@ void UEventMenu::SetWidgetController(UMemoryWidgetController* InWidgetController
 	if (UEventGraphWidgetController* EventGraphWidgetController = Cast<UEventGraphWidgetController>(WidgetController))
 	{
 		EventGraphWidgetController->UpdateEventMenu.AddUObject(this, &UEventMenu::UpdateEventMenu);
-		EventGraphWidgetController->UpdateEventGraph.AddUObject(this, &UEventMenu::UpdateEventGraph);
 
 		EventGraphWidgetController->BroadcastInitialValues();
 	}
@@ -131,6 +131,8 @@ void UEventMenu::HandleCoreWidgetJump(const FContentWidgetInfo& ContentWidgetInf
 		if (Pair.Value->CheckEvent(ContentWidgetInfo.EventTag))
 		{
 			GraphSwitcher->SetActiveWidget(Pair.Value);
+			CurrentEventStage = ContentWidgetInfo.EventStage;
+			CurrentEventGraph = Pair.Value;
 
 			Pair.Value->JumptoEventGraphNode(ContentWidgetInfo.EventTag);
 
@@ -160,7 +162,7 @@ void UEventMenu::UpdateEventMenu(const TMap<FGameplayTag, FExperiencedEventInfom
 		{
 			CurrentEventStage = Pair.Key;
 		}
-
+	
 		if (UEventGraph* EventGraph = GeneratedEventGraphs.FindRef(Pair.Key).Get())
 		{
 			EventGraph->UpdateEventGraph(Pair.Value);
@@ -190,25 +192,13 @@ void UEventMenu::UpdateEventMenu(const TMap<FGameplayTag, FExperiencedEventInfom
 	UpdateEventStageSwitcher(NewEventStages);
 }
 
-void UEventMenu::GenerateEventGraph(const FGameplayTag& EventStage, const FExperiencedEventInfomation& FExperiencedEventInfomation)
+void UEventMenu::GenerateEventGraph(const FGameplayTag& EventStage, const FExperiencedEventInfomation& ExperiencedEventInfomation)
 {
 	UEventGraph* NewEventGraph = CreateWidget<UEventGraph>(this, EventGraphClass);
-	NewEventGraph->UpdateEventGraph(FExperiencedEventInfomation);
+	NewEventGraph->UpdateEventGraph(ExperiencedEventInfomation);
 
 	GraphSwitcher->AddChild(NewEventGraph);
 	GeneratedEventGraphs.Emplace(EventStage, NewEventGraph);
-}
-
-void UEventMenu::UpdateEventGraph(const FGameplayTag& EventStage, const FExperiencedEventInfomation& ExperiencedEventInfomation, bool bNewStage)
-{
-	if (bNewStage)
-	{
-		GenerateEventGraph(EventStage, ExperiencedEventInfomation);
-	}
-	else if (UEventGraph* EventGraph = GeneratedEventGraphs.FindRef(EventStage).Get())
-	{
-		EventGraph->UpdateEventGraph(ExperiencedEventInfomation);
-	}
 }
 
 void UEventMenu::UpdateEventStageSwitcher(const FGameplayTagContainer& NewEventStages)

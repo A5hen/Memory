@@ -56,15 +56,9 @@ void UEventGraph::UpdateEventGraph(const FExperiencedEventInfomation& Experience
 	{
 		if(const FMemoryEventInfo* EventInfo = EventSet->GetEventInfoByEventTag(Pair.Key))
 		{
-			TArray<FVector2D> RelativePositionsToConnect;
-			TMap<FVector2D, TArray<FVector2D>> PositionsToConnect;
+			TMap<FVector2D, FTargetPoint> StartToEnd;
 
 			UpdateEventGraphNode(Pair.Key, Pair.Value, GeneratedEventGraphNodes.Contains(Pair.Key), EventInfo->PositionOnGraph);
-			
-			for(const auto& RelativePositionPair : Pair.Value.RelativePositions)
-			{
-				RelativePositionsToConnect.Add(RelativePositionPair.Value);
-			}
 
 			const FGameplayTagContainer& ExperiencedPreEvents = ExperiencedEvents.FilterExact(EventInfo->PreEventTags);
 			for (const FGameplayTag& PreEventTag : ExperiencedPreEvents)
@@ -79,13 +73,14 @@ void UEventGraph::UpdateEventGraph(const FExperiencedEventInfomation& Experience
 						EventSet->GenerateEventConnectInfo(*PreEventConnectType,
 							EventInfo->PositionOnGraph, PreEventInfo->PositionOnGraph, EventInfo->Size, PreEventInfo->Size, Start, End);
 
-						TArray<FVector2D>& Array_End = PositionsToConnect.FindOrAdd(Start);
-						Array_End.Add(End);
+						FTargetPoint& TargetPoint = StartToEnd.FindOrAdd(Start);
+						TargetPoint.Position = End;
+						TargetPoint.WidgetPosition = PreEventInfo->PositionOnGraph;
 					}
 				}
 			}
 
-			CurveWidget->UpdateCurveSpawnInfo(Pair.Key, EventInfo->PositionOnGraph, RelativePositionsToConnect, PositionsToConnect);
+			CurveWidget->UpdateCurveSpawnInfo(Pair.Key, EventInfo->PositionOnGraph, StartToEnd);
 		}
 	}
 }
@@ -107,7 +102,7 @@ void UEventGraph::UpdateEventGraphNode(const FGameplayTag& EventTag, const FExpe
 
 		NewEventGraphNode->UpdateNode(EventTag, ExperiencedEventInfo);
 
-		GeneratedEventGraphNodes.Add(EventTag, NewEventGraphNode);
+		GeneratedEventGraphNodes.Emplace(EventTag, NewEventGraphNode);
 	}
 	else
 	{
