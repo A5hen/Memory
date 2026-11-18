@@ -10,6 +10,7 @@
 class UCognitionGraphNode;
 
 struct FGeneratedBehavior;
+struct FGeneratedBehaviorCognition;
 
 class UCharacterCognitionSet;
 
@@ -25,16 +26,16 @@ public:
 
 	virtual void ClearGraph()override;
 
-	FVector2D JumptoCognitionGraphNode(const FName& BehaviorDec);
+	FVector2D JumpToCognitionGraphNode(const FName& BehaviorDec);
 
 	void UpdateCognitionGraph(const FGeneratedBehavior& GeneratedBehavior);
-
-	UCognitionGraphNode* GetCognitionGraphNode(const FName& BehaviorDesc);
 
 	const FGameplayTag& GetCharacterTag() const { return CharacterTag; }
 	void SetCharacterTag(const FGameplayTag& InCharacterTag) { CharacterTag = InCharacterTag; }
 
 protected:
+
+	void UpdateCognitionGraphNode(const FName& InBehaviorDesc, const FGeneratedBehaviorCognition& GeneratedBehaviorCognition);
 
 	UCharacterCognitionSet* GetCharacterCognitionSet();
 	

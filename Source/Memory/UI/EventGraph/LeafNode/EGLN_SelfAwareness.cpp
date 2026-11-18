@@ -22,7 +22,7 @@ void UEGLN_SelfAwareness::UpdateLeafNode(const FGameplayTag& EventTag, const FGa
 		Overview_SelfAwareness->ContentWidgetInfo.EventTag = EventTag;
 		Overview_SelfAwareness->ContentWidgetInfo.SelfAwarenessTag = SelfAwareness;
 
-		Overview_SelfAwareness->DisplayContent();
+		Overview_SelfAwareness->UpdateContent();
 
 		ScrollBox_SelfAwareness->AddChild(Overview_SelfAwareness);
 	}

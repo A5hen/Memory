@@ -16,21 +16,12 @@ class USelfAwarenessSet;
 struct FAwarenessInfo;
 
 USTRUCT(BlueprintType)
-struct FNameArray
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FName> Names;
-};
-
-USTRUCT(BlueprintType)
 struct FExperiencedEventInfo
 {
 	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	TMap<FGameplayTag, FNameArray> GeneratedCharacterBehavior;
+	TMap<FGameplayTag, FNameArray> GeneratedCharacterBehaviors;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FGameplayTagContainer GeneratedSelfAwareness;

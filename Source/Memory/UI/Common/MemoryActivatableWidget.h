@@ -36,10 +36,6 @@ public:
 	virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override;
 	/*End of CommonActivatableWidget Interface*/
 
-	/*CommonUIInterface Interface*/
-	virtual void SetOwnerActorTag(const FGameplayTag& ActorTag) override;
-	/*End of CommonUIInterface Interface*/
-
 	virtual void SetWidgetController(UMemoryWidgetController* InWidgetController);
 
 	const FGameplayTag& GetWidgetTag() const;
@@ -49,10 +45,8 @@ protected:
 	virtual void NativeOnActivated() override;
 	virtual void NativeOnDeactivated() override;
 
-	UMemoryActivatableWidget* PushCoreWidget(const FGameplayTag& InWidgetTag, const FGameplayTag& LayerTag);
-
-	void JumpToCoreWidget();
-	virtual void HandleCoreWidgetJump(const FContentWidgetInfo& ContentWidgetInfo);
+	void SwitchToCoreWidget();
+	virtual void HandleCoreWidgetSwitch(const FContentWidgetInfo& ContentWidgetInfo);
 
 	virtual void OnContentSelected(const FContentWidgetInfo& ContentWidgetInfo);
 	void ReactContentSelection();
@@ -70,9 +64,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "WidgetTag")
 	FGameplayTag WidgetTag;
-
-	UPROPERTY(BlueprintReadOnly, Category = "OwnerActorTag")
-	FGameplayTag OwnerActorTag;
 
 	/*ReactContentSelection*/
 	bool bReactContentSelection = false;

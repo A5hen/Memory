@@ -109,7 +109,7 @@ void AInteractableCharacter::FacingPlayer()
 
 void AInteractableCharacter::GatherInteractionOptions(const FInteractionQuery& InteractQuery, FInteractionOptionBuilder& OptionBuilder)
 {
-	if (IsInteractable())
+	if (bInteractable)
 	{
 		for (FInteractionOption& Option : InteractionOptions)
 		{
@@ -155,11 +155,6 @@ void AInteractableCharacter::DisplayOption(int32 OptionIndex, bool bDisplay)
 
 void AInteractableCharacter::SelectOption(int32 OptionIndex, bool bSelect)
 {
-}
-
-bool AInteractableCharacter::IsInteractable() const
-{
-	return bInteractable;
 }
 
 FGameplayTag AInteractableCharacter::GetActorTag() const

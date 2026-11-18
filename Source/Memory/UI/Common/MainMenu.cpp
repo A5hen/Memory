@@ -34,12 +34,12 @@ void UMainMenu::EventMenuButtonClicked()
 {
 	const FMemoryGameplayTags& GameplayTags = FMemoryGameplayTags::Get();
 
-	PushCoreWidget(GameplayTags.Widget_EventMenu, GameplayTags.Layer_Menu);
+	//PushCoreWidget(GameplayTags.Widget_EventMenu, GameplayTags.Layer_Menu);
 }
 
 void UMainMenu::CharacterCognitionMenuButtonClicked()
 {
 	const FMemoryGameplayTags& GameplayTags = FMemoryGameplayTags::Get();
 
-	PushCoreWidget(GameplayTags.Widget_CharacterCognitionMenu, GameplayTags.Layer_Menu);
+	//PushCoreWidget(GameplayTags.Widget_CharacterCognitionMenu, GameplayTags.Layer_Menu);
 }

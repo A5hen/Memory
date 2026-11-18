@@ -36,35 +36,19 @@ public:
 	UPrimaryGameLayout* GetRootLayout() const;
 
 	bool MakeWidgetControllerParams(FWidgetControllerParams& OutParams);
-	UMemoryWidgetController* GetBaseWidgetController();
 	UMemoryWidgetController* GetOverlayWidgetController();
 	UMemoryWidgetController* GetEventGraphWidgetController();
 	UMemoryWidgetController* GetCognitionGraphWidgetController();
-
-	const TSubclassOf<UMemoryActivatableWidget>* GetCoreWidgetClass(const FGameplayTag& WidgetTag) const;
-
-	void PushMainMenu();
 	
 protected:
 
+	/*RootLayout*/
 	UPROPERTY(EditDefaultsOnly, Category = "RootLayout")
 	TSubclassOf<UPrimaryGameLayout> RootLayoutClass;
 
 	UPROPERTY()
 	TObjectPtr<UPrimaryGameLayout> RootLayout;
-
-	/*MainMenu*/
-	UPROPERTY(EditDefaultsOnly, Category = "MainMenu")
-	TSubclassOf<UMemoryActivatableWidget> MainMenuClass;
-	/*MainMenu*/
-
-	/*BaseWidgetController*/
-	UPROPERTY(EditDefaultsOnly, Category = "BaseWidgetController")
-	TSubclassOf<UMemoryWidgetController> BaseWidgetControllerClass;
-
-	UPROPERTY()
-	TObjectPtr<UMemoryWidgetController> BaseWidgetController;
-	/*BaseWidgetController*/
+	/*RootLayout*/
 
 	/*Overlay*/
 	UPROPERTY(EditDefaultsOnly, Category = "Overlay")
@@ -95,7 +79,4 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UCognitionGraphWidgetController> CognitionGraphWidgetController;
 	/*CognitionGraph*/
-
-	UPROPERTY(EditDefaultsOnly, Category = "CoreWidget")
-	TMap<FGameplayTag, TSubclassOf<UMemoryActivatableWidget>> CoreWidgetClasses;
 };

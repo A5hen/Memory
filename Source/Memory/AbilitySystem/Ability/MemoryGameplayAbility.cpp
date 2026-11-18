@@ -13,8 +13,10 @@ void UMemoryGameplayAbility::TryActivateAbilityOnSpawn(const FGameplayAbilityAct
 	if (ActorInfo && !Spec.IsActive() && ActivationPolicy == EMemoryAbilityActivationPolicy::OnSpawn)
 	{
 		UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get();
-	
-		if (ASC)ASC->TryActivateAbility(Spec.Handle);
+		if (ASC)
+		{
+			ASC->TryActivateAbility(Spec.Handle);
+		}
 	}
 }
 

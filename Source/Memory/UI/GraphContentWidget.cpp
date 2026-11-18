@@ -6,9 +6,9 @@
 #include "Memory/AbilitySystem/MemoryAbilitySystemLibrary.h"//
 #include "Memory/UI/WidgetController/MemoryWidgetController.h"//
 
-void UGraphContentWidget::DisplayContent()
+void UGraphContentWidget::UpdateContent()
 {
-	DisplayContentDelegate.Broadcast(ContentWidgetInfo);
+	UpdateContentDelegate.Broadcast(ContentWidgetInfo);
 }
 
 FReply UGraphContentWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)

@@ -101,8 +101,6 @@ public:
 
 	virtual void DisplayOption(int32 OptionIndex, bool bDisplay) {}
 	virtual void SelectOption(int32 OptionIndex, bool bSelect) {}
-
-	virtual bool IsInteractable() const { return true; }
 	/*InteractionOption*/
 
 	virtual FGameplayTag GetActorTag() const { return FGameplayTag(); }

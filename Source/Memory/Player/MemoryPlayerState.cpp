@@ -99,7 +99,6 @@ void AMemoryPlayerState::GenerateSelfAwareness(const FGameplayTag& AwarenessTag,
 	{
 		Info->Source.AddTag(EventTag);
 
-		//TODO: Broadcast SelfAwareness changed
 		OnSelfAwarenessGenerated.Broadcast(AwarenessTag, *Info);
 		
 		return;
@@ -112,7 +111,6 @@ void AMemoryPlayerState::GenerateSelfAwareness(const FGameplayTag& AwarenessTag,
 
 	SelfAwarenessInfomation_Single.Emplace(AwarenessTag, NewSelfAwarenessInfo);
 
-	//TODO: Broadcast SelfAwareness changed
 	OnSelfAwarenessGenerated.Broadcast(AwarenessTag, NewSelfAwarenessInfo);
 
 	const FAwarenessInfo* AwarenessInfo_Single = SelfAwarenessSet->GetAwarenessInfo_Single(AwarenessTag);
@@ -141,7 +139,6 @@ void AMemoryPlayerState::GenerateSelfAwareness(const FGameplayTag& AwarenessTag,
 				NewSelfAwarenessInfo_Group.SelfAwarenessGroup = *SelfAwarenessGroup;
 				SelfAwarenessInfomation_Group.Emplace(GroupName, NewSelfAwarenessInfo_Group);
 
-				//TODO: Broadcast SelfAwareness_Group changed
 				OnSelfAwarenessGenerated_Group.Broadcast(GroupName, NewSelfAwarenessInfo_Group);
 
 				HandleSelfAwarenessGeneration(*SelfAwarenessGroup, Awareness_Group, ChangedCharacterBehaviors);

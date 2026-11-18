@@ -27,19 +27,17 @@ public:
 	virtual void ClearGraph() override;
 
 	bool CheckEvent(const FGameplayTag& EventTag) const;
-	FVector2D JumptoEventGraphNode(const FGameplayTag& EventTag);
+	FVector2D JumpToEventGraphNode(const FGameplayTag& EventTag);
 
 	void UpdateEventGraph(const FExperiencedEventInfomation& ExperiencedEventInfomation);
 
 protected:
 
-	void UpdateEventGraphNode(const FGameplayTag& EventTag, const FExperiencedEventInfo& ExperiencedEventInfo, bool bGenerated = false, const FVector2D& PositionOnGraph = FVector2D());
+	void UpdateEventGraphNode(const FGameplayTag& EventTag, const FExperiencedEventInfo& ExperiencedEventInfo, const FVector2D& PositionOnGraph = FVector2D());
 
 	UMemoryEventSet* GetEventSet();
 
 protected:
-
-	FGameplayTag EventStage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Node")
 	TSubclassOf<UEventGraphNode> EventGraphNodeClass;

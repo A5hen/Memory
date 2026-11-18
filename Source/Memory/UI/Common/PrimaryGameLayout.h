@@ -10,11 +10,10 @@
 #include "CommonActivatableWidget.h"//
 #include "Widgets/CommonActivatableWidgetContainer.h"//
 #include "Memory/UI/Common/CommonUIExtension.h"//
-#include "Memory/MemoryGameplayTag.h"//
 #include "PrimaryGameLayout.generated.h"
 
 class UCommonActivatableWidgetContainerBase;
-class UMemoryActivatableWidget;
+class UCommonActivatableWidgetSwitcher;
 
 enum class EAsyncWidgetLayerState : uint8
 {
@@ -33,14 +32,14 @@ class MEMORY_API UPrimaryGameLayout : public UCommonUserWidget
 
 public:
 
-	template <typename ActivatableWidgetT = UMemoryActivatableWidget>
-	TSharedPtr<FStreamableHandle> PushWidgetToLayerStackAsync(FGameplayTag LayerTag, bool bSuspendInputUntilComplete, TSoftClassPtr<UMemoryActivatableWidget> ActivatableWidgetClass)
+	template <typename ActivatableWidgetT = UCommonActivatableWidget>
+	TSharedPtr<FStreamableHandle> PushWidgetToLayerStackAsync(FGameplayTag LayerTag, bool bSuspendInputUntilComplete, TSoftClassPtr<UCommonActivatableWidget> ActivatableWidgetClass)
 	{
 		return PushWidgetToLayerStackAsync<ActivatableWidgetT>(LayerTag, bSuspendInputUntilComplete, ActivatableWidgetClass, [](EAsyncWidgetLayerState, ActivatableWidgetT*) {});
 	}
 
-	template <typename ActivatableWidgetT = UMemoryActivatableWidget>
-	TSharedPtr<FStreamableHandle> PushWidgetToLayerStackAsync(FGameplayTag LayerTag, bool bSuspendInputUntilComplete, TSoftClassPtr<UMemoryActivatableWidget> ActivatableWidgetClass, TFunction<void(EAsyncWidgetLayerState, ActivatableWidgetT*)> StateFunc)
+	template <typename ActivatableWidgetT = UCommonActivatableWidget>
+	TSharedPtr<FStreamableHandle> PushWidgetToLayerStackAsync(FGameplayTag LayerTag, bool bSuspendInputUntilComplete, TSoftClassPtr<UCommonActivatableWidget> ActivatableWidgetClass, TFunction<void(EAsyncWidgetLayerState, ActivatableWidgetT*)> StateFunc)
 	{
 		static FName NAME_PushingWidgetToLayer("PushingWidgetToLayer");
 		const FName SuspendInputToken = bSuspendInputUntilComplete ? UCommonUIExtension::SuspendInputForPlayer(GetOwningPlayer(), NAME_PushingWidgetToLayer) : NAME_None;
@@ -74,13 +73,13 @@ public:
 		return StreamingHandle;
 	}
 
-	template <typename ActivatableWidgetT = UMemoryActivatableWidget>
+	template <typename ActivatableWidgetT = UCommonActivatableWidget>
 	ActivatableWidgetT* PushWidgetToLayerStack(FGameplayTag LayerTag, UClass* ActivatableWidgetClass)
 	{
 		return PushWidgetToLayerStack<ActivatableWidgetT>(LayerTag, ActivatableWidgetClass, [](ActivatableWidgetT&) {});
 	}
 
-	template <typename ActivatableWidgetT = UMemoryActivatableWidget>
+	template <typename ActivatableWidgetT = UCommonActivatableWidget>
 	ActivatableWidgetT* PushWidgetToLayerStack(FGameplayTag LayerTag, UClass* ActivatableWidgetClass, TFunctionRef<void(ActivatableWidgetT&)> InstanceInitFunc)
 	{
 		if (UCommonActivatableWidgetContainerBase* Layer = GetLayerWidget(LayerTag))
@@ -91,20 +90,11 @@ public:
 		return nullptr;
 	}
 
-	template <typename ActivatableWidgetT = UCommonActivatableWidget>
-	TArray<ActivatableWidgetT*> GetWidgetsInLayer(FGameplayTag LayerTag)
-	{
-		if (UCommonActivatableWidgetContainerBase* Layer = GetLayerWidget(LayerTag))
-		{
-			return Layer->GetWidgetList();
-		}
-
-		return TArray<ActivatableWidgetT*>();
-	}
-
-	void FindAndRemoveWidgetFromLayer(FGameplayTag LayerTag, UMemoryActivatableWidget* ActivatableWidget);
+	void FindAndRemoveWidgetFromLayer(FGameplayTag LayerTag, UCommonActivatableWidget* ActivatableWidget);
 
 	UCommonActivatableWidgetContainerBase* GetLayerWidget(FGameplayTag LayerTag);
+
+	UWidget* SwitchToCoreWidget(const FGameplayTag& CoreWidgetTag);
 
 protected:
 
@@ -114,6 +104,9 @@ protected:
 	void OnWidgetStackTransitioning(UCommonActivatableWidgetContainerBase* Widget, bool bIsTransitioning);
 
 private:
+
+	UPROPERTY(meta = (BindWidget))
+	UCommonActivatableWidgetSwitcher* CoreWidgetSwitcher;
 
 	TArray<FName> SuspendInputTokens;
 

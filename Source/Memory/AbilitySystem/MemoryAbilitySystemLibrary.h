@@ -26,9 +26,6 @@ public:
 	static void GetMemoryHUD(const UObject* WorldContextObject, AMemoryHUD*& OutHUD);
 
 	UFUNCTION(BlueprintPure, Category = "MemoryAbilitySystemLibrary", meta = (DefaultToSelf = "WorldContextObject"))
-	static UMemoryWidgetController* GetBaseWidgetController(const UObject* WorldContextObject);
-
-	UFUNCTION(BlueprintPure, Category = "MemoryAbilitySystemLibrary", meta = (DefaultToSelf = "WorldContextObject"))
 	static UMemoryWidgetController* GetOverlayWidgetController(const UObject* WorldContextObject);
 
 	UFUNCTION(BlueprintPure, Category = "MemoryAbilitySystemLibrary", meta = (DefaultToSelf = "WorldContextObject"))

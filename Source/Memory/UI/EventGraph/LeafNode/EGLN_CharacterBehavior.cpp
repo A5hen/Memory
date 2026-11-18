@@ -22,7 +22,7 @@ void UEGLN_CharacterBehavior::UpdateLeafNode(const FGameplayTag& EventTag, const
 		Overview_AllCharacter->ContentWidgetInfo.CharacterTag = FGameplayTag();
 
 		Overview_AllCharacter->OnSelected.AddUObject(this, &UEGLN_CharacterBehavior::OnCharacterSelected);
-		Overview_AllCharacter->DisplayContent();
+		Overview_AllCharacter->UpdateContent();
 
 		Overview_AllCharacter->NotifyController(false);
 
@@ -31,7 +31,7 @@ void UEGLN_CharacterBehavior::UpdateLeafNode(const FGameplayTag& EventTag, const
 
 	for (const auto& Pair : CharacterBehavior)
 	{
-		if (!GeneratedCharacterBehavior.Contains(Pair.Key))
+		if (!GeneratedCharacterBehaviors_Overview.Contains(Pair.Key))
 		{
 			UGraphContentWidget* Overview_Character = CreateWidget<UGraphContentWidget>(this, OverviewClass_Character);
 			Overview_Character->ContentWidgetInfo.OwnerWidgetTag = GameplayTags.Widget_EventMenu;
@@ -41,16 +41,16 @@ void UEGLN_CharacterBehavior::UpdateLeafNode(const FGameplayTag& EventTag, const
 
 			Overview_Character->OnSelected.AddUObject(this, &UEGLN_CharacterBehavior::OnCharacterSelected);
 
-			Overview_Character->DisplayContent();
+			Overview_Character->UpdateContent();
 
 			ScrollBox_Character->AddChild(Overview_Character);
 
-			GeneratedCharacterBehavior.Add(Pair.Key);
+			GeneratedCharacterBehaviors_Overview.Add(Pair.Key);
 		}
 
 		int32 Index = 0;
 
-		TArray<FName>& BehaviorDescs = GeneratedCharacterBehavior[Pair.Key];
+		TArray<FName>& BehaviorDescs = GeneratedCharacterBehaviors_Overview[Pair.Key];
 
 		for(const FName& BehaviorDesc: Pair.Value)
 		{
@@ -67,7 +67,7 @@ void UEGLN_CharacterBehavior::UpdateLeafNode(const FGameplayTag& EventTag, const
 				Overview_Behavior->ContentWidgetInfo.CharacterTag = Pair.Key;
 				Overview_Behavior->ContentWidgetInfo.BehaviorDesc = BehaviorDesc;
 
-				Overview_Behavior->DisplayContent();
+				Overview_Behavior->UpdateContent();
 
 				ScrollBox_CharacterBehavior->InsertChildAt(Index, Overview_Behavior);
 				++Index;

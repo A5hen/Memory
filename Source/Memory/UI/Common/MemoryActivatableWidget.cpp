@@ -32,11 +32,6 @@ const FGameplayTag& UMemoryActivatableWidget::GetWidgetTag() const
 	return WidgetTag;
 }
 
-void UMemoryActivatableWidget::SetOwnerActorTag(const FGameplayTag& ActorTag)
-{
-	OwnerActorTag = ActorTag;
-}
-
 void UMemoryActivatableWidget::SetWidgetController(UMemoryWidgetController* InWidgetController)
 {
 	WidgetController = InWidgetController;
@@ -49,8 +44,6 @@ void UMemoryActivatableWidget::NativeOnActivated()
 
 void UMemoryActivatableWidget::NativeOnDeactivated()
 {
-	OwnerActorTag = FGameplayTag();
-
 	if (bReactContentSelection && WidgetController)
 	{
 		bReactContentSelection = false;
@@ -61,20 +54,7 @@ void UMemoryActivatableWidget::NativeOnDeactivated()
 	Super::NativeOnDeactivated();
 }
 
-UMemoryActivatableWidget* UMemoryActivatableWidget::PushCoreWidget(const FGameplayTag& InWidgetTag, const FGameplayTag& LayerTag)
-{
-	if (!InWidgetTag.IsValid() || !LayerTag.IsValid())return nullptr;
-
-	if (WidgetController)
-	{
-		UMemoryActivatableWidget* CoreWidget = UCommonUIExtension::PushCoreWidgetToLayerForPlayer(WidgetController->PlayerController, InWidgetTag, LayerTag);
-		return CoreWidget;
-	}
-
-	return nullptr;
-}
-
-void UMemoryActivatableWidget::JumpToCoreWidget()
+void UMemoryActivatableWidget::SwitchToCoreWidget()
 {
 	if (!bReactContentSelection)return;
 
@@ -98,11 +78,17 @@ void UMemoryActivatableWidget::JumpToCoreWidget()
 		TargetCoreWidgetTag = GameplayTags.Widget_SelfAwarenessMenu;
 	}
 	
-	UMemoryActivatableWidget* TargeCoretWidget = PushCoreWidget(TargetCoreWidgetTag, GameplayTags.Layer_Menu);
-	TargeCoretWidget->HandleCoreWidgetJump(SelectedContentWidgetInfo);
+	if (WidgetController->PlayerController)
+	{
+		UWidget* Widget = UCommonUIExtension::SwitchToCoreWidgetForPlayer(WidgetController->PlayerController, TargetCoreWidgetTag);
+		if (UMemoryActivatableWidget* TargeCoretWidget = Cast<UMemoryActivatableWidget>(Widget))
+		{
+			TargeCoretWidget->HandleCoreWidgetSwitch(SelectedContentWidgetInfo);
+		}
+	}
 }
 
-void UMemoryActivatableWidget::HandleCoreWidgetJump(const FContentWidgetInfo& ContentWidgetInfo)
+void UMemoryActivatableWidget::HandleCoreWidgetSwitch(const FContentWidgetInfo& ContentWidgetInfo)
 {
 }
 

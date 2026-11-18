@@ -41,7 +41,7 @@ void UEventMenu::NativeOnInitialized()
 	RegisterUIActionBinding(Args_Pressed);
 	RegisterUIActionBinding(Args_Released);
 
-	CoreWidgetJumpButton->OnClicked().AddUObject(this, &UEventMenu::JumpToCoreWidget);
+	CoreWidgetJumpButton->OnClicked().AddUObject(this, &UEventMenu::SwitchToCoreWidget);
 }
 
 void UEventMenu::NativeOnActivated()
@@ -124,8 +124,10 @@ FReply UEventMenu::NativeOnMouseWheel(const FGeometry& InGeometry, const FPointe
 	return FReply::Handled();
 }
 
-void UEventMenu::HandleCoreWidgetJump(const FContentWidgetInfo& ContentWidgetInfo)
+void UEventMenu::HandleCoreWidgetSwitch(const FContentWidgetInfo& ContentWidgetInfo)
 {
+	if (!ContentWidgetInfo.EventTag.IsValid()) return;
+
 	for (auto& Pair : GeneratedEventGraphs)
 	{
 		if (Pair.Value->CheckEvent(ContentWidgetInfo.EventTag))
@@ -134,7 +136,7 @@ void UEventMenu::HandleCoreWidgetJump(const FContentWidgetInfo& ContentWidgetInf
 			CurrentEventStage = ContentWidgetInfo.EventStage;
 			CurrentEventGraph = Pair.Value;
 
-			Pair.Value->JumptoEventGraphNode(ContentWidgetInfo.EventTag);
+			Pair.Value->JumpToEventGraphNode(ContentWidgetInfo.EventTag);
 
 			return;
 		}
@@ -217,7 +219,7 @@ void UEventMenu::UpdateEventStageSwitcher(const FGameplayTagContainer& NewEventS
 		Overview_Event->OnSelected.AddUObject(this, &UEventMenu::OnEventStageSelected);
 
 		Overview_Event->NotifyController(false);
-		Overview_Event->DisplayContent();
+		Overview_Event->UpdateContent();
 
 		ScrollBox_EventStage->AddChild(Overview_Event);
 		SelectableEventStages.AddTag(EventStage);

@@ -62,7 +62,6 @@ void AMemoryPlayerController::SetupInputComponent()
 
     MemoryInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMemoryPlayerController::Move);
     MemoryInputComponent->BindAction(CameraMoveAction, ETriggerEvent::Triggered, this, &AMemoryPlayerController::CameraMove);
-    MemoryInputComponent->BindAction(OpenMainMenuAction, ETriggerEvent::Started, this, &AMemoryPlayerController::OpenMainMenu);
 
     MemoryInputComponent->BindAbilityActions(InputConfig, this,
         &AMemoryPlayerController::AbilityInputTagPressed,
@@ -99,21 +98,6 @@ void AMemoryPlayerController::CameraMove(const FInputActionValue& InputActionVal
     {
         ControlledPawn->AddControllerYawInput(InputAxisVector.X);
         ControlledPawn->AddControllerPitchInput(-InputAxisVector.Y);
-    }
-}
-
-void AMemoryPlayerController::OpenMainMenu(const FInputActionValue& InputActionValue)
-{
-    const FMemoryGameplayTags& GameplayTag = FMemoryGameplayTags::Get();
-
-    if (GetMemoryASC())
-    {
-        if (MemoryASC->HasMatchingGameplayTag(GameplayTag.State_Interacting))return;
-    }
-
-    if (AMemoryHUD* MemoryHUD = Cast<AMemoryHUD>(GetHUD()))
-    {
-        MemoryHUD->PushMainMenu();
     }
 }
 

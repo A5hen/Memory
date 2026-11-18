@@ -24,12 +24,6 @@ void UCharacterCognitionMenu::SetWidgetController(UMemoryWidgetController* InWid
 	}
 }
 
-void UCharacterCognitionMenu::TestJumpFunction()
-{
-	const FMemoryGameplayTags& GameplayTags = FMemoryGameplayTags::Get();
-	PushCoreWidget(GameplayTags.Widget_EventMenu, GameplayTags.Layer_Menu);
-}
-
 void UCharacterCognitionMenu::NativeOnActivated()
 {
 	if (!WidgetController)
@@ -93,15 +87,17 @@ FReply UCharacterCognitionMenu::NativeOnMouseMove(const FGeometry& InGeometry, c
 	return FReply::Handled();
 }
 
-void UCharacterCognitionMenu::HandleCoreWidgetJump(const FContentWidgetInfo& ContentWidgetInfo)
+void UCharacterCognitionMenu::HandleCoreWidgetSwitch(const FContentWidgetInfo& ContentWidgetInfo)
 {
+	if (!ContentWidgetInfo.CharacterTag.IsValid()) return;
+
 	if (UCharacterCognitionGraph* TargetCognitionGraph = GeneratedCharacterCognitionGraphs.FindRef(ContentWidgetInfo.CharacterTag).Get())
 	{
 		GraphSwitcher->SetActiveWidget(TargetCognitionGraph);
 		CurrentCharacter = ContentWidgetInfo.CharacterTag;
 		CurrentCharacterCognitionGraph = TargetCognitionGraph;
 
-		TargetCognitionGraph->JumptoCognitionGraphNode(ContentWidgetInfo.BehaviorDesc);
+		TargetCognitionGraph->JumpToCognitionGraphNode(ContentWidgetInfo.BehaviorDesc);
 	}
 }
 
@@ -117,7 +113,8 @@ void UCharacterCognitionMenu::OnContentSelected(const FContentWidgetInfo& Conten
 
 		if (UCognitionGraphWidgetController* CognitionGraphWidgetController = Cast<UCognitionGraphWidgetController>(WidgetController))
 		{
-			if (const FGeneratedBehaviorCognition* GenerateBehaviordCognition = CognitionGraphWidgetController->GetGeneratedBehaviorCognition(ContentWidgetInfo.CharacterTag, ContentWidgetInfo.BehaviorDesc))
+			if (const FGeneratedBehaviorCognition* GenerateBehaviordCognition = CognitionGraphWidgetController->GetGeneratedBehaviorCognition(
+				ContentWidgetInfo.CharacterTag, ContentWidgetInfo.BehaviorDesc))
 			{
 				BehaviorCognitionDetail->UpdateDetail(ContentWidgetInfo.CharacterTag, ContentWidgetInfo.BehaviorDesc, *GenerateBehaviordCognition);
 			}
@@ -193,7 +190,7 @@ void UCharacterCognitionMenu::UpdateCharacterSwitcher(const FGameplayTagContaine
 		Overview_Character->OnSelected.AddUObject(this, &UCharacterCognitionMenu::OnCharacterSelected);
 
 		Overview_Character->NotifyController(false);
-		Overview_Character->DisplayContent();
+		Overview_Character->UpdateContent();
 
 		ScrollBox_Character->AddChild(Overview_Character);
 		SelectableCharacters.AddTag(CharacterTag);

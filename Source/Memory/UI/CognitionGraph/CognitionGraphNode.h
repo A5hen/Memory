@@ -38,7 +38,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Content")
 	TSubclassOf<UGraphContentWidget> ContentClass_CharacterBehavior;
 
-	FGameplayTagContainer SourceEvnetTags;
+	UPROPERTY()
+	TMap<FGameplayTag, TObjectPtr<UGraphContentWidget>> GeneratedCharacterBehaviors;
 
 	int32 SwitcherIndex = 0;
 };

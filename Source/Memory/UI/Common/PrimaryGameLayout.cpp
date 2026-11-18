@@ -2,10 +2,11 @@
 
 
 #include "PrimaryGameLayout.h"
+#include "CommonActivatableWidgetSwitcher.h"//
 #include "Memory/UI/Common/CommonUIExtension.h"//
-#include "Memory/UI/Common/MemoryActivatableWidget.h"//
+#include "Memory/MemoryGameplayTag.h"//
 
-void UPrimaryGameLayout::FindAndRemoveWidgetFromLayer(FGameplayTag LayerTag, UMemoryActivatableWidget* ActivatableWidget)
+void UPrimaryGameLayout::FindAndRemoveWidgetFromLayer(FGameplayTag LayerTag, UCommonActivatableWidget* ActivatableWidget)
 {
 	if (UCommonActivatableWidgetContainerBase* Layer = GetLayerWidget(LayerTag))
 	{
@@ -16,6 +17,28 @@ void UPrimaryGameLayout::FindAndRemoveWidgetFromLayer(FGameplayTag LayerTag, UMe
 UCommonActivatableWidgetContainerBase* UPrimaryGameLayout::GetLayerWidget(FGameplayTag LayerTag)
 {
 	return *Layers.Find(LayerTag);
+}
+
+UWidget* UPrimaryGameLayout::SwitchToCoreWidget(const FGameplayTag& CoreWidgetTag)
+{
+	const FMemoryGameplayTags& GameplayTags = FMemoryGameplayTags::Get();
+
+	if (CoreWidgetTag.MatchesTagExact(GameplayTags.Widget_EventMenu))
+	{
+		CoreWidgetSwitcher->SetActiveWidgetIndex(0);
+	}
+
+	if (CoreWidgetTag.MatchesTagExact(GameplayTags.Widget_CharacterCognitionMenu))
+	{
+		CoreWidgetSwitcher->SetActiveWidgetIndex(1);
+	}
+
+	if (CoreWidgetTag.MatchesTagExact(GameplayTags.Widget_SelfAwarenessMenu))
+	{
+		CoreWidgetSwitcher->SetActiveWidgetIndex(2);
+	}
+
+	return CoreWidgetSwitcher->GetActiveWidget();
 }
 
 void UPrimaryGameLayout::RegisterLayer(FGameplayTag LayerTag, UCommonActivatableWidgetContainerBase* LayerWidget)

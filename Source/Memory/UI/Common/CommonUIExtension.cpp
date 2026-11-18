@@ -4,16 +4,28 @@
 #include "CommonUIExtension.h"
 #include "CommonInputSubsystem.h"//
 #include "CommonInputTypeEnum.h"//
+#include "CommonActivatableWidget.h"//
 #include "Memory/HUD/MemoryHUD.h"//
 #include "Memory/UI/Common/PrimaryGameLayout.h"//
-#include "Memory/UI/Common/MemoryActivatableWidget.h"//
-#include "Memory/UI/Common/CommonUIInterface.h"//
 #include "Memory/MemoryGameplayTag.h"//
 
 int32 UCommonUIExtension::InputSuspensions = 0;
 
-UMemoryActivatableWidget* UCommonUIExtension::PushContentToLayerForPlayer(
-	APlayerController* PlayerController, FGameplayTag LayerTag, TSubclassOf<UMemoryActivatableWidget> WidgetClass)
+UPrimaryGameLayout* UCommonUIExtension::GetPrimaryGameLayout(APlayerController* PlayerController)
+{
+	if (!PlayerController)return nullptr;
+
+	AMemoryHUD* MemoryHUD = Cast<AMemoryHUD>(PlayerController->GetHUD());
+	if (MemoryHUD)
+	{
+		return MemoryHUD->GetRootLayout();
+	}
+
+	return nullptr;
+}
+
+UCommonActivatableWidget* UCommonUIExtension::PushContentToLayerForPlayer(
+	APlayerController* PlayerController, FGameplayTag LayerTag, TSubclassOf<UCommonActivatableWidget> WidgetClass)
 {
 	if (!PlayerController)return nullptr;
 
@@ -31,7 +43,7 @@ UMemoryActivatableWidget* UCommonUIExtension::PushContentToLayerForPlayer(
 }
 
 void UCommonUIExtension::PushStreamedContentToLayerForPlayer(
-	APlayerController* PlayerController, FGameplayTag LayerTag, TSoftClassPtr<UMemoryActivatableWidget> WidgetSoftClassPtr)
+	APlayerController* PlayerController, FGameplayTag LayerTag, TSoftClassPtr<UCommonActivatableWidget> WidgetSoftClassPtr)
 {
 	if (!PlayerController)return;
 
@@ -46,47 +58,7 @@ void UCommonUIExtension::PushStreamedContentToLayerForPlayer(
 	}
 }
 
-UMemoryActivatableWidget* UCommonUIExtension::PushCoreWidgetToLayerForPlayer(
-	APlayerController* PlayerController, FGameplayTag WidgetTag, FGameplayTag LayerTag)
-{
-	if (!PlayerController)return nullptr;
-
-	AMemoryHUD* MemoryHUD = Cast<AMemoryHUD>(PlayerController->GetHUD());
-	if (MemoryHUD)
-	{
-		UPrimaryGameLayout* RootLayout = MemoryHUD->GetRootLayout();
-		if (RootLayout)
-		{
-			for (UCommonActivatableWidget* WidgetInLayer : RootLayout->GetWidgetsInLayer(LayerTag))
-			{
-				if (UMemoryActivatableWidget* Widget = Cast<UMemoryActivatableWidget>(WidgetInLayer))
-				{
-					if (Widget->GetWidgetTag().MatchesTagExact(WidgetTag))
-					{
-						if (Widget->IsActivated())
-						{
-							return Widget;
-						}
-						else
-						{
-							RootLayout->FindAndRemoveWidgetFromLayer(LayerTag, Widget);
-						}
-					}
-				}
-			}
-
-			const TSubclassOf<UMemoryActivatableWidget>* WidgetClassPtr = MemoryHUD->GetCoreWidgetClass(WidgetTag);
-			if (WidgetClassPtr)
-			{
-				return RootLayout->PushWidgetToLayerStack(LayerTag, *WidgetClassPtr);
-			}
-		}
-	}
-
-	return nullptr;
-}
-
-UMemoryActivatableWidget* UCommonUIExtension::PushExplanationToLayerForPlayer(APlayerController* PlayerController)
+UCommonActivatableWidget* UCommonUIExtension::PushExplanationToLayerForPlayer(APlayerController* PlayerController)
 {
 	if (!PlayerController)return nullptr;
 
@@ -105,7 +77,26 @@ UMemoryActivatableWidget* UCommonUIExtension::PushExplanationToLayerForPlayer(AP
 	return nullptr;
 }
 
-void UCommonUIExtension::PopContentFromLayer(APlayerController* PlayerController, FGameplayTag LayerTag, UMemoryActivatableWidget* ActivatableWidget)
+UWidget* UCommonUIExtension::SwitchToCoreWidgetForPlayer(APlayerController* PlayerController, FGameplayTag CoreWidgetTag)
+{
+	if (!PlayerController)return nullptr;
+
+	const FMemoryGameplayTags& GameplayTags = FMemoryGameplayTags::Get();
+
+	AMemoryHUD* MemoryHUD = Cast<AMemoryHUD>(PlayerController->GetHUD());
+	if (MemoryHUD)
+	{
+		UPrimaryGameLayout* RootLayout = MemoryHUD->GetRootLayout();
+		if (RootLayout)
+		{
+			return RootLayout->SwitchToCoreWidget(CoreWidgetTag);
+		}
+	}
+
+	return nullptr;
+}
+
+void UCommonUIExtension::PopContentFromLayer(APlayerController* PlayerController, FGameplayTag LayerTag, UCommonActivatableWidget* ActivatableWidget)
 {
 	if (!PlayerController || !ActivatableWidget)return;
 

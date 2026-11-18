@@ -33,10 +33,11 @@ void AMemoryHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySy
 
 	const FMemoryGameplayTags& GameplayTags = FMemoryGameplayTags::Get();
 
-	if (Overlay = RootLayout->PushWidgetToLayerStack(GameplayTags.Layer_Game, OverlayWidgetClass))
+	if (Overlay = Cast<UMemoryActivatableWidget>(RootLayout->PushWidgetToLayerStack(GameplayTags.Layer_Game, OverlayWidgetClass)))
 	{
 		Overlay->SetWidgetController(GetOverlayWidgetController());
 	}
+	//TODO
 }
 
 UPrimaryGameLayout* AMemoryHUD::GetRootLayout() const
@@ -63,21 +64,6 @@ bool AMemoryHUD::MakeWidgetControllerParams(FWidgetControllerParams& OutParams)
 	}
 
 	return false;
-}
-
-UMemoryWidgetController* AMemoryHUD::GetBaseWidgetController()
-{
-	if (BaseWidgetController == nullptr)
-	{
-		FWidgetControllerParams Params;
-		if (MakeWidgetControllerParams(Params))
-		{
-			BaseWidgetController = NewObject<UMemoryWidgetController>(this, BaseWidgetControllerClass);
-			BaseWidgetController->SetWidgetControllerParams(Params);
-		}
-	}
-
-	return BaseWidgetController;
 }
 
 UMemoryWidgetController* AMemoryHUD::GetOverlayWidgetController()
@@ -132,24 +118,4 @@ UMemoryWidgetController* AMemoryHUD::GetCognitionGraphWidgetController()
 	}
 
 	return CognitionGraphWidgetController;
-}
-
-const TSubclassOf<UMemoryActivatableWidget>* AMemoryHUD::GetCoreWidgetClass(const FGameplayTag& WidgetTag) const
-{
-	return CoreWidgetClasses.Find(WidgetTag);
-}
-
-void AMemoryHUD::PushMainMenu()
-{
-	check(MainMenuClass);
-
-	if (!RootLayout)return;
-
-	const FMemoryGameplayTags& GameplayTags = FMemoryGameplayTags::Get();
-
-	UMemoryActivatableWidget* MainMenu = RootLayout->PushWidgetToLayerStack(GameplayTags.Layer_Menu, MainMenuClass);
-	if (MainMenu)
-	{
-		MainMenu->SetWidgetController(GetBaseWidgetController());
-	}
 }

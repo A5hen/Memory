@@ -43,7 +43,6 @@ private:
 
 	void Move(const FInputActionValue& InputActionValue);
 	void CameraMove(const FInputActionValue& InputActionValue);
-	void OpenMainMenu(const FInputActionValue& InputActionValue);
 
 	void AbilityInputTagPressed(FGameplayTag InputTag);
 	void AbilityInputTagReleased(FGameplayTag InputTag);
@@ -60,9 +59,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputAction>CameraMoveAction;
-
-	UPROPERTY(EditAnywhere, Category = "Input")
-	TObjectPtr<UInputAction>OpenMainMenuAction;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UMemoryInputConfig> InputConfig;

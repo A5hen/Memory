@@ -14,18 +14,6 @@ void UMemoryAbilitySystemLibrary::GetMemoryHUD(const UObject* WorldContextObject
 	}
 }
 
-UMemoryWidgetController* UMemoryAbilitySystemLibrary::GetBaseWidgetController(const UObject* WorldContextObject)
-{
-	AMemoryHUD* MemoryHUD;
-	GetMemoryHUD(WorldContextObject, MemoryHUD);
-	if (MemoryHUD)
-	{
-		return MemoryHUD->GetBaseWidgetController();
-	}
-
-	return nullptr;
-}
-
 UMemoryWidgetController* UMemoryAbilitySystemLibrary::GetOverlayWidgetController(const UObject* WorldContextObject)
 {
 	AMemoryHUD* MemoryHUD;

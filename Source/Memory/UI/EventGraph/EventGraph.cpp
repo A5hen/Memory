@@ -31,12 +31,14 @@ bool UEventGraph::CheckEvent(const FGameplayTag& EventTag) const
 	return GeneratedEventGraphNodes.Contains(EventTag);
 }
 
-FVector2D UEventGraph::JumptoEventGraphNode(const FGameplayTag& EventTag)
+FVector2D UEventGraph::JumpToEventGraphNode(const FGameplayTag& EventTag)
 {
 	if (UEventGraphNode* TargetNode = GeneratedEventGraphNodes.FindRef(EventTag).Get())
 	{
 		UCanvasPanelSlot* CanvasPanelSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(TargetNode);
 		return CanvasPanelSlot->GetPosition();
+
+		//TODO
 	}
 
 	return FVector2D();
@@ -56,9 +58,9 @@ void UEventGraph::UpdateEventGraph(const FExperiencedEventInfomation& Experience
 	{
 		if(const FMemoryEventInfo* EventInfo = EventSet->GetEventInfoByEventTag(Pair.Key))
 		{
-			TMap<FVector2D, FTargetPoint> StartToEnd;
+			UpdateEventGraphNode(Pair.Key, Pair.Value, EventInfo->PositionOnGraph);
 
-			UpdateEventGraphNode(Pair.Key, Pair.Value, GeneratedEventGraphNodes.Contains(Pair.Key), EventInfo->PositionOnGraph);
+			TMap<FVector2D, FTargetPoint> StartToEnd;
 
 			const FGameplayTagContainer& ExperiencedPreEvents = ExperiencedEvents.FilterExact(EventInfo->PreEventTags);
 			for (const FGameplayTag& PreEventTag : ExperiencedPreEvents)
@@ -85,11 +87,15 @@ void UEventGraph::UpdateEventGraph(const FExperiencedEventInfomation& Experience
 	}
 }
 
-void UEventGraph::UpdateEventGraphNode(const FGameplayTag& EventTag, const FExperiencedEventInfo& ExperiencedEventInfo, bool bGenerated, const FVector2D& PositionOnGraph)
+void UEventGraph::UpdateEventGraphNode(const FGameplayTag& EventTag, const FExperiencedEventInfo& ExperiencedEventInfo, const FVector2D& PositionOnGraph)
 {
 	check(EventGraphNodeClass);
 
-	if (!bGenerated)
+	if (UEventGraphNode* EventGraphNode = GeneratedEventGraphNodes.FindRef(EventTag).Get())
+	{
+		EventGraphNode->UpdateNode(EventTag, ExperiencedEventInfo);
+	}
+	else
 	{
 		UEventGraphNode* NewEventGraphNode = CreateWidget<UEventGraphNode>(this, EventGraphNodeClass);
 		CanvasPanel_Root->AddChild(NewEventGraphNode);
@@ -103,13 +109,6 @@ void UEventGraph::UpdateEventGraphNode(const FGameplayTag& EventTag, const FExpe
 		NewEventGraphNode->UpdateNode(EventTag, ExperiencedEventInfo);
 
 		GeneratedEventGraphNodes.Emplace(EventTag, NewEventGraphNode);
-	}
-	else
-	{
-		if (UEventGraphNode* EventGraphNode = GeneratedEventGraphNodes.FindRef(EventTag).Get())
-		{
-			EventGraphNode->UpdateNode(EventTag, ExperiencedEventInfo);
-		}
 	}
 }
 

@@ -13,7 +13,7 @@ class UMemoryWidgetController;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBP_OnSelected);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnSelected, const FContentWidgetInfo&);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDisplayContentDelegate, const FContentWidgetInfo&, Info);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateContentDelegate, const FContentWidgetInfo&, Info);
 
 /**
  * 
@@ -25,7 +25,7 @@ class MEMORY_API UGraphContentWidget : public UUserWidget
 
 public:
 
-	void DisplayContent();
+	void UpdateContent();
 
 	void NotifyController(bool bNotify) { bNotifyController = bNotify; }
 
@@ -44,7 +44,7 @@ public:
 	FContentWidgetInfo ContentWidgetInfo;
 
 	UPROPERTY(BlueprintAssignable, Category = "ContentDisplay")
-	FDisplayContentDelegate DisplayContentDelegate;
+	FUpdateContentDelegate UpdateContentDelegate;
 
 protected:
 

@@ -28,18 +28,10 @@ void AInteractableActor::Tick(float DeltaTime)
 
 void AInteractableActor::GatherInteractionOptions(const FInteractionQuery& InteractQuery, FInteractionOptionBuilder& OptionBuilder)
 {
-	if (IsInteractable())
+	for (FInteractionOption& Option : InteractionOptions)
 	{
-		for (FInteractionOption& Option : InteractionOptions)
-		{
-			OptionBuilder.AddInteractionOption(Option);
-		}
+		OptionBuilder.AddInteractionOption(Option);
 	}
-}
-
-bool AInteractableActor::IsInteractable() const
-{
-	return true;
 }
 
 void AInteractableActor::BeginPlay()

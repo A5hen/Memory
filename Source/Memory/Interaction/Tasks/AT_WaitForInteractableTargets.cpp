@@ -41,7 +41,7 @@ void UAT_WaitForInteractableTargets::UpdateInteractableOptions(const TArray<TScr
         {
             FGameplayAbilitySpec* InteractionAbilitySpec = nullptr;
 
-            // if there is a handle an a target ability system, we're triggering the ability on the target.
+            // if there is a handle and a target ability system, we're triggering the ability on the target.
             if (Option.TargetAbilitySystem && Option.TargetInteractionAbilityHandle.IsValid())
             {
                 // Find the spec

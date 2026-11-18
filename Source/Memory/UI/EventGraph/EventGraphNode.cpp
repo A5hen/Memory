@@ -22,7 +22,7 @@ void UEventGraphNode::UpdateLeafNode_CharacterBehavior(const FGameplayTag& Event
 
 	const FMemoryGameplayTags& GameplayTags = FMemoryGameplayTags::Get();
 
-	if (ExperiencedEventInfo.GeneratedCharacterBehavior.Num() != 0)
+	if (ExperiencedEventInfo.GeneratedCharacterBehaviors.Num() != 0)
 	{
 		if(!LeafNode_CharacterBehavior)
 		{
@@ -43,7 +43,7 @@ void UEventGraphNode::UpdateLeafNode_CharacterBehavior(const FGameplayTag& Event
 			CanvasPanelSlot->SetAutoSize(true);
 
 			TMap<FGameplayTag, TArray<FName>> CharacterBehavior;
-			for (const auto& Pair : ExperiencedEventInfo.GeneratedCharacterBehavior)
+			for (const auto& Pair : ExperiencedEventInfo.GeneratedCharacterBehaviors)
 			{
 				CharacterBehavior.Add(Pair.Key, Pair.Value.Names);
 			}
@@ -52,7 +52,7 @@ void UEventGraphNode::UpdateLeafNode_CharacterBehavior(const FGameplayTag& Event
 		else
 		{
 			TMap<FGameplayTag, TArray<FName>> CharacterBehavior;
-			for (const auto& Pair : ExperiencedEventInfo.GeneratedCharacterBehavior)
+			for (const auto& Pair : ExperiencedEventInfo.GeneratedCharacterBehaviors)
 			{
 				CharacterBehavior.Add(Pair.Key, Pair.Value.Names);
 			}

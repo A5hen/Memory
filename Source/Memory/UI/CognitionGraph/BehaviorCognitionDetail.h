@@ -24,7 +24,7 @@ class MEMORY_API UBehaviorCognitionDetail : public UUserWidget
 public:
 
 	void UpdateDetail(const FGameplayTag& InCharacterTag, const FName& InBehaviorDesc, const FGeneratedBehaviorCognition& GeneratedBehaviorCognition);
-	
+
 protected:
 
 	UPROPERTY(meta = (BindWidget))

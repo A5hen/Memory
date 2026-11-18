@@ -33,7 +33,6 @@ public:
 	virtual void GatherInteractionOptions(const FInteractionQuery& InteractQuery, FInteractionOptionBuilder& OptionBuilder) override;
 	virtual void DisplayOption(int32 OptionIndex, bool bDisplay) override;
 	virtual void SelectOption(int32 OptionIndex, bool bSelect) override;
-	virtual bool IsInteractable() const override;
 
 	virtual FGameplayTag GetActorTag()const override;
 
@@ -87,7 +86,7 @@ protected:
 
 	bool bTimerSet = false;
 
-	bool bInteractable = true;
+	bool bInteractable = false;
 
 	/*AI*/
 	UPROPERTY(EditAnywhere, Category = "InteractableCharacter|AI")

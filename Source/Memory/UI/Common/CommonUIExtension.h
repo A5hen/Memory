@@ -7,7 +7,9 @@
 #include "GameplayTagContainer.h"//
 #include "CommonUIExtension.generated.h"
 
-class UMemoryActivatableWidget;
+class UCommonActivatableWidget;
+
+class UPrimaryGameLayout;
 
 /**
  * 
@@ -20,23 +22,24 @@ class MEMORY_API UCommonUIExtension : public UBlueprintFunctionLibrary
 public:
 
 	UFUNCTION(BlueprintCallable, Category = "UI Extensions")
-	static UMemoryActivatableWidget* PushContentToLayerForPlayer(
-		APlayerController* PlayerController, FGameplayTag LayerTag, TSubclassOf<UMemoryActivatableWidget>WidgetClass);
+	static UPrimaryGameLayout* GetPrimaryGameLayout(APlayerController* PlayerController);
+
+	UFUNCTION(BlueprintCallable, Category = "UI Extensions")
+	static UCommonActivatableWidget *PushContentToLayerForPlayer(
+		APlayerController* PlayerController, FGameplayTag LayerTag, TSubclassOf<class UCommonActivatableWidget> WidgetClass);
 
 	UFUNCTION(BlueprintCallable, Category = "UI Extensions")
 	static void PushStreamedContentToLayerForPlayer(
-		APlayerController* PlayerController, FGameplayTag LayerTag, TSoftClassPtr<UMemoryActivatableWidget> WidgetSoftClassPtr);
+		APlayerController* PlayerController, FGameplayTag LayerTag, TSoftClassPtr<class UCommonActivatableWidget> WidgetSoftClassPtr);
 
 	UFUNCTION(BlueprintCallable, Category = "UI Extensions")
-	static UMemoryActivatableWidget* PushCoreWidgetToLayerForPlayer(
-		APlayerController* PlayerController, FGameplayTag WidgetTag, FGameplayTag LayerTag);
+	static UCommonActivatableWidget* PushExplanationToLayerForPlayer(APlayerController* PlayerController);
 
 	UFUNCTION(BlueprintCallable, Category = "UI Extensions")
-	static UMemoryActivatableWidget* PushExplanationToLayerForPlayer(
-		APlayerController* PlayerController);
+	static UWidget* SwitchToCoreWidgetForPlayer(APlayerController* PlayerController, FGameplayTag CoreWidgetTag);
 
 	UFUNCTION(BlueprintCallable, Category = "UI Extensions")
-	static void PopContentFromLayer(APlayerController* PlayerController, FGameplayTag LayerTag, UMemoryActivatableWidget* ActivatableWidget);
+	static void PopContentFromLayer(APlayerController* PlayerController, FGameplayTag LayerTag, class UCommonActivatableWidget* ActivatableWidget);
 
 	static FName SuspendInputForPlayer(APlayerController* PlayerController, FName SuspendReason);
 

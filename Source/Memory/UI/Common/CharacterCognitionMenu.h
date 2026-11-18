@@ -29,9 +29,6 @@ public:
 
 	virtual void SetWidgetController(UMemoryWidgetController* InWidgetController) override;
 
-	UFUNCTION(BlueprintCallable)
-	void TestJumpFunction();
-
 protected:
 
 	virtual void NativeOnActivated() override;
@@ -41,7 +38,7 @@ protected:
 	virtual FReply NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 	virtual FReply NativeOnMouseMove(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 
-	virtual void HandleCoreWidgetJump(const FContentWidgetInfo& ContentWidgetInfo) override;
+	virtual void HandleCoreWidgetSwitch(const FContentWidgetInfo& ContentWidgetInfo) override;
 
 	virtual void OnContentSelected(const FContentWidgetInfo& ContentWidgetInfo) override;
 

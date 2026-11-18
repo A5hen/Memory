@@ -201,16 +201,6 @@ AActor* UMemoryEventDefinition::GetSceneActorByActorTag(const FGameplayTag& Acto
 
 void UMemoryEventDefinition::PushSelectionWidget(TSubclassOf<UMemoryActivatableWidget> SelectionWidgetClass, FGameplayTag ActorTag, const TArray<FText>& Content)
 {
-	const FMemoryGameplayTags& GameplayTags = FMemoryGameplayTags::Get();
-
-	/*if (SelectionWidgetClass && PlayerController)
-	{
-		UMemoryActivatableWidget* SelectionWidget = UCommonUIExtension::PushContentToLayerForPlayer(PlayerController, GameplayTags.Layer_Selection, SelectionWidgetClass);
-		if (ICommonUIInterface* CommonUIInterface = Cast<ICommonUIInterface>(SelectionWidget))
-		{
-			CommonUIInterface->SetOwnerActorTag(ActorTag);
-		}
-	}*/
 }
 
 void UMemoryEventDefinition::SetDialogueContent(FGameplayTag ActorTag, const FDialogueContent& NewDialogueContent)

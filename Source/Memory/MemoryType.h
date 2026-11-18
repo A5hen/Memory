@@ -13,6 +13,15 @@ typedef TMap<FGameplayTag, FGeneratedBehavior> TGeneratedCharacterBehaviorsType;
 typedef TMap<FGameplayTag, FExperiencedEventInfomation> TExperiencedEventInfomationType_AllStage;
 
 USTRUCT(BlueprintType)
+struct FNameArray
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FName> Names;
+};
+
+USTRUCT(BlueprintType)
 struct FContentWidgetInfo
 {
 	GENERATED_BODY()

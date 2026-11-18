@@ -14,8 +14,6 @@ void UBehaviorCognitionDetail::UpdateDetail(const FGameplayTag& InCharacterTag, 
 {
 	check(Content_BehaviorCognitionClass);
 
-	if (InCharacterTag.MatchesTagExact(CharacterTag) && InBehaviorDesc.IsEqual(BehaviorDesc))return;
-
 	const FMemoryGameplayTags& GameplayTags = FMemoryGameplayTags::Get();
 
 	UCharacterCognitionSet* CharacterCognitionSet = nullptr;
@@ -25,20 +23,38 @@ void UBehaviorCognitionDetail::UpdateDetail(const FGameplayTag& InCharacterTag, 
 	}
 	if (!CharacterCognitionSet)return;
 
+	bool bIncrementalUpdate = true;
+	if (InCharacterTag != CharacterTag || InBehaviorDesc != BehaviorDesc)
+	{
+		bIncrementalUpdate = false;
+	}
+	else if (CurrentCognitionLevel == GeneratedBehaviorCognition.CurrentCognitionLevel)
+	{
+		return;
+	}
+
 	CharacterTag = InCharacterTag;
 	BehaviorDesc = InBehaviorDesc;
-	//TODO: Set Text_BehaviorDesc
 
-	int32 WidgetNum = ScrollBox_BehaviorCognition->GetChildrenCount();
+	Text_BehaviorDesc->SetText(FText::FromName(BehaviorDesc));
 
-	for (int32 i = GeneratedBehaviorCognition.CurrentCognitionLevel + 1; i < WidgetNum; ++i)
+	int32 StartIndex = 0;
+
+	if (!bIncrementalUpdate)
 	{
-		ScrollBox_BehaviorCognition->GetChildAt(i)->RemoveFromParent();
+		for (int32 i = GeneratedBehaviorCognition.CurrentCognitionLevel + 1; i <= CurrentCognitionLevel; ++i)
+		{
+			ScrollBox_BehaviorCognition->GetChildAt(i)->SetVisibility(ESlateVisibility::Collapsed);
+		}
+	}
+	else
+	{
+		StartIndex = CurrentCognitionLevel + 1;
 	}
 
 	TArray<UWidget*> GeneratedWidgets = ScrollBox_BehaviorCognition->GetAllChildren();
 
-	for (int32 i = 0; i <= GeneratedBehaviorCognition.CurrentCognitionLevel; ++i)
+	for (int32 i = StartIndex; i <= GeneratedBehaviorCognition.CurrentCognitionLevel; ++i)
 	{
 		UGraphContentWidget* Content_BehaviorCognition = nullptr;
 
@@ -54,12 +70,14 @@ void UBehaviorCognitionDetail::UpdateDetail(const FGameplayTag& InCharacterTag, 
 			CurrentCognitionLevel = i;
 		}
 
+		Content_BehaviorCognition->SetVisibility(ESlateVisibility::Visible);
+
 		Content_BehaviorCognition->ContentWidgetInfo.OwnerWidgetTag = GameplayTags.Widget_CharacterCognitionMenu;
 		Content_BehaviorCognition->ContentWidgetInfo.ContentTag = GameplayTags.Content_CharacterBehavior;
 		Content_BehaviorCognition->ContentWidgetInfo.CharacterTag = InCharacterTag;
 		Content_BehaviorCognition->ContentWidgetInfo.BehaviorDesc = InBehaviorDesc;
 		Content_BehaviorCognition->ContentWidgetInfo.CognitionLevel = i;
 
-		Content_BehaviorCognition->DisplayContent();
+		Content_BehaviorCognition->UpdateContent();
 	}
 }

@@ -25,7 +25,6 @@ public:
 
 	/*~InteractableTarget Interface*/
 	virtual void GatherInteractionOptions(const FInteractionQuery& InteractQuery, FInteractionOptionBuilder& OptionBuilder)override;
-	virtual bool IsInteractable()const override;
 	/*~End of InteractableTarget Interface*/
 
 protected:

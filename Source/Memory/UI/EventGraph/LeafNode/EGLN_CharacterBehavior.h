@@ -42,7 +42,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Overview")
 	TSubclassOf<UGraphContentWidget> OverviewClass_CharacterBehavior;
 
-	TMap<FGameplayTag, TArray<FName>> GeneratedCharacterBehavior;
+	TMap<FGameplayTag, TArray<FName>> GeneratedCharacterBehaviors_Overview;
 
 	FGameplayTag SelectedCharacterTag;
 };

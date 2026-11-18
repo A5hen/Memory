@@ -15,9 +15,13 @@ void UCognitionGraphNode::UpdateNode(const FGameplayTag& InCharactertag, const F
 
 	for (const FGameplayTag& SourceEvent : GeneratedBehaviorCognition.Source)
 	{
-		if (SourceEvnetTags.HasTagExact(SourceEvent))continue;
+		if (UGraphContentWidget* Content_CharacterBehavior = GeneratedCharacterBehaviors.FindRef(SourceEvent).Get())
+		{
+			Content_CharacterBehavior->ContentWidgetInfo.CognitionLevel = GeneratedBehaviorCognition.CurrentCognitionLevel;
+			Content_CharacterBehavior->UpdateContent();
 
-		SourceEvnetTags.AddTag(SourceEvent);
+			continue;
+		}
 
 		UGraphContentWidget* Content_CharacterBehavior = CreateWidget<UGraphContentWidget>(this, ContentClass_CharacterBehavior);
 		Content_CharacterBehavior->ContentWidgetInfo.OwnerWidgetTag = GameplayTags.Widget_CharacterCognitionMenu;
@@ -26,21 +30,23 @@ void UCognitionGraphNode::UpdateNode(const FGameplayTag& InCharactertag, const F
 		Content_CharacterBehavior->ContentWidgetInfo.BehaviorDesc = InBehaviorDesc;
 		Content_CharacterBehavior->ContentWidgetInfo.CognitionLevel = GeneratedBehaviorCognition.CurrentCognitionLevel;
 		Content_CharacterBehavior->ContentWidgetInfo.EventTag = SourceEvent;
-
-		Content_CharacterBehavior->DisplayContent();
+		Content_CharacterBehavior->UpdateContent();
 
 		Switcher_Root->AddChild(Content_CharacterBehavior);
+		GeneratedCharacterBehaviors.Add(SourceEvent, Content_CharacterBehavior);
 	}
 }
 
 void UCognitionGraphNode::SwitchSourceEvent(bool bNext)
 {
-	if (SourceEvnetTags.Num() <= 1)return;
+	int32 WidgetNum = GeneratedCharacterBehaviors.Num();
+
+	if (WidgetNum <= 1)return;
 
 	if (bNext)
 	{
 		++SwitcherIndex;
-		if (SwitcherIndex >= SourceEvnetTags.Num())
+		if (SwitcherIndex >= WidgetNum)
 		{
 			SwitcherIndex = 0;
 		}
@@ -50,7 +56,7 @@ void UCognitionGraphNode::SwitchSourceEvent(bool bNext)
 		--SwitcherIndex;
 		if (SwitcherIndex <= 0)
 		{
-			SwitcherIndex = SourceEvnetTags.Num() - 1;
+			SwitcherIndex = WidgetNum - 1;
 		}
 	}
 
